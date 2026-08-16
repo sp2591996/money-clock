@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Money Clock</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:#0b0d10;
+  color:#f5f7fa;
+  display:flex;
+  align-items:center;
+  justify-content:center
+}
+
+.wrap{
+  width:min(920px,92vw);
+  text-align:center;
+  padding:28px 0
+}
+
+.label{
+  color:#8d96a3;
+  font-size:14px;
+  letter-spacing:.12em;
+  text-transform:uppercase
+}
+
+.amount{
+  font-size:clamp(48px,9vw,100px);
+  font-weight:700;
+  letter-spacing:-.055em;
+  margin:10px 0 2px;
+  font-variant-numeric:tabular-nums
+}
+
+.inr{
+  font-size:clamp(28px,5vw,52px);
+  font-weight:600;
+  color:#b9c0c9;
+  font-variant-numeric:tabular-nums
+}
+
+.rate{
+  color:#8f98a4;
+  font-size:16px;
+  margin-top:10px
+}
+
+.date{
+  color:#626b76;
+  margin-top:8px;
+  font-size:14px
+}
+
+.card{
+  margin:28px auto 0;
+  max-width:650px;
+  background:#13171c;
+  border:1px solid #252b33;
+  border-radius:18px;
+  padding:20px 22px;
+  text-align:left
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  padding:11px 0;
+  border-bottom:1px solid #242a31
+}
+
+.row:last-child{
+  border-bottom:0
+}
+
+.muted{
+  color:#818b98
+}
+
+.value{
+  font-weight:600;
+  font-variant-numeric:tabular-nums
+}
+
+.panel{
+  margin:18px auto 0;
+  max-width:650px;
+  background:#101419;
+  border:1px solid #252b33;
+  border-radius:14px;
+  padding:18px;
+  text-align:left
+}
+
+.panel h3{
+  margin:0 0 14px;
+  font-size:15px
+}
+
+label{
+  display:block;
+  color:#aab2bd;
+  font-size:13px;
+  margin-bottom:12px
+}
+
+input{
+  width:100%;
+  padding:11px;
+  background:#0d1014;
+  color:white;
+  border:1px solid #303741;
+  border-radius:8px;
+  font-size:15px
+}
+
+button{
+  padding:9px 14px;
+  border-radius:9px;
+  border:1px solid #343b45;
+  background:#1a2027;
+  color:white;
+  cursor:pointer;
+  font-size:14px
+}
+
+button:hover{
+  background:#222932
+}
+
+.primary{
+  margin-top:4px
+}
+
+.bonus-list{
+  margin-top:14px
+}
+
+.bonus-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 0;
+  border-top:1px solid #242a31
+}
+
+.bonus-info{
+  display:flex;
+  flex-direction:column;
+  gap:3px
+}
+
+.bonus-name{
+  font-weight:600
+}
+
+.bonus-meta{
+  font-size:12px;
+  color:#737d89
+}
+
+.delete{
+  font-size:12px;
+  padding:7px 10px
+}
+
+.note{
+  color:#5f6874;
+  font-size:12px;
+  margin-top:16px;
+  line-height:1.5
+}
+
+.small{
+  font-size:12px;
+  color:#737d89;
+  margin-top:7px
+}
+
+#fxStatus{
+  min-height:18px
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+  <div class="label">Money earned since start date</div>
+
+  <div class="amount" id="aed">AED 0.00</div>
+
+  <div class="inr" id="inr">₹0.00</div>
+
+  <div class="rate" id="rate"></div>
+
+  <div class="small" id="fxStatus"></div>
+
+  <div class="date" id="today"></div>
+
+
+  <div class="card">
+
+    <div class="row">
+      <span class="muted">Monthly salary</span>
+      <span class="value" id="salary"></span>
+    </div>
+
+    <div class="row">
+      <span class="muted">Start date</span>
+      <span class="value" id="startDisplay"></span>
+    </div>
+
+    <div class="row">
+      <span class="muted">Salary earned since start</span>
+      <span class="value" id="salaryEarned"></span>
+    </div>
+
+    <div class="row">
+      <span class="muted">One-time bonuses</span>
+      <span class="value" id="bonusTotal"></span>
+    </div>
+
+    <div class="row">
+      <span class="muted">Total earnings</span>
+      <span class="value" id="total"></span>
+    </div>
+
+    <div class="row">
+      <span class="muted">Live AED → INR</span>
+      <span class="value" id="fxRate">₹25.0000</span>
+    </div>
+
+  </div>
+
+
+  <div class="panel">
+
+    <h3>Salary & start date</h3>
+
+    <label>
+      Start date
+      <input id="startDate" type="date">
+    </label>
+
+    <label>
+      Monthly salary (AED)
+      <input id="salaryInput" type="number" min="0" step="100">
+    </label>
+
+    <button class="primary" id="save">
+      Update clock
+    </button>
+
+    <div class="small">
+      Changing the salary recalculates the salary-earned portion from your selected start date.
+    </div>
+
+  </div>
+
+
+  <div class="panel">
+
+    <h3>Add one-time bonus</h3>
+
+    <label>
+      Bonus amount (AED)
+      <input
+        id="bonusAmount"
+        type="number"
+        min="0"
+        step="100"
+        placeholder="e.g. 5000"
+      >
+    </label>
+
+    <label>
+      Date received
+      <input id="bonusDate" type="date">
+    </label>
+
+    <button class="primary" id="addBonus">
+      Add bonus
+    </button>
+
+    <div class="bonus-list" id="bonusList"></div>
+
+  </div>
+
+
+  <div class="note">
+    Salary is calculated continuously across all 24 hours of every calendar day.
+    Each calendar month allocates the monthly salary across its actual number of days.
+    One-time bonuses are simply added to total earnings when their selected date is
+    on or before today and on or after the selected start date.
+    INR is converted using the live AED → INR rate, with a cached/fallback rate if
+    the live service is unavailable.
+  </div>
+
+</div>
+
+
+<script>
+
+/* ============================================================
+   MONEY CLOCK
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   FX SETTINGS
+   ------------------------------------------------------------ */
+
+const FX_API_URL =
+  "https://api.frankfurter.dev/v2/rate/AED/INR";
+
+const FX_TIMEOUT_MS = 5000;
+
+/*
+   We use the last successful rate immediately when available.
+
+   If there is no cached rate, the clock starts with ₹25.
+   The live request happens independently in the background.
+*/
+
+const cachedFXRate =
+  Number(localStorage.getItem("moneyClockFxRate"));
+
+let INR_RATE =
+  Number.isFinite(cachedFXRate) && cachedFXRate > 0
+    ? cachedFXRate
+    : 25;
+
+let fxSource =
+  Number.isFinite(cachedFXRate) && cachedFXRate > 0
+    ? "Cached rate"
+    : "Fallback rate";
+
+
+/* ------------------------------------------------------------
+   SALARY / STORAGE
+   ------------------------------------------------------------ */
+
+let salary =
+  Number(localStorage.getItem("moneyClockSalary") || 22000);
+
+let savedStart =
+  localStorage.getItem("moneyClockStartDate");
+
+let bonuses =
+  JSON.parse(
+    localStorage.getItem("moneyClockBonuses") || "[]"
+  );
+
+
+/* ------------------------------------------------------------
+   DATE HELPERS
+   ------------------------------------------------------------ */
+
+function localDateString(d){
+
+  return `${d.getFullYear()}-${
+    String(d.getMonth()+1).padStart(2,"0")
+  }-${
+    String(d.getDate()).padStart(2,"0")
+  }`;
+
+}
+
+
+function parseDate(s){
+
+  if(!s) return new Date();
+
+  const p = s.split("-").map(Number);
+
+  return new Date(
+    p[0],
+    p[1]-1,
+    p[2]
+  );
+
+}
+
+
+/* ------------------------------------------------------------
+   MONEY FORMATTING
+   ------------------------------------------------------------ */
+
+function moneyAED(n,dec=2){
+
+  return "AED " +
+    n.toLocaleString(
+      "en-AE",
+      {
+        minimumFractionDigits:dec,
+        maximumFractionDigits:dec
+      }
+    );
+
+}
+
+
+function moneyINR(n){
+
+  return "₹" +
+    n.toLocaleString(
+      "en-IN",
+      {
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    );
+
+}
+
+
+/* ------------------------------------------------------------
+   MONTH HELPERS
+   ------------------------------------------------------------ */
+
+function daysInMonth(y,m){
+
+  return new Date(y,m+1,0).getDate();
+
+}
+
+
+/* ------------------------------------------------------------
+   LIVE EXCHANGE RATE
+   ------------------------------------------------------------ */
+
+async function fetchLiveRate(){
+
+  const controller = new AbortController();
+
+  const timeout = setTimeout(
+    () => controller.abort(),
+    FX_TIMEOUT_MS
+  );
+
+
+  try{
+
+    /*
+       IMPORTANT:
+       This request is completely independent of the clock.
+
+       The clock is already running before this function is called.
+    */
+
+    const response = await fetch(
+      FX_API_URL,
+      {
+        cache:"no-store",
+        signal:controller.signal
+      }
+    );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        `FX request failed: ${response.status}`
+      );
+
+    }
+
+
+    const data = await response.json();
+
+
+    /*
+       Frankfurter v2 returns:
+
+       {
+         "date": "...",
+         "base": "AED",
+         "quote": "INR",
+         "rate": 25.99
+       }
+    */
+
+    const rate = Number(data.rate);
+
+
+    if(
+      !Number.isFinite(rate) ||
+      rate <= 0
+    ){
+
+      throw new Error("Invalid FX rate");
+
+    }
+
+
+    /* Successful live rate */
+
+    INR_RATE = rate;
+
+    fxSource = "Live rate";
+
+
+    /* Save it for next startup */
+
+    localStorage.setItem(
+      "moneyClockFxRate",
+      String(rate)
+    );
+
+    localStorage.setItem(
+      "moneyClockFxDate",
+      new Date().toISOString()
+    );
+
+
+    update();
+
+
+  }catch(error){
+
+    /*
+       IMPORTANT:
+
+       FX failure must NEVER stop the clock.
+
+       If a previous rate exists, keep using it.
+       Otherwise continue using ₹25.
+    */
+
+    const cached =
+      Number(localStorage.getItem("moneyClockFxRate"));
+
+
+    if(
+      Number.isFinite(cached) &&
+      cached > 0
+    ){
+
+      INR_RATE = cached;
+      fxSource = "Cached rate";
+
+    }else{
+
+      INR_RATE = 25;
+      fxSource = "Fallback rate";
+
+    }
+
+
+    update();
+
+
+  }finally{
+
+    clearTimeout(timeout);
+
+  }
+
+}
+
+
+/* ------------------------------------------------------------
+   SALARY CALCULATION
+   ------------------------------------------------------------ */
+
+function earningsBetween(start,end){
+
+  if(end <= start){
+    return 0;
+  }
+
+
+  let total = 0;
+
+  let cursor =
+    new Date(start.getTime());
+
+
+  while(cursor < end){
+
+    const y =
+      cursor.getFullYear();
+
+    const m =
+      cursor.getMonth();
+
+    const days =
+      daysInMonth(y,m);
+
+
+    /*
+       Each month is treated as:
+
+       [month start, next month start)
+    */
+
+    const nextMonth =
+      new Date(y,m+1,1);
+
+
+    const segEnd =
+      new Date(
+        Math.min(
+          end.getTime(),
+          nextMonth.getTime()
+        )
+      );
+
+
+    const seconds =
+      Math.max(
+        0,
+        (segEnd.getTime() -
+         cursor.getTime()) / 1000
+      );
+
+
+    total +=
+      (salary / days / 86400) *
+      seconds;
+
+
+    cursor = nextMonth;
+
+  }
+
+
+  return total;
+
+}
+
+
+/* ------------------------------------------------------------
+   BONUS CALCULATION
+   ------------------------------------------------------------ */
+
+function bonusTotalForPeriod(start,now){
+
+  const startDate =
+    new Date(
+      start.getFullYear(),
+      start.getMonth(),
+      start.getDate()
+    );
+
+
+  return bonuses.reduce(
+    (sum,b) => {
+
+      const d =
+        parseDate(b.date);
+
+
+      if(
+        d >= startDate &&
+        d <= now
+      ){
+
+        return sum + Number(b.amount);
+
+      }
+
+
+      return sum;
+
+    },
+    0
+  );
+
+}
+
+
+/* ------------------------------------------------------------
+   BONUS DISPLAY
+   ------------------------------------------------------------ */
+
+function renderBonuses(){
+
+  const list =
+    document.getElementById("bonusList");
+
+
+  if(!bonuses.length){
+
+    list.innerHTML =
+      '<div class="small">No one-time bonuses added.</div>';
+
+    return;
+
+  }
+
+
+  list.innerHTML =
+    bonuses.map(
+      (b,i) => `
+
+        <div class="bonus-item">
+
+          <div class="bonus-info">
+
+            <div class="bonus-name">
+              ${moneyAED(Number(b.amount))}
+            </div>
+
+            <div class="bonus-meta">
+              ${
+                parseDate(b.date)
+                  .toLocaleDateString(
+                    "en-AE",
+                    {
+                      day:"numeric",
+                      month:"short",
+                      year:"numeric"
+                    }
+                  )
+              }
+            </div>
+
+          </div>
+
+          <button
+            class="delete"
+            onclick="deleteBonus(${i})"
+          >
+            Delete
+          </button>
+
+        </div>
+
+      `
+    ).join("");
+
+}
+
+
+function deleteBonus(i){
+
+  bonuses.splice(i,1);
+
+  localStorage.setItem(
+    "moneyClockBonuses",
+    JSON.stringify(bonuses)
+  );
+
+  update();
+
+}
+
+
+window.deleteBonus =
+  deleteBonus;
+
+
+/* ------------------------------------------------------------
+   MAIN CLOCK UPDATE
+   ------------------------------------------------------------ */
+
+function update(){
+
+  const now =
+    new Date();
+
+
+  const input =
+    document.getElementById("startDate").value;
+
+
+  if(!input){
+    return;
+  }
+
+
+  const start =
+    parseDate(input);
+
+
+  const salaryEarned =
+    earningsBetween(
+      start,
+      now
+    );
+
+
+  const bonusesEarned =
+    bonusTotalForPeriod(
+      start,
+      now
+    );
+
+
+  const total =
+    salaryEarned +
+    bonusesEarned;
+
+
+  const days =
+    daysInMonth(
+      now.getFullYear(),
+      now.getMonth()
+    );
+
+
+  const daily =
+    salary / days;
+
+
+  const second =
+    daily / 86400;
+
+
+  /* Main totals */
+
+  document.getElementById("aed")
+    .textContent =
+    moneyAED(total);
+
+
+  document.getElementById("inr")
+    .textContent =
+    moneyINR(
+      total * INR_RATE
+    );
+
+
+  /* Per-second earnings */
+
+  document.getElementById("rate")
+    .textContent =
+    moneyAED(second,6) +
+    " / second  •  " +
+    moneyINR(
+      second * INR_RATE
+    ) +
+    " / second";
+
+
+  /* FX rate */
+
+  document.getElementById("fxRate")
+    .textContent =
+    "₹" +
+    INR_RATE.toLocaleString(
+      "en-IN",
+      {
+        minimumFractionDigits:4,
+        maximumFractionDigits:4
+      }
+    );
+
+
+  /* FX status */
+
+  document.getElementById("fxStatus")
+    .textContent =
+    fxSource +
+    " • refreshes automatically";
+
+
+  /* Current date/time */
+
+  document.getElementById("today")
+    .textContent =
+    now.toLocaleString(
+      "en-AE",
+      {
+        weekday:"long",
+        year:"numeric",
+        month:"long",
+        day:"numeric",
+        hour:"2-digit",
+        minute:"2-digit",
+        second:"2-digit"
+      }
+    );
+
+
+  /* Salary details */
+
+  document.getElementById("salary")
+    .textContent =
+    moneyAED(salary,0);
+
+
+  document.getElementById("startDisplay")
+    .textContent =
+    start.toLocaleDateString(
+      "en-AE",
+      {
+        day:"numeric",
+        month:"short",
+        year:"numeric"
+      }
+    );
+
+
+  document.getElementById("salaryEarned")
+    .textContent =
+    moneyAED(salaryEarned);
+
+
+  document.getElementById("bonusTotal")
+    .textContent =
+    moneyAED(bonusesEarned);
+
+
+  document.getElementById("total")
+    .textContent =
+    moneyAED(total);
+
+
+  renderBonuses();
+
+}
+
+
+/* ------------------------------------------------------------
+   INITIAL VALUES
+   ------------------------------------------------------------ */
+
+const today =
+  new Date();
+
+
+document.getElementById("startDate").value =
+  savedStart ||
+  localDateString(today);
+
+
+document.getElementById("salaryInput").value =
+  salary;
+
+
+document.getElementById("bonusDate").value =
+  localDateString(today);
+
+
+/* ------------------------------------------------------------
+   SAVE SALARY / START DATE
+   ------------------------------------------------------------ */
+
+document.getElementById("save").onclick =
+  () => {
+
+    const d =
+      document.getElementById("startDate").value;
+
+    const s =
+      Number(
+        document.getElementById("salaryInput").value
+      );
+
+
+    if(
+      d &&
+      Number.isFinite(s) &&
+      s >= 0
+    ){
+
+      salary = s;
+
+      savedStart = d;
+
+
+      localStorage.setItem(
+        "moneyClockSalary",
+        String(salary)
+      );
+
+
+      localStorage.setItem(
+        "moneyClockStartDate",
+        d
+      );
+
+
+      update();
+
+    }
+
+  };
+
+
+/* ------------------------------------------------------------
+   ADD BONUS
+   ------------------------------------------------------------ */
+
+document.getElementById("addBonus").onclick =
+  () => {
+
+    const amount =
+      Number(
+        document.getElementById("bonusAmount").value
+      );
+
+
+    const date =
+      document.getElementById("bonusDate").value;
+
+
+    if(
+      Number.isFinite(amount) &&
+      amount > 0 &&
+      date
+    ){
+
+      bonuses.push({
+        amount:amount,
+        date:date
+      });
+
+
+      bonuses.sort(
+        (a,b) =>
+          a.date.localeCompare(b.date)
+      );
+
+
+      localStorage.setItem(
+        "moneyClockBonuses",
+        JSON.stringify(bonuses)
+      );
+
+
+      document.getElementById(
+        "bonusAmount"
+      ).value = "";
+
+
+      update();
+
+    }
+
+  };
+
+
+/* ============================================================
+   START THE CLOCK
+   ============================================================ */
+
+/*
+   FIRST:
+   Immediately render the clock using the cached rate
+   or ₹25 fallback.
+
+   This does NOT wait for the internet.
+*/
+
+update();
+
+
+/*
+   SECOND:
+   Try to obtain a live FX rate in the background.
+
+   The clock is already visible and running.
+*/
+
+fetchLiveRate();
+
+
+/*
+   Update the displayed earnings every 100ms.
+
+   The FX rate itself does NOT change every 100ms.
+*/
+
+setInterval(
+  update,
+  100
+);
+
+
+/*
+   Refresh the FX rate every hour.
+
+   If the API fails, the previous rate remains active.
+*/
+
+setInterval(
+  fetchLiveRate,
+  60 * 60 * 1000
+);
+
+</script>
+
+</body>
+</html>
