@@ -2,1096 +2,1187 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Money Clock</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Money Quest</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23E9C46A' stroke='%23B8892B' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&family=Lora:ital,wght@1,500;1,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+/* apply the saved theme before first paint */
+try{const s=JSON.parse(localStorage.getItem('moneyQuest:v1')||'{}');if(s.theme)document.documentElement.dataset.theme=s.theme;}catch(e){}
+</script>
 <style>
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  min-height:100vh;
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  background:#0b0d10;
-  color:#f5f7fa;
-  display:flex;
-  align-items:center;
-  justify-content:center
+:root{
+  --bg:#F6F2EA; --surface:rgba(255,255,255,.72); --surface-solid:#FFFDF9; --raise:rgba(255,255,255,.78); --field:#FFFFFF;
+  --tint:rgba(60,50,80,.055); --tint-2:rgba(60,50,80,.08); --line:rgba(60,50,80,.09); --line-2:rgba(60,50,80,.16); --edge:rgba(255,255,255,.85);
+  --ink:#2F2B3A; --muted:#686274; --faint:#857F92;
+  --sage:#4F7F5C; --sage-soft:#E3EEE2; --sage-deep:#3A6145;
+  --lav:#7467B8;  --lav-soft:#ECE8F8;  --lav-deep:#5A4E9C;
+  --peach:#C0694A;--peach-soft:#FBE7DD;
+  --sky:#4F84AE;  --sky-soft:#E2EEF7;
+  --gold:#A87C22; --gold-soft:#F7EDD3;
+  --rose:#B65863; --rose-soft:#F7E2E4; --rose-deep:#8F404A;
+  --on-accent:#FFFFFF;
+  --top-bg:rgba(246,242,234,.8);
+  --blob1:#DCD3F2; --blob2:#D6E8D6; --blob3:#F6DCCB; --blob-o:.55;
+  --shadow:0 1px 2px rgba(60,50,80,.04),0 12px 32px -14px rgba(60,50,80,.16);
+  --head:"Nunito",system-ui,sans-serif; --body:"Nunito Sans",system-ui,sans-serif; --serif:"Lora",Georgia,serif; --mono:"DM Mono",ui-monospace,monospace;
+  --r:26px;
+  color-scheme:light;
 }
-
-.wrap{
-  width:min(920px,92vw);
-  text-align:center;
-  padding:28px 0
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#15131C; --surface:rgba(33,30,44,.74); --surface-solid:#1D1A27; --raise:rgba(255,255,255,.035); --field:#211E2C;
+    --tint:rgba(255,255,255,.06); --tint-2:rgba(255,255,255,.085); --line:rgba(255,255,255,.07); --line-2:rgba(255,255,255,.15); --edge:rgba(255,255,255,.06);
+    --ink:#ECE8F3; --muted:#AEA8BC; --faint:#8F89A0;
+    --sage:#8CC29B; --sage-soft:rgba(140,194,155,.14); --sage-deep:#5C8F6A;
+    --lav:#ABA0EE;  --lav-soft:rgba(171,160,238,.15);  --lav-deep:#6E62B8;
+    --peach:#E9A383;--peach-soft:rgba(233,163,131,.14);
+    --sky:#8DB8DB;  --sky-soft:rgba(141,184,219,.14);
+    --gold:#E2B85C; --gold-soft:rgba(226,184,92,.13);
+    --rose:#E58F98; --rose-soft:rgba(229,143,152,.14); --rose-deep:#A65C66;
+    --on-accent:#15131C;
+    --top-bg:rgba(21,19,28,.8);
+    --blob1:#3B3266; --blob2:#1F3D2B; --blob3:#4A3026; --blob-o:.5;
+    --shadow:0 1px 2px rgba(0,0,0,.2),0 16px 40px -18px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
 }
-
-.label{
-  color:#8d96a3;
-  font-size:14px;
-  letter-spacing:.12em;
-  text-transform:uppercase
+:root[data-theme="dark"]{
+  --bg:#15131C; --surface:rgba(33,30,44,.74); --surface-solid:#1D1A27; --raise:rgba(255,255,255,.035); --field:#211E2C;
+  --tint:rgba(255,255,255,.06); --tint-2:rgba(255,255,255,.085); --line:rgba(255,255,255,.07); --line-2:rgba(255,255,255,.15); --edge:rgba(255,255,255,.06);
+  --ink:#ECE8F3; --muted:#AEA8BC; --faint:#8F89A0;
+  --sage:#8CC29B; --sage-soft:rgba(140,194,155,.14); --sage-deep:#5C8F6A;
+  --lav:#ABA0EE;  --lav-soft:rgba(171,160,238,.15);  --lav-deep:#6E62B8;
+  --peach:#E9A383;--peach-soft:rgba(233,163,131,.14);
+  --sky:#8DB8DB;  --sky-soft:rgba(141,184,219,.14);
+  --gold:#E2B85C; --gold-soft:rgba(226,184,92,.13);
+  --rose:#E58F98; --rose-soft:rgba(229,143,152,.14); --rose-deep:#A65C66;
+  --on-accent:#15131C;
+  --top-bg:rgba(21,19,28,.8);
+  --blob1:#3B3266; --blob2:#1F3D2B; --blob3:#4A3026; --blob-o:.5;
+  --shadow:0 1px 2px rgba(0,0,0,.2),0 16px 40px -18px rgba(0,0,0,.6);
+  color-scheme:dark;
 }
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);scroll-behavior:smooth;scroll-padding-top:90px}
+body{min-height:100dvh;font-family:var(--body);color:var(--ink);background:var(--bg);overflow-x:hidden;-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.5;transition:background-color .4s,color .4s}
+button,input,select{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:2px solid var(--lav);outline-offset:3px;border-radius:10px}
+svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+[hidden]{display:none!important}
 
-.amount{
-  font-size:clamp(48px,9vw,100px);
-  font-weight:700;
-  letter-spacing:-.055em;
-  margin:10px 0 2px;
-  font-variant-numeric:tabular-nums
+/* ---------- calm ambient backdrop ---------- */
+.sky{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;background:linear-gradient(180deg,var(--sky-top,transparent) 0%,var(--bg) 55%);transition:background .6s}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:var(--blob-o);animation:drift 38s ease-in-out infinite alternate}
+.blob.b1{width:520px;height:520px;background:var(--blob1);top:-160px;left:-120px}
+.blob.b2{width:460px;height:460px;background:var(--blob2);top:30%;right:-160px;animation-duration:46s}
+.blob.b3{width:420px;height:420px;background:var(--blob3);bottom:-160px;left:30%;animation-duration:52s}
+@keyframes drift{to{transform:translate(60px,40px) scale(1.08)}}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:12px clamp(16px,4vw,40px);padding-top:max(12px,env(safe-area-inset-top));
+  background:var(--top-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.brand{font-family:var(--head);font-weight:900;font-size:20px;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.mini-coin{width:24px;height:24px;flex:none;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF6DA,#E9C46A 55%,#B8892B);box-shadow:0 2px 8px rgba(184,137,43,.35)}
+.lvl{flex:1;display:flex;align-items:center;gap:12px;min-width:0;max-width:420px;margin-left:auto}
+.lvl-badge{width:42px;height:42px;flex:none;border-radius:14px;display:grid;place-items:center;font-family:var(--head);font-weight:900;font-size:18px;color:#fff;background:linear-gradient(135deg,#9B8FD8,#7467B8);box-shadow:0 6px 16px -4px rgba(116,103,184,.5)}
+.lvl-meta{flex:1;min-width:0}
+.lvl-title{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--muted)}
+.lvl-title b{font-family:var(--head);color:var(--ink);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lvl-title span{font-family:var(--mono);white-space:nowrap}
+.xpbar{margin-top:6px;height:8px;border-radius:99px;background:var(--lav-soft);overflow:hidden}
+.xpfill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#B7ACE6,var(--lav));transition:width .6s ease}
+.tools{display:flex;align-items:center;gap:8px}
+.streak{display:flex;align-items:center;gap:6px;height:44px;padding:0 13px;border-radius:14px;background:var(--peach-soft);color:var(--peach);font-family:var(--head);font-weight:800;white-space:nowrap}
+.icon-btn{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--muted);transition:background .2s,color .2s,transform .15s}
+.icon-btn:hover{color:var(--ink)}
+.icon-btn:active{transform:scale(.94)}
+.icon-btn[aria-pressed="true"]{color:var(--lav);background:var(--lav-soft)}
+
+/* ---------- layout ---------- */
+main{width:min(1200px,100%);margin:0 auto;padding:8px clamp(16px,4vw,40px) 48px;display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+.greet{grid-column:span 12;padding:22px 4px 2px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px 24px;flex-wrap:wrap}
+.greet h1{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(26px,4vw,40px);line-height:1.15;letter-spacing:-.01em}
+.greet p{color:var(--muted);margin-top:4px;max-width:62ch}
+.greet p b{color:var(--sage);font-family:var(--mono);font-weight:500}
+.daybar{flex:0 1 300px;min-width:200px}
+.daybar small{display:flex;justify-content:space-between;color:var(--faint);font-size:13px}
+.daybar .track{height:6px;border-radius:99px;background:var(--tint-2);margin-top:6px;overflow:hidden}
+.daybar .track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#F2C6A6,#C9B8EA)}
+
+.card{background:var(--surface);border:1px solid var(--edge);border-radius:var(--r);padding:24px;box-shadow:var(--shadow);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);min-width:0;position:relative}
+.card h2{font-family:var(--head);display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800}
+.card h2 .ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;flex:none}
+.card .lead{color:var(--muted);font-size:14px;margin:4px 0 16px}
+.tag{margin-left:auto;font-family:var(--body);font-size:12px;font-weight:600;color:var(--muted);background:var(--tint);padding:4px 10px;border-radius:99px;white-space:nowrap}
+.c-loot,.c-quests{grid-column:span 6;display:flex;flex-direction:column}
+.c-net{grid-column:span 12}
+
+/* ---------- lifetime loot ---------- */
+.loot-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);font-weight:700;margin-top:10px}
+.live{display:inline-block;margin-right:8px;vertical-align:1px;width:8px;height:8px;border-radius:50%;background:var(--sage);animation:breathe 2.4s ease-in-out infinite}
+@keyframes breathe{50%{opacity:.35;transform:scale(.8)}}
+.big{font-family:var(--mono);font-weight:500;font-size:clamp(30px,4.2vw,50px);letter-spacing:-.04em;line-height:1.1;margin-top:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.big .cur{font-size:.4em;color:var(--faint);letter-spacing:0;margin-right:.3em;vertical-align:.6em}
+.big .dec{color:var(--sage);opacity:.85}
+.inr{font-family:var(--mono);font-size:clamp(18px,2.2vw,24px);color:var(--muted);margin-top:2px}
+.coin-wrap{position:relative;width:92px;height:92px;flex:none}
+.coin{width:92px;height:92px;border-radius:50%;position:relative;display:grid;place-items:center;
+  background:radial-gradient(circle at 34% 28%,#FFF8E1 0,#F6DE97 26%,#E9C46A 56%,#C99A3A 86%,#B8892B 100%);
+  box-shadow:inset 0 -5px 0 rgba(140,100,30,.35),inset 0 4px 0 rgba(255,250,230,.7),0 10px 26px -6px rgba(184,137,43,.45);
+  animation:float 5s ease-in-out infinite;transition:transform .15s}
+.coin::before{content:"";position:absolute;inset:9px;border-radius:50%;border:2px dashed rgba(140,100,30,.35)}
+.coin span{font-family:var(--head);font-weight:900;font-size:18px;color:#8A6420}
+.coin:active{transform:scale(.92)}
+.coin.bump{animation:bump .4s ease}
+@keyframes float{50%{translate:0 -6px}}
+@keyframes bump{40%{transform:scale(1.07) rotate(-5deg)}}
+.combo{position:absolute;top:-8px;right:-12px;background:#7467B8;color:#fff;font-family:var(--head);font-weight:800;font-size:13px;padding:3px 9px;border-radius:99px;opacity:0;transform:scale(.6);transition:.2s;pointer-events:none}
+.combo.on{opacity:1;transform:scale(1) rotate(8deg)}
+.pop{position:absolute;left:50%;top:0;font-family:var(--mono);font-size:13px;color:var(--sage);pointer-events:none;white-space:nowrap;animation:popUp 1.8s ease-out forwards}
+@keyframes popUp{from{opacity:0;transform:translate(-50%,6px)}20%{opacity:.9}to{opacity:0;transform:translate(-50%,-46px)}}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.stat{padding:11px 13px;border-radius:16px;background:var(--raise);border:1px solid var(--line);min-width:0}
+.stat small{display:block;font-size:12px;color:var(--faint)}
+.stat b{display:block;font-family:var(--mono);font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat em{display:block;font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
+.today{margin-top:auto;padding-top:18px;display:grid;grid-template-columns:96px 1fr 1fr;gap:18px;align-items:center}
+.ring{position:relative;width:96px;height:96px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:10}
+.ring .trk{stroke:var(--tint-2)}
+.ring .prg{stroke:url(#gradDay);stroke-linecap:round;transition:stroke-dashoffset .6s}
+.ring .lbl{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-family:var(--head);font-weight:800;font-size:18px}
+.today-t small{color:var(--faint);font-size:13px}
+.today-t b{display:block;font-family:var(--mono);font-weight:500;font-size:22px;color:var(--gold);white-space:nowrap}
+.today-t p{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.fxline{margin-top:14px;font-size:12px;color:var(--faint)}
+
+/* ---------- quests ---------- */
+.qform{display:grid;grid-template-columns:1.3fr 1fr auto;gap:8px}
+.qform #qName{grid-column:1/-1}
+.inp{width:100%;min-height:44px;padding:10px 12px;border-radius:13px;background:var(--field);border:1px solid var(--line-2);font-size:16px}
+.inp:focus{outline:none;border-color:var(--lav);box-shadow:0 0 0 3px var(--lav-soft)}
+select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:28px}
+.btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:13px;font-family:var(--head);font-weight:800;
+  background:var(--lav);color:var(--on-accent);box-shadow:0 3px 0 var(--lav-deep);transition:transform .1s,box-shadow .1s,filter .2s;white-space:nowrap}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--lav-deep)}
+.btn.sage{background:var(--sage);box-shadow:0 3px 0 var(--sage-deep)}
+.btn.rose{background:var(--rose);box-shadow:0 3px 0 var(--rose-deep)}
+.btn.ghost{background:transparent;color:var(--muted);box-shadow:none;border:1px dashed var(--line-2)}
+.btn.ghost:hover{color:var(--ink);border-color:var(--lav)}
+.presets{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--faint);margin:10px 0 14px}
+.presets button{min-height:32px;padding:4px 12px;border-radius:99px;background:var(--tint);color:var(--muted);transition:.2s}
+.presets button:hover{background:var(--lav-soft);color:var(--lav)}
+.err{color:var(--rose);font-size:13px;margin-top:8px}
+.btn.mini{margin-left:6px;min-height:38px;padding:6px 12px;font-size:14px}
+.qadd{padding:12px;border-radius:18px;background:var(--raise);border:1px dashed var(--line-2);margin-bottom:12px}
+.qadd .presets{margin:10px 0 0}
+.toggle{display:inline-flex;align-items:center;gap:8px;min-height:32px;padding:3px 10px 3px 4px;border-radius:99px;background:var(--tint);font-size:12px;font-weight:600;color:var(--muted)}
+.toggle .knob{width:30px;height:18px;border-radius:99px;background:var(--line-2);position:relative;transition:background .2s}
+.toggle .knob::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.toggle[aria-pressed="true"]{color:var(--sage);background:var(--sage-soft)}
+.toggle[aria-pressed="true"] .knob{background:var(--sage)}
+.toggle[aria-pressed="true"] .knob::after{transform:translateX(12px)}
+.entry.pinned{border-style:dashed}
+.eform .seg-ctl.kind{grid-column:span 6;margin:0;display:flex}
+.eform .seg-ctl.kind button{flex:1}
+.dots{display:none}
+.quest.due .q-badge{background:var(--peach-soft);color:var(--peach)}
+.quest.due .q-sub b{color:var(--peach)}
+.quest.due .bar i{background:linear-gradient(90deg,#F5CDB8,var(--peach))}
+.tile .chip,.tile .brandmark{display:none}
+.qlist{display:flex;flex-direction:column;gap:10px;overflow-y:auto;flex:1 1 0;min-height:260px;padding-right:4px;margin-right:-4px;overscroll-behavior:contain}
+.quest{border-radius:18px;padding:14px 16px;background:var(--raise);border:1px solid var(--line);flex:none}
+.q-top{display:flex;align-items:center;gap:10px}
+.q-name{font-family:var(--head);font-weight:800;font-size:16px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q-badge{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;background:var(--lav-soft);color:var(--lav)}
+.quest.pay .q-badge{background:var(--gold-soft);color:var(--gold)}
+.quest.emi .q-badge{background:var(--rose-soft);color:var(--rose)}
+.quest.done .q-badge{background:var(--sage-soft);color:var(--sage)}
+.del{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:var(--faint);transition:.2s;flex:none}
+.del:hover{color:var(--rose);background:var(--rose-soft)}
+.edit:hover{color:var(--lav);background:var(--lav-soft)}
+.q-cd{display:flex;gap:6px;margin-top:10px}
+.seg{flex:1 1 0;min-width:0;max-width:76px;padding:6px 2px;border-radius:12px;background:var(--tint);text-align:center}
+.seg b{display:block;font-family:var(--mono);font-weight:500;font-size:19px;line-height:1.3}
+.seg small{display:block;font-size:10px;letter-spacing:.1em;color:var(--faint);text-transform:uppercase}
+.q-abs{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:8px}
+.q-abs span{font-size:12px;color:var(--muted);background:var(--tint);border-radius:8px;padding:2px 8px;white-space:nowrap}
+.q-abs b{font-family:var(--mono);font-weight:500;color:var(--ink)}
+.q-sub{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 14px;margin-top:10px;font-size:13px;color:var(--muted)}
+.q-sub b{font-family:var(--mono);font-weight:500;color:var(--sage)}
+.quest.emi .q-sub b{color:var(--rose)}
+.bar{height:6px;border-radius:99px;background:var(--tint-2);margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#C9B8EA,var(--lav));transition:width .5s}
+.quest.pay .bar i{background:linear-gradient(90deg,#F2DEA6,var(--gold))}
+.quest.emi .bar i{background:linear-gradient(90deg,#EFC2C7,var(--rose))}
+.quest.done .bar i{background:var(--sage)}
+
+/* ---------- net worth ---------- */
+.nw-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.seg-ctl{margin-left:auto;display:inline-flex;padding:4px;border-radius:14px;background:var(--tint);gap:2px}
+.seg-ctl button{min-height:36px;min-width:58px;padding:4px 12px;border-radius:10px;font-family:var(--head);font-weight:800;font-size:14px;color:var(--muted);transition:.2s}
+.seg-ctl button[aria-pressed="true"]{background:var(--surface-solid);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+.tile{border-radius:20px;padding:18px 20px;border:1px solid var(--line);min-width:0}
+.tile.a{background:linear-gradient(160deg,var(--sage-soft),var(--raise))}
+.tile.l{background:linear-gradient(160deg,var(--rose-soft),var(--raise))}
+.tile.n{background:linear-gradient(160deg,var(--lav-soft),var(--raise))}
+.tile .t-l{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.tile.a .t-l{color:var(--sage)} .tile.l .t-l{color:var(--rose)} .tile.n .t-l{color:var(--lav)}
+.tile .t-v{font-family:var(--mono);font-size:clamp(20px,2.4vw,30px);letter-spacing:-.03em;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .t-v .dec{opacity:.5}
+.tile .t-s{font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:2px}
+.tile .t-d{font-size:13px;color:var(--muted);margin-top:8px}
+.tile .t-d b{font-family:var(--mono);font-weight:500}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+.col{display:flex;flex-direction:column;min-width:0}
+.col h3{font-family:var(--head);font-weight:800;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.col h3 .btn{margin-left:auto;min-height:40px;padding:6px 12px;font-size:14px}
+.eform{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:14px;border-radius:18px;background:var(--raise);border:1px dashed var(--line-2);margin-bottom:12px}
+.eform label{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px;grid-column:span 2}
+.eform label.w6,.eform .err{grid-column:span 6}
+.eform .acts{grid-column:span 6;display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+.elist{display:flex;flex-direction:column;gap:10px}
+#lList{max-height:720px;overflow-y:auto;overscroll-behavior:contain;padding-right:4px;margin-right:-4px}
+.empty{padding:22px;border-radius:18px;border:1px dashed var(--line-2);text-align:center;color:var(--faint);font-size:14px}
+.entry{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:start;padding:14px;border-radius:18px;background:var(--raise);border:1px solid var(--line);flex:none}
+.entry .eic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center}
+.entry .en{font-family:var(--head);font-weight:800;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.entry .ev{font-family:var(--mono);font-size:18px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.entry .ev .dec{opacity:.45}
+.entry .ea{display:flex;gap:2px}
+.chipline{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pill{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--tint);color:var(--muted);white-space:nowrap}
+.pill b{font-family:var(--mono);font-weight:500;color:var(--ink)}
+.pill.good{background:var(--sage-soft);color:var(--sage)}
+.pill.warn{background:var(--peach-soft);color:var(--peach)}
+.payoff{margin-top:10px}
+.payoff .bar i{background:linear-gradient(90deg,#BFD9C3,var(--sage))}
+.payoff-l{display:flex;justify-content:space-between;font-size:12px;color:var(--faint);margin-top:4px}
+.spark{width:100%;height:46px;margin-top:10px;display:block}
+.spark .area{fill:url(#gradDebt)}
+.spark .ln{fill:none;stroke:var(--rose);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.spark-l{display:flex;justify-content:space-between;font-size:11px;color:var(--faint)}
+
+/* allocation panel (fills the assets column) */
+.alloc{margin-top:12px;padding:16px;border-radius:18px;background:var(--raise);border:1px solid var(--line);flex:1;display:flex;flex-direction:column;gap:12px}
+.alloc h4{font-family:var(--head);font-weight:800;font-size:15px;display:flex;justify-content:space-between;align-items:center}
+.alloc h4 span{font-family:var(--body);font-weight:600;font-size:12px;color:var(--faint)}
+.mix{display:flex;height:12px;border-radius:99px;overflow:hidden;background:var(--tint-2);gap:2px}
+.mix i{display:block;height:100%}
+.legend{display:flex;flex-direction:column;gap:8px}
+.lg{display:grid;grid-template-columns:12px 1fr auto auto;gap:10px;align-items:center;font-size:14px}
+.lg .dot{width:10px;height:10px;border-radius:3px}
+.lg .v{font-family:var(--mono);font-size:13px;color:var(--muted);white-space:nowrap}
+.lg .p{font-family:var(--mono);font-size:13px;min-width:44px;text-align:right}
+.ratios{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto}
+.ratio{padding:12px;border-radius:14px;background:var(--tint)}
+.ratio small{display:block;font-size:12px;color:var(--faint)}
+.ratio b{font-family:var(--mono);font-weight:500;font-size:18px}
+.ratio em{display:block;font-style:normal;font-size:12px;color:var(--muted)}
+
+/* ---------- settings drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(10,8,16,.35);backdrop-filter:blur(3px);z-index:40;opacity:0;pointer-events:none;transition:opacity .3s}
+.drawer{position:fixed;top:0;right:0;height:100dvh;width:min(440px,100%);z-index:41;background:var(--surface-solid);box-shadow:-20px 0 60px -20px rgba(0,0,0,.35);
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);overflow-y:auto;padding:24px;padding-bottom:max(24px,env(safe-area-inset-bottom))}
+body.settings .scrim{opacity:1;pointer-events:auto}
+body.settings .drawer{transform:none}
+.drawer header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.drawer h3{font-family:var(--head);font-size:22px;font-weight:900}
+.drawer section{padding:18px 0;border-top:1px solid var(--line)}
+.drawer h4{font-family:var(--head);font-size:15px;font-weight:800;margin-bottom:12px}
+.fld{display:block;font-size:13px;color:var(--muted);margin-bottom:12px}
+.fld .inp{margin-top:6px}
+.help{font-size:13px;color:var(--faint);line-height:1.5;margin-top:10px}
+.blist{margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.bitem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:14px;background:var(--tint)}
+.bitem b{font-family:var(--mono);font-weight:500}
+.bitem small{display:block;color:var(--faint);font-size:12px}
+
+/* ---------- phone tab bar ---------- */
+.tabbar{display:none}
+
+/* ---------- toasts / fx ---------- */
+.toasts{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:min(420px,calc(100% - 32px))}
+.toast{display:flex;align-items:center;gap:12px;width:100%;padding:12px 16px;border-radius:18px;background:var(--surface-solid);border:1px solid var(--line);box-shadow:0 18px 50px -12px rgba(0,0,0,.3);animation:tIn .5s cubic-bezier(.2,1.2,.4,1) both}
+.toast.out{animation:tOut .35s ease forwards}
+.toast .medal{width:40px;height:40px;flex:none;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#FFF6DA,#E9C46A 60%,#B8892B);color:#7A5617}
+.toast b{display:block;font-family:var(--head);font-weight:800}
+.toast small{color:var(--muted);font-size:13px}
+@keyframes tIn{from{opacity:0;transform:translateY(24px) scale(.95)}}
+@keyframes tOut{to{opacity:0;transform:translateY(16px)}}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:55}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- tablet ---------- */
+@media (max-width:980px){
+  .c-loot,.c-quests{grid-column:span 12}
+  .qlist{flex:none;min-height:0;max-height:520px}
+  .cols{grid-template-columns:1fr}
+  #lList{max-height:none;overflow:visible}
 }
-
-.inr{
-  font-size:clamp(28px,5vw,52px);
-  font-weight:600;
-  color:#b9c0c9;
-  font-variant-numeric:tabular-nums
+/* ---------- phone ---------- */
+@media (max-width:640px){
+  html{scroll-padding-top:120px}
+  .top{flex-wrap:wrap;gap:8px 8px;padding:10px 16px}
+  .brand{margin-right:auto;font-size:18px}
+  .brand-t{display:none}
+  .lvl{order:5;flex-basis:100%;max-width:none;gap:10px}
+  .lvl-badge{width:34px;height:34px;border-radius:11px;font-size:15px}
+  .xpbar{height:6px;margin-top:4px}
+  .icon-btn,.streak{height:40px}
+  .icon-btn{width:40px;border-radius:12px}
+  .streak{padding:0 10px;border-radius:12px}
+  main{gap:14px;padding:4px 16px calc(96px + env(safe-area-inset-bottom))}
+  .greet{padding-top:14px}
+  .daybar{flex-basis:100%}
+  .card{padding:18px;border-radius:22px}
+  .card h2{font-size:18px}
+  .coin-wrap,.coin{width:72px;height:72px}
+  .coin span{font-size:15px}
+  .coin::before{inset:7px}
+  .big{font-size:clamp(26px,8.6vw,38px)}
+  .stats{grid-template-columns:1fr;gap:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--raise)}
+  .stat{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:baseline;padding:10px 14px;border:0;border-radius:0;background:none}
+  .stat+.stat{border-top:1px solid var(--line)}
+  .stat small{font-size:13px}
+  .stat em{min-width:84px;text-align:right}
+  .today{grid-template-columns:76px 1fr 1fr;gap:12px}
+  .ring{width:76px;height:76px}
+  .ring .lbl{font-size:15px}
+  .today-t b{font-size:17px}
+  .today-t p{font-size:12px}
+  .qform{grid-template-columns:1fr 1fr}
+  .qform .btn{grid-column:span 2}
+  .card h2 .tag{display:none}
+  .btn.mini{margin-left:auto}
+  .qlist{max-height:none;overflow:visible;padding:0;margin:0}
+  .quest{padding:12px 13px}
+  .q-cd{gap:4px}
+  .seg{padding:5px 1px;border-radius:10px}
+  .seg b{font-size:16px}
+  .seg small{font-size:9px;letter-spacing:.06em}
+  .nw-head .seg-ctl{margin-left:0}
+  /* bank-app style card carousel */
+  .tiles{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:84%;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;
+    margin:0 -18px;padding:6px 18px 14px;scrollbar-width:none;scroll-padding:0 18px;-webkit-overflow-scrolling:touch}
+  .tiles::-webkit-scrollbar{display:none}
+  .tile{scroll-snap-align:center;scroll-snap-stop:always;position:relative;overflow:hidden;aspect-ratio:1.586;display:flex;flex-direction:column;
+    padding:18px 20px;border:0;border-radius:22px;color:#fff;box-shadow:0 14px 30px -14px rgba(30,20,50,.55)}
+  .tile.n{background:linear-gradient(135deg,#9A8DDB 0%,#6C5FB8 55%,#4E4394 100%)}
+  .tile.a{background:linear-gradient(135deg,#7DB18C 0%,#4F8460 55%,#3A6447 100%)}
+  .tile.l{background:linear-gradient(135deg,#DC8C95 0%,#B35D69 55%,#8C414C 100%)}
+  .tile::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-80px;top:-90px;background:rgba(255,255,255,.12)}
+  .tile::after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-30px;bottom:-110px;background:rgba(255,255,255,.08)}
+  .tile>*{position:relative;z-index:1}
+  .tile .chip{display:block;width:34px;height:26px;border-radius:6px;background:linear-gradient(135deg,#F6E3A6,#D8B35A);box-shadow:inset 0 0 0 1px rgba(120,80,10,.25);margin-bottom:10px;order:-1}
+  .tile .brandmark{display:block;position:absolute;right:20px;top:20px;font-family:var(--head);font-weight:900;font-size:13px;letter-spacing:.04em;opacity:.85}
+  .tile .t-l,.tile.a .t-l,.tile.l .t-l,.tile.n .t-l{color:rgba(255,255,255,.9);font-size:12px}
+  .tile .t-v{font-size:22px;margin-top:4px;color:#fff;text-overflow:clip}
+  .tile .t-v .dec{opacity:.6;font-size:.72em}
+  .tile .t-s{color:rgba(255,255,255,.8)}
+  .tile .t-d{margin-top:auto;color:rgba(255,255,255,.85);font-size:12.5px}
+  .tile .t-d b{color:#fff}
+  .dots{display:flex;justify-content:center;gap:2px;margin:-2px 0 16px}
+  .dots button{width:28px;height:24px;display:grid;place-items:center}
+  .dots button::before{content:"";width:7px;height:7px;border-radius:99px;background:var(--line-2);transition:width .25s,background .25s}
+  .dots button[aria-selected="true"]::before{width:20px;background:var(--lav)}
+  .eform label{grid-column:span 3}
+  .entry{grid-template-columns:38px 1fr;padding:12px}
+  .entry .eic{width:38px;height:38px;border-radius:12px}
+  .entry .ea{grid-column:1/-1;justify-content:flex-end;margin-top:-6px}
+  .entry .ev{font-size:16px}
+  .lg{font-size:13px}
+  .toasts{bottom:calc(84px + env(safe-area-inset-bottom))}
+  .tabbar{display:flex;position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:30;padding:6px;border-radius:22px;
+    background:var(--top-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line);box-shadow:0 12px 32px -12px rgba(0,0,0,.3)}
+  .tabbar button{flex:1;min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:16px;font-family:var(--head);font-weight:800;font-size:12px;color:var(--faint);transition:.2s}
+  .tabbar button[aria-current="true"]{background:var(--lav-soft);color:var(--lav)}
+  .tabbar svg.i{width:20px;height:20px}
 }
-
-.rate{
-  color:#8f98a4;
-  font-size:16px;
-  margin-top:10px
-}
-
-.date{
-  color:#626b76;
-  margin-top:8px;
-  font-size:14px
-}
-
-.card{
-  margin:28px auto 0;
-  max-width:650px;
-  background:#13171c;
-  border:1px solid #252b33;
-  border-radius:18px;
-  padding:20px 22px;
-  text-align:left
-}
-
-.row{
-  display:flex;
-  justify-content:space-between;
-  gap:20px;
-  padding:11px 0;
-  border-bottom:1px solid #242a31
-}
-
-.row:last-child{
-  border-bottom:0
-}
-
-.muted{
-  color:#818b98
-}
-
-.value{
-  font-weight:600;
-  font-variant-numeric:tabular-nums
-}
-
-.panel{
-  margin:18px auto 0;
-  max-width:650px;
-  background:#101419;
-  border:1px solid #252b33;
-  border-radius:14px;
-  padding:18px;
-  text-align:left
-}
-
-.panel h3{
-  margin:0 0 14px;
-  font-size:15px
-}
-
-label{
-  display:block;
-  color:#aab2bd;
-  font-size:13px;
-  margin-bottom:12px
-}
-
-input{
-  width:100%;
-  padding:11px;
-  background:#0d1014;
-  color:white;
-  border:1px solid #303741;
-  border-radius:8px;
-  font-size:15px
-}
-
-button{
-  padding:9px 14px;
-  border-radius:9px;
-  border:1px solid #343b45;
-  background:#1a2027;
-  color:white;
-  cursor:pointer;
-  font-size:14px
-}
-
-button:hover{
-  background:#222932
-}
-
-.primary{
-  margin-top:4px
-}
-
-.bonus-list{
-  margin-top:14px
-}
-
-.bonus-item{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:10px 0;
-  border-top:1px solid #242a31
-}
-
-.bonus-info{
-  display:flex;
-  flex-direction:column;
-  gap:3px
-}
-
-.bonus-name{
-  font-weight:600
-}
-
-.bonus-meta{
-  font-size:12px;
-  color:#737d89
-}
-
-.delete{
-  font-size:12px;
-  padding:7px 10px
-}
-
-.note{
-  color:#5f6874;
-  font-size:12px;
-  margin-top:16px;
-  line-height:1.5
-}
-
-.small{
-  font-size:12px;
-  color:#737d89;
-  margin-top:7px
-}
-
-#fxStatus{
-  min-height:18px
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 </style>
 </head>
-
 <body>
+<div class="sky" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 
-<div class="wrap">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gradDay" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2C6A6"/><stop offset="1" stop-color="#9B8FD8"/></linearGradient>
+    <linearGradient id="gradDebt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#C96A75" stop-opacity=".25"/><stop offset="1" stop-color="#C96A75" stop-opacity="0"/></linearGradient>
+  </defs>
+  <!-- Lucide icons (ISC license) -->
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+  <symbol id="i-vol" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5v14"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></symbol>
+  <symbol id="i-car" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></symbol>
+  <symbol id="i-mountain" viewBox="0 0 24 24"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M11.5 2.3a.5.5 0 0 1 1 0l2.3 4.7a2 2 0 0 0 1.5 1.1l5.2.8a.5.5 0 0 1 .3.9l-3.8 3.7a2 2 0 0 0-.6 1.8l.9 5.1a.5.5 0 0 1-.8.6l-4.6-2.4a2 2 0 0 0-1.9 0l-4.6 2.4a.5.5 0 0 1-.8-.6l.9-5.1a2 2 0 0 0-.6-1.8L1.8 9.8a.5.5 0 0 1 .3-.9l5.2-.8a2 2 0 0 0 1.5-1.1z"/></symbol>
+  <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+</svg>
 
-  <div class="label">Money earned since start date</div>
-
-  <div class="amount" id="aed">AED 0.00</div>
-
-  <div class="inr" id="inr">₹0.00</div>
-
-  <div class="rate" id="rate"></div>
-
-  <div class="small" id="fxStatus"></div>
-
-  <div class="date" id="today"></div>
-
-
-  <div class="card">
-
-    <div class="row">
-      <span class="muted">Monthly salary</span>
-      <span class="value" id="salary"></span>
+<header class="top">
+  <div class="brand"><span class="mini-coin" aria-hidden="true"></span><span class="brand-t">Money Quest</span></div>
+  <div class="lvl" title="XP = AED earned from salary and bonuses">
+    <div class="lvl-badge" id="lvlNum">1</div>
+    <div class="lvl-meta">
+      <div class="lvl-title"><b id="lvlName">Intern</b><span id="lvlXp">0 / 100 XP</span></div>
+      <div class="xpbar" role="progressbar" aria-label="Progress to next level" aria-valuemin="0" aria-valuemax="100" id="xpBar"><div class="xpfill" id="xpFill"></div></div>
     </div>
-
-    <div class="row">
-      <span class="muted">Start date</span>
-      <span class="value" id="startDisplay"></span>
-    </div>
-
-    <div class="row">
-      <span class="muted">Salary earned since start</span>
-      <span class="value" id="salaryEarned"></span>
-    </div>
-
-    <div class="row">
-      <span class="muted">One-time bonuses</span>
-      <span class="value" id="bonusTotal"></span>
-    </div>
-
-    <div class="row">
-      <span class="muted">Total earnings</span>
-      <span class="value" id="total"></span>
-    </div>
-
-    <div class="row">
-      <span class="muted">Live AED → INR</span>
-      <span class="value" id="fxRate">₹25.0000</span>
-    </div>
-
   </div>
+  <div class="tools">
+    <div class="streak" title="Daily visit streak"><svg class="i"><use href="#i-flame"/></svg><span id="streak">1</span><span class="sr"> day streak</span></div>
+    <button class="icon-btn" id="themeBtn" aria-label="Switch to dark mode"><svg class="i"><use href="#i-moon" id="themeIc"/></svg></button>
+    <button class="icon-btn" id="soundBtn" aria-label="Toggle soft sounds" aria-pressed="false"><svg class="i"><use href="#i-mute" id="soundIc"/></svg></button>
+    <button class="icon-btn" id="openSettings" aria-label="Open settings"><svg class="i"><use href="#i-sliders"/></svg></button>
+  </div>
+</header>
 
-
-  <div class="panel">
-
-    <h3>Salary & start date</h3>
-
-    <label>
-      Start date
-      <input id="startDate" type="date">
-    </label>
-
-    <label>
-      Monthly salary (AED)
-      <input id="salaryInput" type="number" min="0" step="100">
-    </label>
-
-    <button class="primary" id="save">
-      Update clock
-    </button>
-
-    <div class="small">
-      Changing the salary recalculates the salary-earned portion from your selected start date.
+<main>
+  <section class="greet">
+    <div>
+      <h1 id="greetH">Good evening.</h1>
+      <p id="greetP">Your money keeps working while you rest.</p>
     </div>
+    <div class="daybar" aria-hidden="true"><small><span>Today</span><span id="dayPctTxt">0%</span></small><div class="track"><i id="dayBar"></i></div></div>
+  </section>
 
-  </div>
+  <!-- LIFETIME LOOT -->
+  <section class="card c-loot" id="secLoot" aria-labelledby="lootH">
+    <div class="loot-top">
+      <div style="min-width:0">
+        <h2 id="lootH"><span class="ic" style="background:var(--sage-soft);color:var(--sage)"><svg class="i"><use href="#i-leaf"/></svg></span>Lifetime loot</h2>
+        <div class="eyebrow"><span class="live" aria-hidden="true"></span>Earned since <span id="sinceTxt">start</span></div>
+      </div>
+      <div class="coin-wrap" id="coinWrap">
+        <button class="coin" id="coin" aria-label="Tap the coin"><span>AED</span></button>
+        <span class="combo" id="combo">x2</span>
+      </div>
+    </div>
+    <div class="big" id="aed"><span class="cur">AED</span>0<span class="dec">.0000</span></div>
+    <div class="inr" id="inr">₹0.00</div>
+    <div class="stats">
+      <div class="stat"><small>per second</small><b id="perSec">0</b><em id="perSecI"></em></div>
+      <div class="stat"><small>per hour</small><b id="perHour">0</b><em id="perHourI"></em></div>
+      <div class="stat"><small>per day</small><b id="perDay">0</b><em id="perDayI"></em></div>
+    </div>
+    <div class="today">
+      <div class="ring">
+        <svg viewBox="0 0 96 96" aria-hidden="true"><circle class="trk" cx="48" cy="48" r="40"/><circle class="prg" id="dayRing" cx="48" cy="48" r="40" stroke-dasharray="251.3" stroke-dashoffset="251.3"/></svg>
+        <div class="lbl" id="dayPct">0%</div>
+      </div>
+      <div class="today-t"><small>Earned today</small><b id="todayAmt">AED 0.00</b><p id="todayInr">₹0</p></div>
+      <div class="today-t"><small>This month</small><b id="monthAmt" style="color:var(--sage)">AED 0.00</b><p id="monthInr">₹0</p></div>
+    </div>
+    <div class="fxline" id="fxLine"></div>
+  </section>
 
+  <!-- QUESTS -->
+  <section class="card c-quests" id="secQuests" aria-labelledby="qH">
+    <h2 id="qH"><span class="ic" style="background:var(--lav-soft);color:var(--lav)"><svg class="i"><use href="#i-target"/></svg></span>Quests<span class="tag" id="qCount">0 active</span><button class="btn mini" id="qToggle" aria-expanded="false" aria-controls="qAdd"><svg class="i"><use href="#i-plus"/></svg>New quest</button></h2>
+    <p class="lead">Countdowns to what matters, plus payday and every EMI.</p>
+    <div id="qAdd" class="qadd" hidden>
+    <form class="qform" id="qForm" novalidate>
+      <input class="inp" id="qName" maxlength="48" placeholder="What are you waiting for?" aria-label="Quest name" autocomplete="off">
+      <input class="inp" id="qDate" type="date" aria-label="Date">
+      <input class="inp" id="qTime" type="time" aria-label="Time">
+      <button class="btn" type="submit"><svg class="i"><use href="#i-plus"/></svg>Add</button>
+    </form>
+    <div class="err" id="qErr" hidden>Pick a date in the future.</div>
+    <div class="presets">Quick start:
+      <button type="button" data-preset="weekend">Weekend</button>
+      <button type="button" data-preset="ny">New Year</button>
+      <button type="button" data-preset="hour">1 hour</button>
+      <button type="button" data-preset="min">1 minute</button>
+    </div>
+    </div>
+    <div class="qlist" id="qList"></div>
+  </section>
 
-  <div class="panel">
+  <!-- NET WORTH -->
+  <section class="card c-net" id="secNet" aria-labelledby="nwH">
+    <div class="nw-head">
+      <h2 id="nwH"><span class="ic" style="background:var(--sky-soft);color:var(--sky)"><svg class="i"><use href="#i-scale"/></svg></span>Net worth</h2>
+      <div class="seg-ctl" role="group" aria-label="Net worth currency">
+        <button type="button" data-nwcur="AED" aria-pressed="true">AED</button>
+        <button type="button" data-nwcur="INR" aria-pressed="false">INR</button>
+      </div>
+    </div>
+    <p class="lead">Assets grow, loans shrink with every EMI. Everything ticks live.</p>
+    <div class="tiles" id="tiles">
+      <div class="tile n"><span class="chip" aria-hidden="true"></span><span class="brandmark" aria-hidden="true">Money Quest</span><div class="t-l"><svg class="i"><use href="#i-scale"/></svg>Net worth</div><div class="t-v" id="tN">0</div><div class="t-s" id="tNi"></div><div class="t-d" id="tNd"></div></div>
+      <div class="tile a"><span class="chip" aria-hidden="true"></span><span class="brandmark" aria-hidden="true">Money Quest</span><div class="t-l"><svg class="i"><use href="#i-up"/></svg>Assets</div><div class="t-v" id="tA">0</div><div class="t-s" id="tAi"></div><div class="t-d" id="tAd"></div></div>
+      <div class="tile l"><span class="chip" aria-hidden="true"></span><span class="brandmark" aria-hidden="true">Money Quest</span><div class="t-l"><svg class="i"><use href="#i-down"/></svg>Liabilities</div><div class="t-v" id="tL">0</div><div class="t-s" id="tLi"></div><div class="t-d" id="tLd"></div></div>
+    </div>
+    <div class="dots" id="tileDots" role="tablist" aria-label="Net worth cards">
+      <button role="tab" aria-label="Net worth" aria-selected="true"></button><button role="tab" aria-label="Assets" aria-selected="false"></button><button role="tab" aria-label="Liabilities" aria-selected="false"></button>
+    </div>
+    <div class="cols">
+      <div class="col">
+        <h3><svg class="i" style="color:var(--sage)"><use href="#i-up"/></svg>Assets<button class="btn sage" id="addAssetBtn"><svg class="i"><use href="#i-plus"/></svg>Add asset</button></h3>
+        <form class="eform" id="aForm" hidden novalidate>
+          <input type="hidden" id="aId">
+          <label class="w6">Name<input class="inp" id="aName" maxlength="40" placeholder="e.g. Emergency fund"></label>
+          <label>Current value<input class="inp" id="aVal" type="number" min="0" step="any" inputmode="decimal" placeholder="50000"></label>
+          <label>Currency<select class="inp" id="aCur"><option>AED</option><option>INR</option></select></label>
+          <label>Growth % / year<input class="inp" id="aGrow" type="number" step="any" inputmode="decimal" placeholder="0"></label>
+          <label>Type<select class="inp" id="aType"><option value="wallet">Cash / savings</option><option value="up">Investments</option><option value="home">Property</option><option value="gem">Gold</option><option value="car">Vehicle</option></select></label>
+          <div class="err" id="aErr" hidden>Add a name and a value above zero.</div>
+          <div class="acts"><button type="button" class="btn ghost" data-cancel="a">Cancel</button><button class="btn sage" type="submit">Save asset</button></div>
+        </form>
+        <div class="elist" id="aList"></div>
+        <div class="alloc" id="alloc"></div>
+      </div>
+      <div class="col">
+        <h3><svg class="i" style="color:var(--rose)"><use href="#i-down"/></svg>Liabilities<button class="btn rose" id="addLiabBtn"><svg class="i"><use href="#i-plus"/></svg>Add liability</button></h3>
 
-    <h3>Add one-time bonus</h3>
+        <form class="eform" id="lForm" hidden novalidate>
+          <input type="hidden" id="lId">
+          <div class="seg-ctl kind" role="group" aria-label="Liability type">
+            <button type="button" data-lkind="emi" aria-pressed="true">Loan with EMI</button>
+            <button type="button" data-lkind="once" aria-pressed="false">One-time payment</button>
+          </div>
+          <label class="w6">Name<input class="inp" id="lName" maxlength="40" placeholder="e.g. Home loan"></label>
+          <label><span data-k="emi">Outstanding today</span><span data-k="once" hidden>Amount payable</span><input class="inp" id="lVal" type="number" min="0" step="any" inputmode="decimal" placeholder="2500000"></label>
+          <label>Currency<select class="inp" id="lCur"><option>AED</option><option>INR</option></select></label>
+          <label data-k="once" hidden>Due date<input class="inp" id="lDue" type="date"></label>
+          <label data-k="emi">Interest % / year<input class="inp" id="lRate" type="number" min="0" step="any" inputmode="decimal" placeholder="8.5"></label>
+          <label data-k="emi">EMI amount<input class="inp" id="lEmi" type="number" min="0" step="any" inputmode="decimal" placeholder="25000"></label>
+          <label data-k="emi">EMI day of month<input class="inp" id="lDay" type="number" min="1" max="31" step="1" inputmode="numeric" placeholder="10"></label>
+          <label data-k="emi">Original loan (optional)<input class="inp" id="lOrig" type="number" min="0" step="any" inputmode="decimal" placeholder="for % cleared"></label>
+          <div class="err" id="lErr" hidden>Add a name, an outstanding amount and an EMI day from 1 to 31.</div>
+          <div class="acts"><button type="button" class="btn ghost" data-cancel="l">Cancel</button><button class="btn rose" type="submit">Save liability</button></div>
+        </form>
+        <div class="elist" id="lList"></div>
+      </div>
+    </div>
+  </section>
+</main>
 
-    <label>
-      Bonus amount (AED)
-      <input
-        id="bonusAmount"
-        type="number"
-        min="0"
-        step="100"
-        placeholder="e.g. 5000"
-      >
-    </label>
+<nav class="tabbar" aria-label="Sections">
+  <button data-go="secLoot" aria-current="true"><svg class="i"><use href="#i-leaf"/></svg>Loot</button>
+  <button data-go="secQuests"><svg class="i"><use href="#i-target"/></svg>Quests</button>
+  <button data-go="secNet"><svg class="i"><use href="#i-scale"/></svg>Net worth</button>
+</nav>
 
-    <label>
-      Date received
-      <input id="bonusDate" type="date">
-    </label>
+<!-- SETTINGS -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="Settings" aria-hidden="true">
+  <header><h3>Settings</h3><button class="icon-btn" id="closeSettings" aria-label="Close settings"><svg class="i"><use href="#i-x"/></svg></button></header>
+  <section>
+    <h4>Salary</h4>
+    <label class="fld">Start date<input class="inp" id="startDate" type="date"></label>
+    <label class="fld">Monthly salary (AED)<input class="inp" id="salaryInput" type="number" min="0" step="100" inputmode="decimal"></label>
+    <label class="fld">Payday (day of month)<input class="inp" id="paydayInput" type="number" min="1" max="31" step="1" inputmode="numeric"></label>
+    <button class="btn sage" id="saveSalary"><svg class="i"><use href="#i-check"/></svg>Save</button>
+    <p class="help">Salary accrues every second, 24 hours a day. Each calendar month spreads the salary over its actual number of days.</p>
+  </section>
+  <section>
+    <h4>One-time bonuses</h4>
+    <label class="fld">Bonus amount (AED)<input class="inp" id="bonusAmount" type="number" min="0" step="100" placeholder="e.g. 5000" inputmode="decimal"></label>
+    <label class="fld">Date received<input class="inp" id="bonusDate" type="date"></label>
+    <button class="btn" id="addBonus"><svg class="i"><use href="#i-gift"/></svg>Add bonus</button>
+    <div class="blist" id="bonusList"></div>
+    <p class="help">A bonus counts once its date is on or after the start date and not in the future.</p>
+  </section>
+  <section>
+    <h4>Exchange rate</h4>
+    <p class="help" id="fxHelp"></p>
+  </section>
+</aside>
 
-    <button class="primary" id="addBonus">
-      Add bonus
-    </button>
-
-    <div class="bonus-list" id="bonusList"></div>
-
-  </div>
-
-
-  <div class="note">
-    Salary is calculated continuously across all 24 hours of every calendar day.
-    Each calendar month allocates the monthly salary across its actual number of days.
-    One-time bonuses are simply added to total earnings when their selected date is
-    on or before today and on or after the selected start date.
-    INR is converted using the live AED → INR rate, with a cached/fallback rate if
-    the live service is unavailable.
-  </div>
-
-</div>
-
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
 
 <script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const icon=id=>`<svg class="i"><use href="#i-${id}"/></svg>`;
+const DAY=864e5,YEAR=365.25*DAY;
 
-/* ============================================================
-   MONEY CLOCK
-   ============================================================ */
+/* ================= storage (also reads the old Money Clock + Chronos keys) ================= */
+const store={
+  get(k,d){try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v);}catch(e){return d;}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}},
+  raw(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+};
+const K='moneyQuest:v1';
+function iso(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
+const todayStr=()=>iso(new Date());
+function parseDate(s){const p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2]);}
+function uid(){return Math.random().toString(36).slice(2,9);}
 
-/* ------------------------------------------------------------
-   FX SETTINGS
-   ------------------------------------------------------------ */
-
-const FX_API_URL =
-  "https://api.frankfurter.dev/v2/rate/AED/INR";
-
-const FX_TIMEOUT_MS = 5000;
-
-/*
-   We use the last successful rate immediately when available.
-
-   If there is no cached rate, the clock starts with ₹25.
-   The live request happens independently in the background.
-*/
-
-const cachedFXRate =
-  Number(localStorage.getItem("moneyClockFxRate"));
-
-let INR_RATE =
-  Number.isFinite(cachedFXRate) && cachedFXRate > 0
-    ? cachedFXRate
-    : 25;
-
-let fxSource =
-  Number.isFinite(cachedFXRate) && cachedFXRate > 0
-    ? "Cached rate"
-    : "Fallback rate";
-
-
-/* ------------------------------------------------------------
-   SALARY / STORAGE
-   ------------------------------------------------------------ */
-
-let salary =
-  Number(localStorage.getItem("moneyClockSalary") || 10000);
-
-let savedStart =
-  localStorage.getItem("moneyClockStartDate");
-
-let bonuses =
-  JSON.parse(
-    localStorage.getItem("moneyClockBonuses") || "[]"
-  );
-
-
-/* ------------------------------------------------------------
-   DATE HELPERS
-   ------------------------------------------------------------ */
-
-function localDateString(d){
-
-  return `${d.getFullYear()}-${
-    String(d.getMonth()+1).padStart(2,"0")
-  }-${
-    String(d.getDate()).padStart(2,"0")
-  }`;
-
+let S=store.get(K,null);
+if(!S||!S.salary){
+  let oldBon=[];try{oldBon=JSON.parse(store.raw('moneyClockBonuses')||'[]');}catch(e){}
+  S=Object.assign({salary:Number(store.raw('moneyClockSalary'))||10000,start:store.raw('moneyClockStartDate')||todayStr(),
+     payday:1,bonuses:Array.isArray(oldBon)?oldBon:[],quests:[],streak:0,lastVisit:null,level:0,sound:false},S||{});
+  const c=store.get('chronos:v1',null);
+  if(c&&c.t)S.quests.push({id:uid(),name:c.n||'The Moment',t:c.t,created:c.s||Date.now(),done:!!c.completed});
 }
+S.quests=S.quests||[];S.bonuses=S.bonuses||[];S.assets=S.assets||[];S.liabs=S.liabs||[];S.nwCur=S.nwCur||'AED';delete S.ach;
+const save=()=>store.set(K,S);
 
+(function streak(){
+  const t=todayStr();
+  if(S.lastVisit!==t){const y=new Date();y.setDate(y.getDate()-1);S.streak=S.lastVisit===iso(y)?(S.streak||0)+1:1;S.lastVisit=t;save();}
+  $('#streak').textContent=S.streak;
+})();
 
-function parseDate(s){
-
-  if(!s) return new Date();
-
-  const p = s.split("-").map(Number);
-
-  return new Date(
-    p[0],
-    p[1]-1,
-    p[2]
-  );
-
+/* ================= theme ================= */
+const sysDark=matchMedia('(prefers-color-scheme: dark)');
+const isDark=()=>S.theme?S.theme==='dark':sysDark.matches;
+function applyTheme(){
+  if(S.theme)document.documentElement.dataset.theme=S.theme;else delete document.documentElement.dataset.theme;
+  const d=isDark();
+  $('#themeIc').setAttribute('href',d?'#i-sun':'#i-moon');
+  $('#themeBtn').setAttribute('aria-label',d?'Switch to light mode':'Switch to dark mode');
+  greetSky(new Date());
 }
+$('#themeBtn').onclick=()=>{S.theme=isDark()?'light':'dark';save();applyTheme();};
+sysDark.addEventListener('change',()=>{if(!S.theme)applyTheme();});
 
-
-/* ------------------------------------------------------------
-   MONEY FORMATTING
-   ------------------------------------------------------------ */
-
-function moneyAED(n,dec=2){
-
-  return "AED " +
-    n.toLocaleString(
-      "en-AE",
-      {
-        minimumFractionDigits:dec,
-        maximumFractionDigits:dec
-      }
-    );
-
-}
-
-
-function moneyINR(n){
-
-  return "₹" +
-    n.toLocaleString(
-      "en-IN",
-      {
-        minimumFractionDigits:2,
-        maximumFractionDigits:2
-      }
-    );
-
-}
-
-
-/* ------------------------------------------------------------
-   MONTH HELPERS
-   ------------------------------------------------------------ */
-
-function daysInMonth(y,m){
-
-  return new Date(y,m+1,0).getDate();
-
-}
-
-
-/* ------------------------------------------------------------
-   LIVE EXCHANGE RATE
-   ------------------------------------------------------------ */
-
-async function fetchLiveRate(){
-
-  const controller = new AbortController();
-
-  const timeout = setTimeout(
-    () => controller.abort(),
-    FX_TIMEOUT_MS
-  );
-
-
+/* ================= FX ================= */
+const FX_URL='https://api.frankfurter.dev/v2/rate/AED/INR';
+const cachedFx=Number(store.raw('moneyClockFxRate'));
+let RATE=cachedFx>0?cachedFx:25,fxSrc=cachedFx>0?'cached':'fallback';
+async function fetchFx(){
+  const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),5000);
   try{
+    const r=await fetch(FX_URL,{cache:'no-store',signal:ctl.signal});if(!r.ok)throw 0;
+    const rate=Number((await r.json()).rate);if(!(rate>0))throw 0;
+    RATE=rate;fxSrc='live';try{localStorage.setItem('moneyClockFxRate',String(rate));}catch(e){}
+  }catch(e){}finally{clearTimeout(to);renderFx();}
+}
+function renderFx(){
+  const r='₹'+RATE.toFixed(4);
+  $('#fxLine').textContent=`1 AED = ${r} · ${fxSrc} rate`;
+  $('#fxHelp').textContent=`1 AED = ${r} (${fxSrc}). Refreshed hourly from frankfurter.dev; the last good rate, or ₹25, is used when offline. Used to convert between AED and INR everywhere.`;
+}
+const toAED=(v,cur)=>cur==='INR'?v/RATE:v;
+const fromAED=(v,cur)=>cur==='INR'?v*RATE:v;
+const conv=(v,from,to)=>fromAED(toAED(v,from),to);
 
-    /*
-       IMPORTANT:
-       This request is completely independent of the clock.
+/* ================= formatting ================= */
+const fAED=(n,d=2)=>'AED '+n.toLocaleString('en-AE',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fINR=(n,d=0)=>'₹'+n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fCur=(n,cur,d=0)=>(n<0?'−':'')+(cur==='INR'?fINR(Math.abs(n),d):fAED(Math.abs(n),d));
+const fNum=(n,d=0)=>n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const fShort=n=>Math.abs(n)>=1e6?(n/1e6).toFixed(2)+'M':Math.abs(n)>=1e4?(n/1e3).toFixed(1)+'k':n.toLocaleString('en-AE',{maximumFractionDigits:0});
+function tickHTML(n,cur='AED',dp=4){
+  const neg=n<0;const [w,d]=Math.abs(n).toFixed(dp).split('.');
+  return `${neg?'−':''}${cur==='INR'?'₹':'AED '}${Number(w).toLocaleString(cur==='INR'?'en-IN':'en-AE')}<span class="dec">.${d}</span>`;
+}
+const monthYear=d=>d.toLocaleDateString('en-GB',{month:'short',year:'numeric'});
+function dur(ms){const s=Math.max(0,Math.floor(ms/1000));const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);
+  return d?`${d}d ${h}h`:h?`${h}h ${m}m`:`${m}m ${s%60}s`;}
+const ordinal=n=>n+(['th','st','nd','rd'][(n%100-20)%10]||['th','st','nd','rd'][n%100]||'th');
 
-       The clock is already running before this function is called.
-    */
-
-    const response = await fetch(
-      FX_API_URL,
-      {
-        cache:"no-store",
-        signal:controller.signal
-      }
-    );
-
-
-    if(!response.ok){
-
-      throw new Error(
-        `FX request failed: ${response.status}`
-      );
-
-    }
-
-
-    const data = await response.json();
-
-
-    /*
-       Frankfurter v2 returns:
-
-       {
-         "date": "...",
-         "base": "AED",
-         "quote": "INR",
-         "rate": 25.99
-       }
-    */
-
-    const rate = Number(data.rate);
-
-
-    if(
-      !Number.isFinite(rate) ||
-      rate <= 0
-    ){
-
-      throw new Error("Invalid FX rate");
-
-    }
-
-
-    /* Successful live rate */
-
-    INR_RATE = rate;
-
-    fxSource = "Live rate";
-
-
-    /* Save it for next startup */
-
-    localStorage.setItem(
-      "moneyClockFxRate",
-      String(rate)
-    );
-
-    localStorage.setItem(
-      "moneyClockFxDate",
-      new Date().toISOString()
-    );
-
-
-    update();
-
-
-  }catch(error){
-
-    /*
-       IMPORTANT:
-
-       FX failure must NEVER stop the clock.
-
-       If a previous rate exists, keep using it.
-       Otherwise continue using ₹25.
-    */
-
-    const cached =
-      Number(localStorage.getItem("moneyClockFxRate"));
-
-
-    if(
-      Number.isFinite(cached) &&
-      cached > 0
-    ){
-
-      INR_RATE = cached;
-      fxSource = "Cached rate";
-
-    }else{
-
-      INR_RATE = 25;
-      fxSource = "Fallback rate";
-
-    }
-
-
-    update();
-
-
-  }finally{
-
-    clearTimeout(timeout);
-
-  }
-
+/* calendar-aware Y/M/D/H/M/S difference (from Chronos) */
+function decompose(from,to){
+  let y=to.getFullYear()-from.getFullYear(),mo=to.getMonth()-from.getMonth(),d=to.getDate()-from.getDate(),
+      h=to.getHours()-from.getHours(),mi=to.getMinutes()-from.getMinutes(),s=to.getSeconds()-from.getSeconds();
+  if(s<0){s+=60;mi--;} if(mi<0){mi+=60;h--;} if(h<0){h+=24;d--;}
+  if(d<0){d+=new Date(to.getFullYear(),to.getMonth(),0).getDate();mo--;} if(mo<0){mo+=12;y--;}
+  return {y,mo,d,h,mi,s};
 }
 
-
-/* ------------------------------------------------------------
-   SALARY CALCULATION
-   ------------------------------------------------------------ */
-
-function earningsBetween(start,end){
-
-  if(end <= start){
-    return 0;
-  }
-
-
-  let total = 0;
-
-  let cursor =
-    new Date(start.getTime());
-
-
-  while(cursor < end){
-
-    const y =
-      cursor.getFullYear();
-
-    const m =
-      cursor.getMonth();
-
-    const days =
-      daysInMonth(y,m);
-
-
-    /*
-       Each month is treated as:
-
-       [month start, next month start)
-    */
-
-    const nextMonth =
-      new Date(y,m+1,1);
-
-
-    const segEnd =
-      new Date(
-        Math.min(
-          end.getTime(),
-          nextMonth.getTime()
-        )
-      );
-
-
-    const seconds =
-      Math.max(
-        0,
-        (segEnd.getTime() -
-         cursor.getTime()) / 1000
-      );
-
-
-    total +=
-      (salary / days / 86400) *
-      seconds;
-
-
-    cursor = nextMonth;
-
-  }
-
-
-  return total;
-
+/* ================= salary maths (from Money Clock) ================= */
+const dim=(y,m)=>new Date(y,m+1,0).getDate();
+function earnedBetween(a,b){
+  if(b<=a)return 0;let t=0,c=new Date(a.getTime());
+  while(c<b){const y=c.getFullYear(),m=c.getMonth(),nx=new Date(y,m+1,1),e=Math.min(b.getTime(),nx.getTime());
+    t+=(S.salary/dim(y,m)/86400)*Math.max(0,(e-c.getTime())/1000);c=nx;}
+  return t;
 }
+function bonusBetween(a,b){return S.bonuses.reduce((s,x)=>{const d=parseDate(x.date);return d>=a&&d<=b?s+Number(x.amount):s;},0);}
 
-
-/* ------------------------------------------------------------
-   BONUS CALCULATION
-   ------------------------------------------------------------ */
-
-function bonusTotalForPeriod(start,now){
-
-  const startDate =
-    new Date(
-      start.getFullYear(),
-      start.getMonth(),
-      start.getDate()
-    );
-
-
-  return bonuses.reduce(
-    (sum,b) => {
-
-      const d =
-        parseDate(b.date);
-
-
-      if(
-        d >= startDate &&
-        d <= now
-      ){
-
-        return sum + Number(b.amount);
-
-      }
-
-
-      return sum;
-
-    },
-    0
-  );
-
+/* ================= assets & liabilities ================= */
+const assetAt=(a,t)=>a.val*Math.pow(1+(a.g||0)/100,(t-a.asOf)/YEAR);
+const assetPerSec=(a,t)=>assetAt(a,t)*Math.log(1+(a.g||0)/100)/(YEAR/1000);
+const emiDate=(y,m,day)=>new Date(y,m,Math.min(day,dim(y,m)));
+function nextEmi(after,day){let d=emiDate(after.getFullYear(),after.getMonth(),day);if(d<=after)d=emiDate(after.getFullYear(),after.getMonth()+1,day);return d;}
+const rMs=l=>(l.rate||0)/100/(365*DAY);
+const isOnce=l=>l.kind==='once';
+function liabAt(l,t){ // interest accrues daily between EMIs; the EMI comes off on its day each month
+  if(isOnce(l))return t<l.due?l.val:0;    // one-time payment: owed in full until its due date
+  let bal=l.val,cur=new Date(l.asOf),n=nextEmi(cur,l.day),g=0;const r=rMs(l);
+  while(n<=t&&bal>0&&g++<1500){bal*=1+r*(n-cur);bal-=l.emi||0;cur=n;n=nextEmi(cur,l.day);}
+  return bal<=0?0:bal*(1+r*(t-cur));
 }
+function project(l,now){
+  if(isOnce(l))return l.due>now?{pts:[[+now,l.val],[l.due,0]],count:1,interest:0,payoff:new Date(l.due),never:false}:{pts:[[+now,0]],count:0,interest:0,payoff:null,never:false};
+  let bal=liabAt(l,now),cur=new Date(now),interest=0,count=0;const r=rMs(l),pts=[[now.getTime(),bal]];
+  if(bal<=0)return {pts,count:0,interest:0,payoff:null,never:false};
+  if(!(l.emi>0))return {pts,count:0,interest:0,payoff:null,never:true};
+  let n=nextEmi(cur,l.day);
+  while(bal>0&&count<600){const i=bal*r*(n-cur);interest+=i;bal+=i-l.emi;count++;cur=n;pts.push([n.getTime(),Math.max(0,bal)]);n=nextEmi(cur,l.day);
+    if(count===3&&bal>=pts[0][1])return {pts:[pts[0]],count:0,interest:0,payoff:null,never:true};}
+  return {pts,count,interest,payoff:bal<=0?cur:null,never:bal>0};
+}
+let proj={},projDirty=true;
+function projections(now){if(projDirty){proj={};S.liabs.forEach(l=>proj[l.id]=project(l,now));projDirty=false;}return proj;}
 
+const incLoot=()=>S.incLoot!==false;
+const lootTotal=now=>{const st=parseDate(S.start);return earnedBetween(st,now)+bonusBetween(st,now);};
+const TYPES={loot:['Lifetime loot','var(--gold-soft)','var(--gold)'],wallet:['Cash & savings','var(--sky-soft)','var(--sky)'],up:['Investments','var(--sage-soft)','var(--sage)'],home:['Property','var(--peach-soft)','var(--peach)'],gem:['Gold','var(--gold-soft)','var(--gold)'],car:['Vehicles','var(--lav-soft)','var(--lav)']};
 
-/* ------------------------------------------------------------
-   BONUS DISPLAY
-   ------------------------------------------------------------ */
-
-function renderBonuses(){
-
-  const list =
-    document.getElementById("bonusList");
-
-
-  if(!bonuses.length){
-
-    list.innerHTML =
-      '<div class="small">No one-time bonuses added.</div>';
-
-    return;
-
-  }
-
-
-  list.innerHTML =
-    bonuses.map(
-      (b,i) => `
-
-        <div class="bonus-item">
-
-          <div class="bonus-info">
-
-            <div class="bonus-name">
-              ${moneyAED(Number(b.amount))}
-            </div>
-
-            <div class="bonus-meta">
-              ${
-                parseDate(b.date)
-                  .toLocaleDateString(
-                    "en-AE",
-                    {
-                      day:"numeric",
-                      month:"short",
-                      year:"numeric"
-                    }
-                  )
-              }
-            </div>
-
-          </div>
-
-          <button
-            class="delete"
-            onclick="deleteBonus(${i})"
-          >
-            Delete
-          </button>
-
+function renderAssets(){
+  const pinned=`
+    <div class="entry pinned" data-a="loot">
+      <div class="eic" style="background:var(--gold-soft);color:var(--gold)">${icon('leaf')}</div>
+      <div style="min-width:0"><div class="en">Lifetime loot</div><div class="ev" data-av></div>
+        <div class="chipline"><span class="pill">Salary + bonuses, live</span><span class="pill" data-aconv></span></div></div>
+      <div class="ea"><button class="toggle" data-loot-toggle aria-pressed="${incLoot()}" aria-label="Count lifetime loot in net worth"><span class="knob"></span>${incLoot()?'Counted':'Not counted'}</button></div>
+    </div>`;
+  if(!S.assets.length){$('#aList').innerHTML=pinned+'<div class="empty">Savings, investments, property, gold. Add what else you own and watch it grow.</div>';return;}
+  $('#aList').innerHTML=pinned+S.assets.map(a=>{const c=TYPES[a.type]||TYPES.wallet;return `
+    <div class="entry" data-a="${a.id}">
+      <div class="eic" style="background:${c[1]};color:${c[2]}">${icon(a.type||'wallet')}</div>
+      <div style="min-width:0"><div class="en">${esc(a.name)}</div><div class="ev" data-av></div>
+        <div class="chipline"><span class="pill ${a.g>0?'good':''}">${a.g?(a.g>0?'+':'')+a.g+'% / yr':'no growth set'}</span><span class="pill" data-aconv></span><span class="pill" data-ad></span></div></div>
+      <div class="ea"><button class="del edit" data-edit-a="${a.id}" aria-label="Edit ${esc(a.name)}">${icon('pencil')}</button><button class="del" data-del-a="${a.id}" aria-label="Delete ${esc(a.name)}">${icon('trash')}</button></div>
+    </div>`;}).join('');
+}
+function sparkSVG(pts){
+  if(pts.length<2)return '';
+  const t0=pts[0][0],t1=pts[pts.length-1][0],max=pts[0][1]||1,step=Math.max(1,Math.floor(pts.length/80));
+  const p=pts.filter((_,i)=>i%step===0||i===pts.length-1).map(([t,v])=>`${((t-t0)/(t1-t0||1)*100).toFixed(2)},${(4+(1-v/max)*38).toFixed(2)}`);
+  return `<svg class="spark" viewBox="0 0 100 46" preserveAspectRatio="none" aria-hidden="true"><polygon class="area" points="0,46 ${p.join(' ')} 100,46"/><polyline class="ln" points="${p.join(' ')}"/></svg>`;
+}
+function renderLiabs(){
+  const now=new Date(),P=projections(now);
+  if(!S.liabs.length){$('#lList').innerHTML='<div class="empty">Home loan, car loan, credit card. Add a loan with its EMI and see the day it reaches zero.</div>';return;}
+  $('#lList').innerHTML=S.liabs.map(l=>{const p=P[l.id],orig=l.orig||l.val;
+    if(isOnce(l)){const due=new Date(l.due),paid=due<=now;return `
+    <div class="entry" data-l="${l.id}">
+      <div class="eic" style="background:var(--peach-soft);color:var(--peach)">${icon('gift')}</div>
+      <div style="min-width:0"><div class="en">${esc(l.name)}</div><div class="ev" data-lv></div>
+        <div class="chipline">
+          <span class="pill">One-time · <b>${fCur(l.val,l.cur)}</b></span>
+          <span class="pill">Due ${due.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</span>
+          <span class="pill ${paid?'good':'warn'}" data-next></span>
+          <span class="pill" data-lconv></span>
+          ${paid?'':`<span class="pill">You'll earn <b data-earnby></b> by then</span>`}
         </div>
-
-      `
-    ).join("");
-
+        <div class="payoff"><div class="bar"><i data-pb></i></div><div class="payoff-l"><span data-pct></span><span>until due</span></div></div>
+      </div>
+      <div class="ea"><button class="del edit" data-edit-l="${l.id}" aria-label="Edit ${esc(l.name)}">${icon('pencil')}</button><button class="del" data-del-l="${l.id}" aria-label="Delete ${esc(l.name)}">${icon('trash')}</button></div>
+    </div>`;}
+    const payoff=p.payoff?`Debt-free by <b>${monthYear(p.payoff)}</b>`:p.never?'EMI doesn’t cover the interest':'Cleared';
+    return `
+    <div class="entry" data-l="${l.id}">
+      <div class="eic" style="background:var(--rose-soft);color:var(--rose)">${icon('mountain')}</div>
+      <div style="min-width:0"><div class="en">${esc(l.name)}</div><div class="ev" data-lv></div>
+        <div class="chipline">
+          <span class="pill">EMI <b>${fCur(l.emi||0,l.cur)}</b> on the ${ordinal(l.day)}</span>
+          <span class="pill" data-next></span>
+          ${l.rate?`<span class="pill">${l.rate}% p.a.</span>`:''}
+          <span class="pill" data-lconv></span>
+          <span class="pill ${p.never?'warn':'good'}">${payoff}</span>
+          ${p.count?`<span class="pill">${p.count} EMIs left</span>`:''}
+          ${p.interest?`<span class="pill">Interest ahead <b>${fCur(p.interest,l.cur)}</b></span>`:''}
+        </div>
+        <div class="payoff"><div class="bar"><i data-pb></i></div><div class="payoff-l"><span data-pct></span><span>of ${fCur(orig,l.cur)}</span></div></div>
+        ${sparkSVG(p.pts)}
+        ${p.pts.length>1?`<div class="spark-l"><span>Today</span><span>${monthYear(new Date(p.pts[p.pts.length-1][0]))}</span></div>`:''}
+      </div>
+      <div class="ea"><button class="del edit" data-edit-l="${l.id}" aria-label="Edit ${esc(l.name)}">${icon('pencil')}</button><button class="del" data-del-l="${l.id}" aria-label="Delete ${esc(l.name)}">${icon('trash')}</button></div>
+    </div>`;}).join('');
 }
-
-
-function deleteBonus(i){
-
-  bonuses.splice(i,1);
-
-  localStorage.setItem(
-    "moneyClockBonuses",
-    JSON.stringify(bonuses)
-  );
-
-  update();
-
+function renderAlloc(now,A,L){
+  const C=S.nwCur,el=$('#alloc');
+  if(!S.assets.length&&!S.liabs.length&&!incLoot()){
+    el.innerHTML=`<h4>How it works</h4><div class="legend" style="color:var(--muted);font-size:14px;gap:10px">
+      <div>1. Add what you own: savings, funds, property, gold.</div><div>2. Add each loan with its EMI and EMI day.</div>
+      <div>3. Watch net worth tick up, and loans fall on every EMI date.</div></div>`;return;}
+  const by={};if(incLoot())by.loot=lootTotal(now);S.assets.forEach(a=>{by[a.type]=(by[a.type]||0)+toAED(assetAt(a,now),a.cur);});
+  const keys=Object.keys(by).sort((a,b)=>by[b]-by[a]);
+  const emis=S.liabs.reduce((s,l)=>s+(!isOnce(l)&&liabAt(l,now)>0?toAED(l.emi||0,l.cur):0),0);
+  const salaryM=S.salary;
+  const nH=S.assets.length+(incLoot()?1:0);
+  el.innerHTML=`<h4>Asset mix <span>${nH} holding${nH===1?'':'s'}</span></h4>
+    <div class="mix">${keys.map(k=>`<i style="width:${(A>0?by[k]/A*100:0).toFixed(2)}%;background:${TYPES[k][2]}"></i>`).join('')}</div>
+    <div class="legend">${keys.map(k=>`<div class="lg"><span class="dot" style="background:${TYPES[k][2]}"></span><span>${TYPES[k][0]}</span><span class="v">${fCur(fromAED(by[k],C),C)}</span><span class="p">${(A>0?by[k]/A*100:0).toFixed(1)}%</span></div>`).join('')||'<div class="lg" style="grid-template-columns:1fr;color:var(--faint)">No assets yet</div>'}</div>
+    <div class="ratios">
+      <div class="ratio"><small>Debt to assets</small><b>${A>0?(L/A*100).toFixed(1)+'%':'—'}</b><em>${A>0?(L/A<.3?'Comfortable':L/A<.6?'Moderate':'Heavy'):'add assets'}</em></div>
+      <div class="ratio"><small>EMIs vs salary</small><b>${salaryM>0?(emis/salaryM*100).toFixed(1)+'%':'—'}</b><em>${fCur(fromAED(emis,C),C)} / month</em></div>
+    </div>`;
 }
-
-
-window.deleteBonus =
-  deleteBonus;
-
-
-/* ------------------------------------------------------------
-   MAIN CLOCK UPDATE
-   ------------------------------------------------------------ */
-
-function update(){
-
-  const now =
-    new Date();
-
-
-  const input =
-    document.getElementById("startDate").value;
-
-
-  if(!input){
-    return;
+function tickNet(now,full){
+  const C=S.nwCur,O=C==='AED'?'INR':'AED';
+  let A=0,Ad=0,L=0,Ld=0;
+  { const v=lootTotal(now),el=document.querySelector('[data-a="loot"]');
+    if(incLoot()){A+=v;Ad+=S.salary/dim(now.getFullYear(),now.getMonth());}
+    if(el){el.querySelector('[data-av]').innerHTML=tickHTML(fromAED(v,C),C);if(full)el.querySelector('[data-aconv]').textContent='≈ '+fCur(fromAED(v,O),O);} }
+  S.assets.forEach(a=>{const v=assetAt(a,now),ps=assetPerSec(a,now);A+=toAED(v,a.cur);Ad+=toAED(ps,a.cur)*86400;
+    const el=document.querySelector(`[data-a="${a.id}"]`);if(!el)return;
+    el.querySelector('[data-av]').innerHTML=tickHTML(conv(v,a.cur,C),C);
+    if(full){el.querySelector('[data-aconv]').textContent='≈ '+fCur(conv(v,a.cur,O),O);
+      el.querySelector('[data-ad]').textContent=a.g?`${a.g>0?'+':'−'}${fCur(Math.abs(conv(ps*86400,a.cur,C)),C,2)} / day`:'';}});
+  S.liabs.forEach(l=>{const v=liabAt(l,now);L+=toAED(v,l.cur);Ld+=toAED(v*rMs(l)*DAY,l.cur);
+    const el=document.querySelector(`[data-l="${l.id}"]`);if(!el)return;
+    el.querySelector('[data-lv]').innerHTML=tickHTML(conv(v,l.cur,C),C);
+    if(full&&isOnce(l)){
+      const span=l.due-l.asOf,f=span>0?Math.max(0,Math.min(1,(now-l.asOf)/span)):1;
+      el.querySelector('[data-lconv]').textContent='≈ '+fCur(conv(l.val,l.cur,O),O);
+      el.querySelector('[data-pb]').style.width=(f*100).toFixed(2)+'%';
+      el.querySelector('[data-pct]').textContent=v>0?(f*100).toFixed(1)+'% of the wait done':'Settled';
+      el.querySelector('[data-next]').textContent=v>0?'due in '+dur(l.due-now):'paid';
+      const eb=el.querySelector('[data-earnby]');if(eb){const e=earnedBetween(now,new Date(l.due));eb.textContent=fCur(fromAED(e,C),C);}
+    }
+    else if(full){const orig=l.orig||l.val,cl=Math.max(0,Math.min(1,1-v/orig));
+      el.querySelector('[data-lconv]').textContent='≈ '+fCur(conv(v,l.cur,O),O);
+      el.querySelector('[data-pb]').style.width=(cl*100).toFixed(2)+'%';
+      el.querySelector('[data-pct]').textContent=(cl*100).toFixed(1)+'% cleared';
+      el.querySelector('[data-next]').textContent=v>0&&l.emi>0?'next EMI in '+dur(nextEmi(now,l.day)-now):'all paid';}});
+  const N=A-L;
+  $('#tA').innerHTML=tickHTML(fromAED(A,C),C);$('#tL').innerHTML=tickHTML(fromAED(L,C),C);$('#tN').innerHTML=tickHTML(fromAED(N,C),C);
+  if(full){
+    $('#tAi').textContent='≈ '+fCur(fromAED(A,O),O);$('#tLi').textContent='≈ '+fCur(fromAED(L,O),O);$('#tNi').textContent='≈ '+fCur(fromAED(N,O),O);
+    $('#tAd').innerHTML=(S.assets.length||incLoot())?`Growing <b>${fCur(fromAED(Ad,C),C,2)}</b> / day`:'Add an asset to start';
+    const P=projections(now);let last=null;Object.values(P).forEach(p=>{if(p.payoff&&(!last||p.payoff>last))last=p.payoff;});
+    $('#tLd').innerHTML=S.liabs.length?`Interest <b>${fCur(fromAED(Ld,C),C,2)}</b> / day${last?` · debt-free <b>${monthYear(last)}</b>`:''}`:'No loans. Nice.';
+    $('#tNd').innerHTML=(S.assets.length||S.liabs.length||incLoot())?`Drifting <b>${(Ad-Ld>=0?'+':'')+fCur(fromAED(Ad-Ld,C),C,2)}</b> / day, before EMIs`:'Assets minus liabilities';
+    renderAlloc(now,A,L);
   }
+}
+function setNwCur(c){S.nwCur=c;save();document.querySelectorAll('[data-nwcur]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.nwcur===c));tickNet(new Date(),true);}
+document.querySelectorAll('[data-nwcur]').forEach(b=>b.onclick=()=>setNwCur(b.dataset.nwcur));
 
+/* entry forms */
+function openForm(k,item){
+  const f=$('#'+k+'Form');f.hidden=false;$('#'+k+'Err').hidden=true;f.reset();$('#'+k+'Id').value='';
+  if(item){$('#'+k+'Id').value=item.id;$('#'+k+'Name').value=item.name;$('#'+k+'Cur').value=item.cur;
+    if(k==='a'){$('#aVal').value=+assetAt(item,new Date()).toFixed(2);$('#aGrow').value=item.g||'';$('#aType').value=item.type;}
+    else if(isOnce(item)){setLKind('once');$('#lVal').value=item.val;$('#lDue').value=iso(new Date(item.due));}
+    else{setLKind('emi');$('#lVal').value=+liabAt(item,new Date()).toFixed(2);$('#lRate').value=item.rate||'';$('#lEmi').value=item.emi||'';$('#lDay').value=item.day;$('#lOrig').value=item.orig||'';}}
+  else{$('#'+k+'Cur').value=S.nwCur;if(k==='l')setLKind('emi');}
+  $('#'+k+'Name').focus();
+}
+$('#addAssetBtn').onclick=()=>openForm('a');
+$('#addLiabBtn').onclick=()=>openForm('l');
+document.querySelectorAll('[data-cancel]').forEach(b=>b.onclick=()=>{$('#'+b.dataset.cancel+'Form').hidden=true;});
+$('#aForm').addEventListener('submit',e=>{
+  e.preventDefault();const name=$('#aName').value.trim(),val=Number($('#aVal').value);
+  if(!name||!(val>0)){$('#aErr').hidden=false;return;}
+  const id=$('#aId').value,rec={id:id||uid(),name,val,cur:$('#aCur').value,g:Number($('#aGrow').value)||0,type:$('#aType').value,asOf:Date.now()};
+  const i=S.assets.findIndex(a=>a.id===id);if(i>=0)S.assets[i]=rec;else S.assets.push(rec);
+  save();$('#aForm').hidden=true;renderAssets();tickNet(new Date(),true);chime([523,659,784]);softBurst('#aList');
+});
+let lKind='emi';
+function setLKind(k){
+  lKind=k;document.querySelectorAll('[data-lkind]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.lkind===k));
+  document.querySelectorAll('#lForm [data-k]').forEach(el=>el.hidden=el.dataset.k!==k);
+  $('#lName').placeholder=k==='once'?'e.g. Sister’s wedding':'e.g. Home loan';
+  $('#lVal').placeholder=k==='once'?'150000':'2500000';
+  $('#lErr').textContent=k==='once'?'Add a name, an amount and a due date in the future.':'Add a name, an outstanding amount and an EMI day from 1 to 31.';
+}
+document.querySelectorAll('[data-lkind]').forEach(b=>b.onclick=()=>setLKind(b.dataset.lkind));
+$('#lForm').addEventListener('submit',e=>{
+  e.preventDefault();const name=$('#lName').value.trim(),val=Number($('#lVal').value),day=Math.round(Number($('#lDay').value));
+  const id=$('#lId').value,old=S.liabs.find(l=>l.id===id);
+  if(lKind==='once'){
+    const d=$('#lDue').value,due=d?parseDate(d).getTime():0;
+    if(!name||!(val>0)||!(due>Date.now())){$('#lErr').hidden=false;return;}
+    const rec={id:id||uid(),kind:'once',name,val,cur:$('#lCur').value,due,asOf:old&&isOnce(old)?old.asOf:Date.now()};
+    const i=S.liabs.findIndex(l=>l.id===id);if(i>=0)S.liabs[i]=rec;else S.liabs.push(rec);
+    save();projDirty=true;$('#lForm').hidden=true;renderLiabs();renderQuests();tickNet(new Date(),true);chime([392,523,659]);return;
+  }
+  if(!name||!(val>0)||!(day>=1&&day<=31)){$('#lErr').hidden=false;return;}
+  const orig=Number($('#lOrig').value)||(old&&old.orig)||val;
+  const rec={id:id||uid(),name,val,cur:$('#lCur').value,rate:Number($('#lRate').value)||0,emi:Number($('#lEmi').value)||0,day,orig:Math.max(orig,val),asOf:Date.now()};
+  const i=S.liabs.findIndex(l=>l.id===id);if(i>=0)S.liabs[i]=rec;else S.liabs.push(rec);
+  save();projDirty=true;$('#lForm').hidden=true;renderLiabs();renderQuests();tickNet(new Date(),true);chime([392,523,659]);
+});
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-loot-toggle]')){S.incLoot=!incLoot();save();renderAssets();tickNet(new Date(),true);return;}
+  const t=e.target.closest('[data-del-a],[data-del-l],[data-edit-a],[data-edit-l]');if(!t)return;
+  if(t.dataset.delA){S.assets=S.assets.filter(a=>a.id!==t.dataset.delA);save();renderAssets();tickNet(new Date(),true);}
+  else if(t.dataset.delL){S.liabs=S.liabs.filter(l=>l.id!==t.dataset.delL);save();projDirty=true;renderLiabs();renderQuests();tickNet(new Date(),true);}
+  else if(t.dataset.editA)openForm('a',S.assets.find(a=>a.id===t.dataset.editA));
+  else openForm('l',S.liabs.find(l=>l.id===t.dataset.editL));
+});
 
-  const start =
-    parseDate(input);
+/* ================= levels ================= */
+const TITLES=['Intern','Hustler','Side-Gigger','Grinder','Earner','Go-Getter','Closer','Rainmaker','Steady Hand','High Roller','Tycoon','Mogul','Magnate','Legend','Money Sage','Gold Keeper','Zen Master','Myth'];
+const G=1.8,B=100;
+const xpFor=n=>B*(Math.pow(G,n-1)-1)/(G-1);
+const levelOf=x=>Math.floor(Math.log(x*(G-1)/B+1)/Math.log(G))+1;
 
+/* ================= quests (from Chronos) + payday + EMIs ================= */
+function nextPayday(now){const mk=(y,m)=>emiDate(y,m,S.payday);let d=mk(now.getFullYear(),now.getMonth());if(d<=now)d=mk(now.getFullYear(),now.getMonth()+1);return d;}
+function prevMonthSame(next,day){const y=next.getFullYear(),m=next.getMonth()-1,yy=m<0?y-1:y,mm=(m+12)%12;return emiDate(yy,mm,day);}
+function questView(){
+  const now=new Date(),np=nextPayday(now);
+  const rec=[{id:'pay',name:'Payday',t:np.getTime(),created:prevMonthSame(np,S.payday).getTime(),kind:'pay'}];
+  S.liabs.forEach(l=>{
+    if(isOnce(l)){if(!l.ack)rec.push({id:'due-'+l.id,name:l.name,t:l.due,created:l.asOf,kind:'due',l});return;}
+    if(!(l.emi>0)||liabAt(l,now)<=0)return;const n=nextEmi(now,l.day);
+    rec.push({id:'emi-'+l.id,name:l.name+' EMI',t:n.getTime(),created:prevMonthSame(n,l.day).getTime(),kind:'emi',l});});
+  return rec.concat(S.quests).sort((a,b)=>(!!a.done-!!b.done)||(a.done?b.t-a.t:a.t-b.t));
+}
+const SEGS=[['y','yrs'],['mo','mos'],['d','days'],['h','hrs'],['mi','min'],['s','sec']];
+function renderQuests(){
+  const qs=questView();
+  $('#qList').innerHTML=qs.map(q=>`
+    <div class="quest ${q.kind||''} ${q.done?'done':''}" data-q="${q.id}" data-t="${q.t}">
+      <div class="q-top"><span class="q-name">${esc(q.name)}</span>
+        <span class="q-badge">${q.kind==='pay'?'Payday':q.kind==='emi'?'EMI':q.kind==='due'?'Payment':q.done?'Cleared':'Quest'}</span>
+        ${q.kind?'':`<button class="del" data-delq="${q.id}" aria-label="Delete quest">${icon('trash')}</button>`}</div>
+      <div class="q-cd">${SEGS.map(([k,l])=>`<div class="seg" data-seg="${k}"><b>0</b><small>${l}</small></div>`).join('')}</div>
+      <div class="q-abs" aria-label="Total time"></div>
+      <div class="bar"><i style="width:0"></i></div>
+      <div class="q-sub"><span class="q-when"></span><span class="q-earn"></span></div>
+    </div>`).join('');
+  $('#qCount').textContent=`${qs.filter(q=>!q.done).length} active`;
+  tickQuests(true);
+}
+function tickQuests(full){
+  const now=new Date();
+  for(const q of questView()){
+    const el=$('#qList').querySelector(`[data-q="${q.id}"]`);
+    if(!el){renderQuests();return;}
+    if(q.kind==='due'&&q.t<=now){q.l.ack=true;save();onDue(q.l);projDirty=true;renderLiabs();renderQuests();return;}
+    if(q.kind&&q.kind!=='due'&&Number(el.dataset.t)!==q.t){
+      if(Number(el.dataset.t)<=now)q.kind==='pay'?onPayday():onEmi(q.l);
+      projDirty=true;renderLiabs();renderQuests();return;
+    }
+    const target=new Date(q.t);
+    if(!q.kind&&!q.done&&target<=now){const o=S.quests.find(x=>x.id===q.id);o.done=true;save();finishQuest(o);renderQuests();return;}
+    const up=target<now,T=Math.abs(target-now)/1000;
+    const dec=up?decompose(target,now):decompose(now,target);
+    let lead=true;
+    SEGS.forEach(([k])=>{const s=el.querySelector(`[data-seg="${k}"]`);const v=dec[k];
+      if((k==='y'||k==='mo')&&lead&&v===0){s.hidden=true;return;} lead=false;s.hidden=false;
+      s.firstChild.textContent=(k==='y'||k==='mo'||k==='d')?v:String(v).padStart(2,'0');});
+    el.querySelector('.q-abs').innerHTML=`<span><b>${fNum(T/86400,1)}</b> days</span><span><b>${fNum(T/3600,1)}</b> hrs</span><span><b>${fNum(Math.floor(T/60))}</b> min</span><span><b>${fNum(Math.floor(T))}</b> sec</span>`;
+    const total=q.t-q.created,p=q.done?1:total>0?Math.min(1,Math.max(0,(now-q.created)/total)):0;
+    el.querySelector('.bar i').style.width=(p*100).toFixed(2)+'%';
+    if(full)el.querySelector('.q-when').textContent=(up?'Since ':'')+target.toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    const earn=el.querySelector('.q-earn');
+    if(q.kind==='due'){const l=q.l,O=l.cur==='AED'?'INR':'AED',e=earnedBetween(now,target);
+      earn.innerHTML=`Pay <b>${fCur(l.val,l.cur)}</b> (≈ ${fCur(conv(l.val,l.cur,O),O)}) · you'll earn <b>${fAED(e,0)}</b> · <b>${fINR(e*RATE)}</b> by then`;}
+    else if(q.kind==='emi'){const l=q.l,O=l.cur==='AED'?'INR':'AED',after=Math.max(0,liabAt(l,new Date(q.t+1000)));
+      earn.innerHTML=`Pays <b>${fCur(l.emi,l.cur)}</b> (≈ ${fCur(conv(l.emi,l.cur,O),O)}) · leaves ${fCur(after,l.cur)}`;}
+    else{const e=up?earnedBetween(target,now):earnedBetween(now,target);
+      earn.innerHTML=up?`Earned since <b>${fAED(e)}</b> · <b>${fINR(e*RATE,2)}</b>`:`To earn by then <b>${fAED(e)}</b> · <b>${fINR(e*RATE,2)}</b>`;}
+  }
+}
+function finishQuest(q){toast('check','Quest complete: '+q.name,'The moment has arrived');chime([523,659,784,1046]);if(!reduced)burst(innerWidth/2,innerHeight*.45,90,850);}
+function onPayday(){toast('gift','Payday','A new salary cycle begins');chime([659,784,1046]);if(!reduced)coinRain();}
+function onDue(l){toast('gift','Payment day: '+l.name,'Marked as paid and cleared from liabilities');chime([523,659,784]);if(!reduced)burst(innerWidth/2,innerHeight*.5,50,650);}
+function onEmi(l){if(!l)return;toast('mountain','EMI paid: '+l.name,'One step lighter');chime([440,554,659]);if(!reduced)burst(innerWidth/2,innerHeight*.5,40,600);}
 
-  const salaryEarned =
-    earningsBetween(
-      start,
-      now
-    );
+$('#qForm').addEventListener('submit',e=>{
+  e.preventDefault();const d=$('#qDate').value,t=$('#qTime').value||'00:00';
+  const target=d?new Date(`${d}T${t.length===5?t+':00':t}`):null;
+  if(!target||target<=new Date()){$('#qErr').hidden=false;return;}
+  $('#qErr').hidden=true;S.quests.push({id:uid(),name:$('#qName').value.trim()||'Something nice',t:target.getTime(),created:Date.now(),done:false});
+  save();$('#qName').value='';showQAdd(false);renderQuests();chime([523,784]);
+});
+function showQAdd(o){$('#qAdd').hidden=!o;$('#qToggle').setAttribute('aria-expanded',o);if(o)$('#qName').focus();}
+$('#qToggle').onclick=()=>showQAdd($('#qAdd').hidden);
+$('#qList').addEventListener('click',e=>{const b=e.target.closest('[data-delq]');if(!b)return;S.quests=S.quests.filter(q=>q.id!==b.dataset.delq);save();renderQuests();});
+document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{
+  const now=new Date();let d,name;
+  switch(b.dataset.preset){
+    case 'ny':d=new Date(now.getFullYear()+1,0,1);name='New Year';break;
+    case 'weekend':{d=new Date(now);d.setDate(d.getDate()+((6-now.getDay()+7)%7||7));d.setHours(9,0,0,0);name='Weekend';break;}
+    case 'hour':d=new Date(now.getTime()+3600e3);name='One more hour';break;
+    default:d=new Date(now.getTime()+60e3);name='One minute';
+  }
+  $('#qDate').value=iso(d);$('#qTime').value=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  if(!$('#qName').value)$('#qName').value=name;
+}));
 
-
-  const bonusesEarned =
-    bonusTotalForPeriod(
-      start,
-      now
-    );
-
-
-  const total =
-    salaryEarned +
-    bonusesEarned;
-
-
-  const days =
-    daysInMonth(
-      now.getFullYear(),
-      now.getMonth()
-    );
-
-
-  const daily =
-    salary / days;
-
-
-  const second =
-    daily / 86400;
-
-
-  /* Main totals */
-
-  document.getElementById("aed")
-    .textContent =
-    moneyAED(total);
-
-
-  document.getElementById("inr")
-    .textContent =
-    moneyINR(
-      total * INR_RATE
-    );
-
-
-  /* Per-second earnings */
-
-  document.getElementById("rate")
-    .textContent =
-    moneyAED(second,6) +
-    " / second  •  " +
-    moneyINR(
-      second * INR_RATE
-    ) +
-    " / second";
-
-
-  /* FX rate */
-
-  document.getElementById("fxRate")
-    .textContent =
-    "₹" +
-    INR_RATE.toLocaleString(
-      "en-IN",
-      {
-        minimumFractionDigits:4,
-        maximumFractionDigits:4
-      }
-    );
-
-
-  /* FX status */
-
-  document.getElementById("fxStatus")
-    .textContent =
-    fxSource +
-    " • refreshes automatically";
-
-
-  /* Current date/time */
-
-  document.getElementById("today")
-    .textContent =
-    now.toLocaleString(
-      "en-AE",
-      {
-        weekday:"long",
-        year:"numeric",
-        month:"long",
-        day:"numeric",
-        hour:"2-digit",
-        minute:"2-digit",
-        second:"2-digit"
-      }
-    );
-
-
-  /* Salary details */
-
-  document.getElementById("salary")
-    .textContent =
-    moneyAED(salary,0);
-
-
-  document.getElementById("startDisplay")
-    .textContent =
-    start.toLocaleDateString(
-      "en-AE",
-      {
-        day:"numeric",
-        month:"short",
-        year:"numeric"
-      }
-    );
-
-
-  document.getElementById("salaryEarned")
-    .textContent =
-    moneyAED(salaryEarned);
-
-
-  document.getElementById("bonusTotal")
-    .textContent =
-    moneyAED(bonusesEarned);
-
-
-  document.getElementById("total")
-    .textContent =
-    moneyAED(total);
-
-
-  renderBonuses();
-
+/* ================= greeting + ambient sky ================= */
+function greetSky(now){
+  const h=now.getHours(),i=h<5?0:h<12?1:h<17?2:h<21?3:4;
+  const light=['#E6E1F3','#FBEADF','#EEF3E6','#EFE4F3','#E3E3F2'],dark=['#211D33','#2A2128','#1C2420','#261F33','#1B1B2C'];
+  document.documentElement.style.setProperty('--sky-top',(isDark()?dark:light)[i]);
+  return i;
+}
+function greet(now,today){
+  const i=greetSky(now);
+  $('#greetH').textContent=['Still up?','Good morning.','Good afternoon.','Good evening.','Good night.'][i];
+  const line=i===0||i>=3?'Clock out. Your money keeps working while you rest.':i===1?'A fresh day, already adding up.':'Steady progress, one second at a time.';
+  $('#greetP').innerHTML=`You've added <b>${fAED(today)}</b> today. ${line}`;
 }
 
+/* ================= main loop ================= */
+let lastWhole=null,lastSec=-1,lastFull=0;
+function update(){
+  const now=new Date(),start=parseDate(S.start);
+  const total=earnedBetween(start,now)+bonusBetween(start,now),inr=total*RATE;
+  $('#aed').innerHTML=tickHTML(total).replace('AED ','<span class="cur">AED</span>');
+  $('#inr').textContent=fINR(inr,2);
 
-/* ------------------------------------------------------------
-   INITIAL VALUES
-   ------------------------------------------------------------ */
+  const sec=Math.floor(now/1000),full=sec!==lastSec;
+  if(full){
+    lastSec=sec;
+    const perSec=S.salary/dim(now.getFullYear(),now.getMonth())/86400;
+    $('#perSec').textContent=fAED(perSec,4);$('#perSecI').textContent=fINR(perSec*RATE,3);
+    $('#perHour').textContent=fAED(perSec*3600);$('#perHourI').textContent=fINR(perSec*3600*RATE,2);
+    $('#perDay').textContent=fAED(perSec*86400);$('#perDayI').textContent=fINR(perSec*86400*RATE,2);
+    const mid=new Date(now.getFullYear(),now.getMonth(),now.getDate()),frac=(now-mid)/DAY;
+    const today=earnedBetween(start>mid?start:mid,now)+bonusBetween(start>mid?start:mid,now);
+    const m1=new Date(now.getFullYear(),now.getMonth(),1),mStart=start>m1?start:m1,month=earnedBetween(mStart,now)+bonusBetween(mStart,now);
+    $('#dayRing').style.strokeDashoffset=(251.3*(1-frac)).toFixed(1);
+    $('#dayPct').textContent=Math.floor(frac*100)+'%';$('#dayPctTxt').textContent=Math.floor(frac*100)+'%';$('#dayBar').style.width=(frac*100).toFixed(1)+'%';
+    $('#todayAmt').textContent=fAED(today);$('#todayInr').textContent=fINR(today*RATE,2);
+    $('#monthAmt').textContent=fAED(month);$('#monthInr').textContent=fINR(month*RATE,2);
+    $('#sinceTxt').textContent=start.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    greet(now,today);
 
-const today =
-  new Date();
+    const lv=Math.max(1,levelOf(Math.max(0,total))),lo=xpFor(lv),hi=xpFor(lv+1),pct=Math.min(100,(total-lo)/(hi-lo)*100);
+    $('#lvlNum').textContent=lv;$('#lvlName').textContent=TITLES[Math.min(lv-1,TITLES.length-1)];
+    $('#lvlXp').textContent=`${fShort(total-lo)} / ${fShort(hi-lo)} XP`;$('#xpFill').style.width=pct+'%';$('#xpBar').setAttribute('aria-valuenow',Math.round(pct));
+    if(S.level&&lv>S.level){toast('star',`Level ${lv}`,TITLES[Math.min(lv-1,TITLES.length-1)]+', well earned');chime([523,659,784,1046]);if(!reduced)burst(innerWidth/2,90,70,750);}
+    if(lv!==S.level){S.level=lv;save();}
 
+    tickQuests(false);
+    if(now-lastFull>60000){if(lastFull){projDirty=true;renderLiabs();renderQuests();}lastFull=+now;}
+    if(!document.hidden&&!reduced&&sec%2===0)floatPop('+'+fAED(perSec*2,4));
+  }
+  tickNet(now,full);
 
-document.getElementById("startDate").value =
-  savedStart ||
-  localDateString(today);
+  const whole=Math.floor(total);
+  if(lastWhole!==null&&whole>lastWhole){clink();const c=$('#coin');c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');}
+  lastWhole=whole;
+}
+function floatPop(txt){const p=document.createElement('span');p.className='pop';p.textContent=txt;$('#coinWrap').appendChild(p);setTimeout(()=>p.remove(),1800);}
 
+/* ================= coin ================= */
+let combo=0,comboT;
+$('#coin').addEventListener('click',e=>{
+  combo++;clearTimeout(comboT);
+  comboT=setTimeout(()=>{combo=0;$('#combo').classList.remove('on');},900);
+  if(combo>1){$('#combo').textContent='x'+combo;$('#combo').classList.add('on');}
+  const r=e.currentTarget.getBoundingClientRect();
+  if(!reduced)burst(r.left+r.width/2,r.top+r.height/2,6+Math.min(combo,14),380,true);
+  clink(1+Math.min(combo,12)*.05);
+});
 
-document.getElementById("salaryInput").value =
-  salary;
+/* ================= net worth card carousel (phone) ================= */
+(function(){
+  const box=$('#tiles'),dots=[...document.querySelectorAll('#tileDots button')],cards=[...box.children];
+  const sync=()=>{const c=box.scrollLeft+box.clientWidth/2;let best=0,bd=1e9;
+    cards.forEach((t,i)=>{const d=Math.abs(t.offsetLeft+t.offsetWidth/2-c);if(d<bd){bd=d;best=i;}});
+    dots.forEach((d,i)=>d.setAttribute('aria-selected',i===best));};
+  box.addEventListener('scroll',()=>requestAnimationFrame(sync),{passive:true});
+  dots.forEach((d,i)=>d.onclick=()=>box.scrollTo({left:cards[i].offsetLeft-(box.clientWidth-cards[i].offsetWidth)/2,behavior:reduced?'auto':'smooth'}));
+})();
 
+/* ================= phone tab bar ================= */
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.go).scrollIntoView({block:'start'}));
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)document.querySelectorAll('[data-go]').forEach(b=>b.setAttribute('aria-current',b.dataset.go===e.target.id));});},{rootMargin:'-45% 0px -50% 0px'});
+['secLoot','secQuests','secNet'].forEach(id=>io.observe(document.getElementById(id)));
 
-document.getElementById("bonusDate").value =
-  localDateString(today);
+/* ================= settings ================= */
+function openSettings(o){
+  document.body.classList.toggle('settings',o);$('#drawer').setAttribute('aria-hidden',!o);
+  if(o){$('#startDate').value=S.start;$('#salaryInput').value=S.salary;$('#paydayInput').value=S.payday;$('#bonusDate').value=todayStr();renderBonuses();$('#closeSettings').focus();}
+}
+$('#openSettings').onclick=()=>openSettings(true);
+$('#closeSettings').onclick=()=>openSettings(false);
+$('#scrim').onclick=()=>openSettings(false);
+addEventListener('keydown',e=>{if(e.key==='Escape')openSettings(false);});
+$('#saveSalary').onclick=()=>{
+  const d=$('#startDate').value,s=Number($('#salaryInput').value),p=Math.round(Number($('#paydayInput').value));
+  if(!d||!(s>=0))return;
+  S.start=d;S.salary=s;S.payday=p>=1&&p<=31?p:1;save();lastWhole=null;renderQuests();toast('check','Saved','Your clock has been recalculated');
+};
+function renderBonuses(){
+  $('#bonusList').innerHTML=S.bonuses.length?S.bonuses.map((b,i)=>`<div class="bitem"><div><b>${fAED(Number(b.amount))}</b><small>${parseDate(b.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</small></div><button class="del" data-b="${i}" aria-label="Delete bonus">${icon('trash')}</button></div>`).join(''):'<p class="help">No bonuses yet.</p>';
+}
+$('#bonusList').addEventListener('click',e=>{const b=e.target.closest('[data-b]');if(!b)return;S.bonuses.splice(+b.dataset.b,1);save();renderBonuses();});
+$('#addBonus').onclick=()=>{
+  const a=Number($('#bonusAmount').value),d=$('#bonusDate').value;if(!(a>0)||!d)return;
+  S.bonuses.push({amount:a,date:d});S.bonuses.sort((x,y)=>x.date.localeCompare(y.date));save();
+  $('#bonusAmount').value='';renderBonuses();chime([659,988]);if(!reduced)coinRain();
+};
 
+/* ================= soft sounds ================= */
+let ac=null;
+function audio(){if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();return ac;}
+function tone(f,t0,d,vol){const a=audio(),o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=f;
+  g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(vol,t0+.02);g.gain.exponentialRampToValueAtTime(.0004,t0+d);o.connect(g);g.connect(a.destination);o.start(t0);o.stop(t0+d);}
+function chime(fs){if(!S.sound)return;const t=audio().currentTime;fs.forEach((f,i)=>tone(f,t+i*.12,1.1,.05));}
+function clink(k=1){if(!S.sound)return;const t=audio().currentTime;tone(1320*k,t,.5,.035);tone(1980*k,t+.04,.4,.018);}
+function setSound(on){S.sound=on;save();$('#soundBtn').setAttribute('aria-pressed',on);$('#soundIc').setAttribute('href',on?'#i-vol':'#i-mute');}
+$('#soundBtn').onclick=()=>{setSound(!S.sound);if(S.sound)chime([659,880]);};
+setSound(false); // browsers block audio until a click
 
-/* ------------------------------------------------------------
-   SAVE SALARY / START DATE
-   ------------------------------------------------------------ */
+/* ================= toasts ================= */
+function toast(ic,title,sub){
+  const t=document.createElement('div');t.className='toast';
+  t.innerHTML=`<div class="medal">${icon(ic)}</div><div><b></b><small></small></div>`;
+  t.querySelector('b').textContent=title;t.querySelector('small').textContent=sub;
+  $('#toasts').appendChild(t);setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),350);},3800);
+}
 
-document.getElementById("save").onclick =
-  () => {
+/* ================= gentle particles ================= */
+const cv=$('#fx'),cx=cv.getContext('2d');let parts=[],running=false,lastT=0;
+const COLS=['#E9C46A','#C9B8EA','#BFD9C3','#F2C6A6','#A9C8E2','#EFC2C7'];
+function size(){const d=Math.min(2,devicePixelRatio||1);cv.width=innerWidth*d;cv.height=innerHeight*d;cx.setTransform(d,0,0,d,0,0);}
+size();addEventListener('resize',size);
+function burst(x,y,n,pow,coins){
+  for(let i=0;i<n;i++){const a=-Math.PI/2+(Math.random()-.5)*(coins?3:2.4),sp=pow*(.4+Math.random()*.7);
+    parts.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:Math.random()*6,vr:(Math.random()-.5)*8,coin:coins,w:coins?6:4+Math.random()*4,h:7+Math.random()*8,c:COLS[i%COLS.length],t:0,ttl:1.4+Math.random()*1.4});}
+  run();
+}
+function softBurst(sel){if(reduced)return;const r=$(sel).getBoundingClientRect();burst(r.left+r.width/2,r.top+30,24,420);}
+function coinRain(){for(let i=0;i<36;i++)parts.push({x:Math.random()*innerWidth,y:-20-Math.random()*300,vx:(Math.random()-.5)*40,vy:60+Math.random()*120,r:0,vr:(Math.random()-.5)*5,coin:true,w:7,h:7,t:0,ttl:3.2});run();}
+function run(){if(!running){running=true;lastT=performance.now();requestAnimationFrame(frame);}}
+function frame(ts){
+  const dt=Math.min(.05,(ts-lastT)/1000);lastT=ts;cx.clearRect(0,0,innerWidth,innerHeight);
+  parts=parts.filter(p=>p.t<p.ttl&&p.y<innerHeight+40);
+  for(const p of parts){
+    p.t+=dt;p.vy+=900*dt;p.vx*=Math.exp(-1.6*dt);p.x+=p.vx*dt+Math.sin(p.t*3+p.r)*.4;p.y+=p.vy*dt;p.r+=p.vr*dt;
+    cx.save();cx.globalAlpha=.9*(1-Math.pow(p.t/p.ttl,3));cx.translate(p.x,p.y);
+    if(p.coin){cx.scale(Math.max(.15,Math.abs(Math.cos(p.r))),1);cx.beginPath();cx.arc(0,0,p.w,0,Math.PI*2);cx.fillStyle='#E9C46A';cx.fill();cx.lineWidth=1.5;cx.strokeStyle='#B8892B';cx.stroke();}
+    else{cx.rotate(p.r);cx.fillStyle=p.c;cx.beginPath();cx.ellipse(0,0,p.w/2,p.h/2,0,0,Math.PI*2);cx.fill();}
+    cx.restore();
+  }
+  if(parts.length)requestAnimationFrame(frame);else{running=false;cx.clearRect(0,0,innerWidth,innerHeight);}
+}
 
-    const d =
-      document.getElementById("startDate").value;
-
-    const s =
-      Number(
-        document.getElementById("salaryInput").value
-      );
-
-
-    if(
-      d &&
-      Number.isFinite(s) &&
-      s >= 0
-    ){
-
-      salary = s;
-
-      savedStart = d;
-
-
-      localStorage.setItem(
-        "moneyClockSalary",
-        String(salary)
-      );
-
-
-      localStorage.setItem(
-        "moneyClockStartDate",
-        d
-      );
-
-
-      update();
-
-    }
-
-  };
-
-
-/* ------------------------------------------------------------
-   ADD BONUS
-   ------------------------------------------------------------ */
-
-document.getElementById("addBonus").onclick =
-  () => {
-
-    const amount =
-      Number(
-        document.getElementById("bonusAmount").value
-      );
-
-
-    const date =
-      document.getElementById("bonusDate").value;
-
-
-    if(
-      Number.isFinite(amount) &&
-      amount > 0 &&
-      date
-    ){
-
-      bonuses.push({
-        amount:amount,
-        date:date
-      });
-
-
-      bonuses.sort(
-        (a,b) =>
-          a.date.localeCompare(b.date)
-      );
-
-
-      localStorage.setItem(
-        "moneyClockBonuses",
-        JSON.stringify(bonuses)
-      );
-
-
-      document.getElementById(
-        "bonusAmount"
-      ).value = "";
-
-
-      update();
-
-    }
-
-  };
-
-
-/* ============================================================
-   START THE CLOCK
-   ============================================================ */
-
-/*
-   FIRST:
-   Immediately render the clock using the cached rate
-   or ₹25 fallback.
-
-   This does NOT wait for the internet.
-*/
-
-update();
-
-
-/*
-   SECOND:
-   Try to obtain a live FX rate in the background.
-
-   The clock is already visible and running.
-*/
-
-fetchLiveRate();
-
-
-/*
-   Update the displayed earnings every 100ms.
-
-   The FX rate itself does NOT change every 100ms.
-*/
-
-setInterval(
-  update,
-  100
-);
-
-
-/*
-   Refresh the FX rate every hour.
-
-   If the API fails, the previous rate remains active.
-*/
-
-setInterval(
-  fetchLiveRate,
-  60 * 60 * 1000
-);
-
+/* ================= boot ================= */
+applyTheme();renderFx();renderAssets();renderLiabs();renderQuests();setNwCur(S.nwCur);update();
+setInterval(update,100);
+fetchFx();setInterval(fetchFx,3600e3);
+})();
 </script>
-
 </body>
 </html>
