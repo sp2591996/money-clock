@@ -97,6 +97,8 @@ svg.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke
 .xpbar{margin-top:6px;height:8px;border-radius:99px;background:var(--lav-soft);overflow:hidden}
 .xpfill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#B7ACE6,var(--lav));transition:width .6s ease}
 .tools{display:flex;align-items:center;gap:8px}
+.seg-ctl.cur-ctl{margin-left:0}
+.seg-ctl.cur-ctl button{min-height:36px}
 .streak{display:flex;align-items:center;gap:6px;height:44px;padding:0 13px;border-radius:14px;background:var(--peach-soft);color:var(--peach);font-family:var(--head);font-weight:800;white-space:nowrap}
 .icon-btn{width:44px;height:44px;flex:none;display:grid;place-items:center;border-radius:14px;background:var(--surface);border:1px solid var(--line);color:var(--muted);transition:background .2s,color .2s,transform .15s}
 .icon-btn:hover{color:var(--ink)}
@@ -353,6 +355,9 @@ body.settings .drawer{transform:none}
   .icon-btn,.streak{height:40px}
   .icon-btn{width:40px;border-radius:12px}
   .streak{padding:0 10px;border-radius:12px}
+  .tools{gap:6px}
+  .seg-ctl.cur-ctl{padding:3px;border-radius:12px}
+  .seg-ctl.cur-ctl button{min-width:44px;min-height:34px;padding:2px 6px;font-size:13px}
   main{gap:14px;padding:4px 16px calc(96px + env(safe-area-inset-bottom))}
   .greet{padding-top:14px}
   .daybar{flex-basis:100%}
@@ -491,6 +496,10 @@ body.settings .drawer{transform:none}
     </div>
   </div>
   <div class="tools">
+    <div class="seg-ctl cur-ctl" role="group" aria-label="Currency">
+      <button type="button" data-cur="AED" aria-pressed="true">AED</button>
+      <button type="button" data-cur="INR" aria-pressed="false">INR</button>
+    </div>
     <div class="streak" title="Daily visit streak"><svg class="i"><use href="#i-flame"/></svg><span id="streak">1</span><span class="sr"> day streak</span></div>
     <button class="icon-btn" id="themeBtn" aria-label="Switch to dark mode"><svg class="i"><use href="#i-moon" id="themeIc"/></svg></button>
     <button class="icon-btn" id="soundBtn" aria-label="Toggle soft sounds" aria-pressed="false"><svg class="i"><use href="#i-mute" id="soundIc"/></svg></button>
@@ -515,7 +524,7 @@ body.settings .drawer{transform:none}
         <div class="eyebrow"><span class="live" aria-hidden="true"></span>Earned since <span id="sinceTxt">start</span></div>
       </div>
       <div class="coin-wrap" id="coinWrap">
-        <button class="coin" id="coin" aria-label="Tap the coin"><span>AED</span></button>
+        <button class="coin" id="coin" aria-label="Tap the coin"><span id="coinCur">AED</span></button>
         <span class="combo" id="combo">x2</span>
       </div>
     </div>
@@ -565,10 +574,6 @@ body.settings .drawer{transform:none}
   <section class="card c-net" id="secNet" aria-labelledby="nwH">
     <div class="nw-head">
       <h2 id="nwH"><span class="ic" style="background:var(--sky-soft);color:var(--sky)"><svg class="i"><use href="#i-scale"/></svg></span>Net worth</h2>
-      <div class="seg-ctl" role="group" aria-label="Net worth currency">
-        <button type="button" data-nwcur="AED" aria-pressed="true">AED</button>
-        <button type="button" data-nwcur="INR" aria-pressed="false">INR</button>
-      </div>
     </div>
     <p class="lead">Assets grow, loans shrink with every EMI. Everything ticks live.</p>
     <div class="tiles" id="tiles">
@@ -690,7 +695,7 @@ if(!S||!S.salary){
   const c=store.get('chronos:v1',null);
   if(c&&c.t)S.quests.push({id:uid(),name:c.n||'The Moment',t:c.t,created:c.s||Date.now(),done:!!c.completed});
 }
-S.quests=S.quests||[];S.bonuses=S.bonuses||[];S.assets=S.assets||[];S.liabs=S.liabs||[];S.nwCur=S.nwCur||'AED';delete S.ach;
+S.quests=S.quests||[];S.bonuses=S.bonuses||[];S.assets=S.assets||[];S.liabs=S.liabs||[];S.cur=S.cur||S.nwCur||'AED';delete S.nwCur;delete S.ach;
 const save=()=>store.set(K,S);
 
 (function streak(){
@@ -744,8 +749,12 @@ function tickHTML(n,cur='AED',dp=4){
   return `${neg?'−':''}${cur==='INR'?'₹':'AED '}${Number(w).toLocaleString(cur==='INR'?'en-IN':'en-AE')}<span class="dec">.${d}</span>`;
 }
 /* two figures together: main value, then the other currency muted behind a hairline */
-const dual=(aed,d=2)=>`<span class="pair"><b>${fAED(aed,d)}</b><span class="alt">${fINR(aed*RATE,d)}</span></span>`;
-const pairCur=(v,cur,d=0)=>{const O=cur==='AED'?'INR':'AED';return `<span class="pair"><b>${fCur(v,cur,d)}</b><span class="alt">${fCur(conv(v,cur,O),O,d)}</span></span>`;};
+const OTH=c=>c==='AED'?'INR':'AED';
+/* format an AED amount in a currency; dA/dI = decimals for AED/INR */
+const fIn=(aed,c,dA=2,dI=dA)=>c==='INR'?fINR(aed*RATE,dI):fAED(aed,dA);
+const one=(aed,dA=2,dI=dA)=>fIn(aed,S.cur,dA,dI);
+const dual=(aed,d=2)=>`<span class="pair"><b>${fIn(aed,S.cur,d)}</b><span class="alt">${fIn(aed,OTH(S.cur),d)}</span></span>`;
+const pairCur=(v,cur,d=0)=>{const C=S.cur,O=OTH(C);return `<span class="pair"><b>${fCur(conv(v,cur,C),C,d)}</b><span class="alt">${fCur(conv(v,cur,O),O,d)}</span></span>`;};
 const kv=(label,val)=>`<div class="kv"><span>${label}</span>${val}</div>`;
 /* shrink a single-line figure until it fits its box (never clip a number) */
 function fitText(el){
@@ -876,7 +885,7 @@ function renderLiabs(){
     </div>`;}).join('');
 }
 function renderAlloc(now,A,L){
-  const C=S.nwCur,el=$('#alloc');
+  const C=S.cur,el=$('#alloc');
   if(!S.assets.length&&!S.liabs.length&&!incLoot()){
     el.innerHTML=`<h4>How it works</h4><div class="legend" style="color:var(--muted);font-size:14px;gap:10px">
       <div>1. Add what you own: savings, funds, property, gold.</div><div>2. Add each loan with its EMI and EMI day.</div>
@@ -895,7 +904,7 @@ function renderAlloc(now,A,L){
     </div>`;
 }
 function tickNet(now,full){
-  const C=S.nwCur,O=C==='AED'?'INR':'AED';
+  const C=S.cur,O=OTH(C);
   let A=0,Ad=0,L=0,Ld=0;
   { const v=lootTotal(now),el=document.querySelector('[data-a="loot"]');
     if(incLoot()){A+=v;Ad+=S.salary/dim(now.getFullYear(),now.getMonth());}
@@ -932,8 +941,12 @@ function tickNet(now,full){
     renderAlloc(now,A,L);
   }
 }
-function setNwCur(c){S.nwCur=c;save();document.querySelectorAll('[data-nwcur]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.nwcur===c));tickNet(new Date(),true);}
-document.querySelectorAll('[data-nwcur]').forEach(b=>b.onclick=()=>setNwCur(b.dataset.nwcur));
+function setCur(c,init){S.cur=c;save();
+  document.querySelectorAll('[data-cur]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cur===c));
+  $('#coinCur').textContent=c==='INR'?'₹':'AED';
+  if(init)return;
+  lastSec=-1;renderBonuses();renderQuests();tickNet(new Date(),true);update();}
+document.querySelectorAll('[data-cur]').forEach(b=>b.onclick=()=>setCur(b.dataset.cur));
 
 /* entry forms */
 function openForm(k,item){
@@ -942,7 +955,7 @@ function openForm(k,item){
     if(k==='a'){$('#aVal').value=+assetAt(item,new Date()).toFixed(2);$('#aGrow').value=item.g||'';$('#aType').value=item.type;}
     else if(isOnce(item)){setLKind('once');$('#lVal').value=item.val;$('#lDue').value=iso(new Date(item.due));}
     else{setLKind('emi');$('#lVal').value=+liabAt(item,new Date()).toFixed(2);$('#lRate').value=item.rate||'';$('#lEmi').value=item.emi||'';$('#lDay').value=item.day;$('#lOrig').value=item.orig||'';}}
-  else{$('#'+k+'Cur').value=S.nwCur;if(k==='l')setLKind('emi');}
+  else{$('#'+k+'Cur').value=S.cur;if(k==='l')setLKind('emi');}
   $('#'+k+'Name').focus();
 }
 $('#addAssetBtn').onclick=()=>openForm('a');
@@ -1092,7 +1105,7 @@ function greet(now,today){
   const i=greetSky(now);
   $('#greetH').textContent=['Still up?','Good morning.','Good afternoon.','Good evening.','Good night.'][i];
   const line=i===0||i>=3?'Clock out. Your money keeps working while you rest.':i===1?'A fresh day, already adding up.':'Steady progress, one second at a time.';
-  $('#greetP').innerHTML=`You've added <b>${fAED(today)}</b> today. ${line}`;
+  $('#greetP').innerHTML=`You've added <b>${one(today)}</b> today. ${line}`;
 }
 
 /* ================= main loop ================= */
@@ -1100,23 +1113,24 @@ let lastWhole=null,lastSec=-1,lastFull=0;
 function update(){
   const now=new Date(),start=parseDate(S.start);
   const total=earnedBetween(start,now)+bonusBetween(start,now),inr=total*RATE;
-  $('#aed').innerHTML=tickHTML(total).replace('AED ','<span class="cur">AED</span>');
-  $('#inr').textContent=fINR(inr,2);
+  const C=S.cur,O=OTH(C);
+  $('#aed').innerHTML=tickHTML(fromAED(total,C),C).replace(C==='INR'?'₹':'AED ',`<span class="cur">${C==='INR'?'₹':'AED'}</span>`);
+  $('#inr').textContent=fIn(total,O,2);
 
   const sec=Math.floor(now/1000),full=sec!==lastSec;
   if(full){
     lastSec=sec;
     const perSec=S.salary/dim(now.getFullYear(),now.getMonth())/86400;
-    $('#perSec').textContent=fAED(perSec,4);$('#perSecI').textContent=fINR(perSec*RATE,3);
-    $('#perHour').textContent=fAED(perSec*3600);$('#perHourI').textContent=fINR(perSec*3600*RATE,2);
-    $('#perDay').textContent=fAED(perSec*86400);$('#perDayI').textContent=fINR(perSec*86400*RATE,2);
+    $('#perSec').textContent=fIn(perSec,C,4,3);$('#perSecI').textContent=fIn(perSec,O,4,3);
+    $('#perHour').textContent=fIn(perSec*3600,C);$('#perHourI').textContent=fIn(perSec*3600,O);
+    $('#perDay').textContent=fIn(perSec*86400,C);$('#perDayI').textContent=fIn(perSec*86400,O);
     const mid=new Date(now.getFullYear(),now.getMonth(),now.getDate()),frac=(now-mid)/DAY;
     const today=earnedBetween(start>mid?start:mid,now)+bonusBetween(start>mid?start:mid,now);
     const m1=new Date(now.getFullYear(),now.getMonth(),1),mStart=start>m1?start:m1,month=earnedBetween(mStart,now)+bonusBetween(mStart,now);
     $('#dayRing').style.strokeDashoffset=(251.3*(1-frac)).toFixed(1);
     $('#dayPct').textContent=Math.floor(frac*100)+'%';$('#dayPctTxt').textContent=Math.floor(frac*100)+'%';$('#dayBar').style.width=(frac*100).toFixed(1)+'%';
-    $('#todayAmt').textContent=fAED(today);$('#todayInr').textContent=fINR(today*RATE,2);
-    $('#monthAmt').textContent=fAED(month);$('#monthInr').textContent=fINR(month*RATE,2);
+    $('#todayAmt').textContent=fIn(today,C);$('#todayInr').textContent=fIn(today,O);
+    $('#monthAmt').textContent=fIn(month,C);$('#monthInr').textContent=fIn(month,O);
     $('#sinceTxt').textContent=start.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
     greet(now,today);
 
@@ -1128,7 +1142,7 @@ function update(){
 
     tickQuests(false);
     if(now-lastFull>60000){if(lastFull){projDirty=true;renderLiabs();renderQuests();}lastFull=+now;}
-    if(!document.hidden&&!reduced&&sec%2===0)floatPop('+'+fAED(perSec*2,4));
+    if(!document.hidden&&!reduced&&sec%2===0)floatPop('+'+one(perSec*2,4,3));
   }
   tickNet(now,full);
   fitAll();
@@ -1193,7 +1207,7 @@ $('#saveSalary').onclick=()=>{
   S.start=d;S.salary=s;S.payday=p>=1&&p<=31?p:1;save();lastWhole=null;renderQuests();toast('check','Saved','Your clock has been recalculated');
 };
 function renderBonuses(){
-  $('#bonusList').innerHTML=S.bonuses.length?S.bonuses.map((b,i)=>`<div class="bitem"><div><b>${fAED(Number(b.amount))}</b><small>${parseDate(b.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</small></div><button class="del" data-b="${i}" aria-label="Delete bonus">${icon('trash')}</button></div>`).join(''):'<p class="help">No bonuses yet.</p>';
+  $('#bonusList').innerHTML=S.bonuses.length?S.bonuses.map((b,i)=>`<div class="bitem"><div><b>${one(Number(b.amount))}</b><small>${parseDate(b.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</small></div><button class="del" data-b="${i}" aria-label="Delete bonus">${icon('trash')}</button></div>`).join(''):'<p class="help">No bonuses yet.</p>';
 }
 $('#bonusList').addEventListener('click',e=>{const b=e.target.closest('[data-b]');if(!b)return;S.bonuses.splice(+b.dataset.b,1);save();renderBonuses();});
 $('#addBonus').onclick=()=>{
@@ -1248,7 +1262,7 @@ function frame(ts){
 }
 
 /* ================= boot ================= */
-applyTheme();renderFx();renderAssets();renderLiabs();renderQuests();setNwCur(S.nwCur);update();
+applyTheme();renderFx();renderAssets();renderLiabs();renderQuests();setCur(S.cur,true);update();
 setInterval(update,100);
 fetchFx();setInterval(fetchFx,3600e3);
 })();
