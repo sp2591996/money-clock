@@ -127,7 +127,7 @@ main{width:min(1200px,100%);margin:0 auto;padding:8px clamp(16px,4vw,40px) 48px;
 .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);font-weight:700;margin-top:10px}
 .live{display:inline-block;margin-right:8px;vertical-align:1px;width:8px;height:8px;border-radius:50%;background:var(--sage);animation:breathe 2.4s ease-in-out infinite}
 @keyframes breathe{50%{opacity:.35;transform:scale(.8)}}
-.big{font-family:var(--mono);font-weight:500;font-size:clamp(30px,4.2vw,50px);letter-spacing:-.04em;line-height:1.1;margin-top:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.big{font-family:var(--mono);font-weight:500;font-size:clamp(30px,4.2vw,50px);letter-spacing:-.03em;line-height:1.15;margin-top:14px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden}
 .big .cur{font-size:.4em;color:var(--faint);letter-spacing:0;margin-right:.3em;vertical-align:.6em}
 .big .dec{color:var(--sage);opacity:.85}
 .inr{font-family:var(--mono);font-size:clamp(18px,2.2vw,24px);color:var(--muted);margin-top:2px}
@@ -151,7 +151,18 @@ main{width:min(1200px,100%);margin:0 auto;padding:8px clamp(16px,4vw,40px) 48px;
 .stat small{display:block;font-size:12px;color:var(--faint)}
 .stat b{display:block;font-family:var(--mono);font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stat em{display:block;font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted);white-space:nowrap}
-.today{margin-top:auto;padding-top:18px;display:grid;grid-template-columns:96px 1fr 1fr;gap:18px;align-items:center}
+.today{margin-top:auto;padding-top:18px;display:grid;grid-template-columns:96px 1fr;gap:20px;align-items:center}
+.today-col{display:grid;grid-template-columns:1fr 1fr;min-width:0}
+.today-col .today-t{min-width:0}
+.today-col .today-t+.today-t{border-left:1px solid var(--line-2);padding-left:20px;margin-left:4px}
+.fit{display:block;white-space:nowrap;overflow:hidden}
+/* two figures side by side: the second is muted and set off by a hairline */
+.pair{display:inline-flex;align-items:baseline;flex-wrap:wrap;justify-content:flex-end;gap:2px 0}
+.pair b{font-family:var(--mono);font-weight:500;white-space:nowrap}
+.pair .alt{font-family:var(--mono);color:var(--muted);white-space:nowrap;margin-left:10px;padding-left:10px;border-left:1px solid var(--line-2)}
+.kv{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:7px 0 0;margin-top:7px;border-top:1px dashed var(--line)}
+.kv>span:first-child{color:var(--muted);font-size:13px;white-space:nowrap}
+.kv .pair,.kv>b{text-align:right}
 .ring{position:relative;width:96px;height:96px}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring circle{fill:none;stroke-width:10}
@@ -195,7 +206,6 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .eform .seg-ctl.kind button{flex:1}
 .dots{display:none}
 .quest.due .q-badge{background:var(--peach-soft);color:var(--peach)}
-.quest.due .q-sub b{color:var(--peach)}
 .quest.due .bar i{background:linear-gradient(90deg,#F5CDB8,var(--peach))}
 .tile .chip,.tile .brandmark{display:none}
 .qlist{display:flex;flex-direction:column;gap:10px;overflow-y:auto;flex:1 1 0;min-height:260px;padding-right:4px;margin-right:-4px;overscroll-behavior:contain}
@@ -216,9 +226,11 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .q-abs{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:8px}
 .q-abs span{font-size:12px;color:var(--muted);background:var(--tint);border-radius:8px;padding:2px 8px;white-space:nowrap}
 .q-abs b{font-family:var(--mono);font-weight:500;color:var(--ink)}
-.q-sub{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 14px;margin-top:10px;font-size:13px;color:var(--muted)}
-.q-sub b{font-family:var(--mono);font-weight:500;color:var(--sage)}
-.quest.emi .q-sub b{color:var(--rose)}
+.q-sub{margin-top:10px;font-size:14px}
+.q-when{display:block;font-size:12px;color:var(--faint)}
+.q-sub .pair b{color:var(--sage)}
+.quest.emi .q-sub .pair b{color:var(--rose)}
+.quest.due .q-sub .pair b{color:var(--peach)}
 .bar{height:6px;border-radius:99px;background:var(--tint-2);margin-top:10px;overflow:hidden}
 .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#C9B8EA,var(--lav));transition:width .5s}
 .quest.pay .bar i{background:linear-gradient(90deg,#F2DEA6,var(--gold))}
@@ -237,10 +249,10 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .tile.n{background:linear-gradient(160deg,var(--lav-soft),var(--raise))}
 .tile .t-l{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .tile.a .t-l{color:var(--sage)} .tile.l .t-l{color:var(--rose)} .tile.n .t-l{color:var(--lav)}
-.tile .t-v{font-family:var(--mono);font-size:clamp(20px,2.4vw,30px);letter-spacing:-.03em;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tile .t-v .dec{opacity:.5}
-.tile .t-s{font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:2px}
-.tile .t-d{font-size:13px;color:var(--muted);margin-top:8px}
+.tile .t-v{font-family:var(--mono);font-size:clamp(20px,2.4vw,30px);letter-spacing:-.02em;line-height:1.25;margin-top:8px;white-space:nowrap;overflow:hidden}
+.tile .t-v .dec{opacity:.5;font-size:.7em}
+.tile .t-s{font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:4px}
+.tile .t-d{font-size:13px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
 .tile .t-d b{font-family:var(--mono);font-weight:500}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
 .col{display:flex;flex-direction:column;min-width:0}
@@ -281,8 +293,8 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .legend{display:flex;flex-direction:column;gap:8px}
 .lg{display:grid;grid-template-columns:12px 1fr auto auto;gap:10px;align-items:center;font-size:14px}
 .lg .dot{width:10px;height:10px;border-radius:3px}
-.lg .v{font-family:var(--mono);font-size:13px;color:var(--muted);white-space:nowrap}
-.lg .p{font-family:var(--mono);font-size:13px;min-width:44px;text-align:right}
+.lg .v{font-family:var(--mono);font-size:13px;white-space:nowrap;text-align:right}
+.lg .p{font-family:var(--mono);font-size:13px;color:var(--muted);min-width:58px;text-align:right;padding-left:10px;border-left:1px solid var(--line-2)}
 .ratios{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto}
 .ratio{padding:12px;border-radius:14px;background:var(--tint)}
 .ratio small{display:block;font-size:12px;color:var(--faint)}
@@ -351,15 +363,25 @@ body.settings .drawer{transform:none}
   .coin::before{inset:7px}
   .big{font-size:clamp(26px,8.6vw,38px)}
   .stats{grid-template-columns:1fr;gap:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--raise)}
-  .stat{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:baseline;padding:10px 14px;border:0;border-radius:0;background:none}
+  .stat{display:grid;grid-template-columns:1fr auto auto;gap:0;align-items:baseline;padding:11px 14px;border:0;border-radius:0;background:none}
   .stat+.stat{border-top:1px solid var(--line)}
   .stat small{font-size:13px}
-  .stat em{min-width:84px;text-align:right}
-  .today{grid-template-columns:76px 1fr 1fr;gap:12px}
-  .ring{width:76px;height:76px}
+  .stat b{font-size:13.5px;text-align:right}
+  .stat em{min-width:86px;text-align:right;margin-left:12px;padding-left:12px;border-left:1px solid var(--line-2)}
+  .eyebrow{font-size:11px;letter-spacing:.08em}
+  .today{grid-template-columns:72px 1fr;gap:16px;align-items:center}
+  .ring{width:72px;height:72px}
   .ring .lbl{font-size:15px}
-  .today-t b{font-size:17px}
-  .today-t p{font-size:12px}
+  .today-col{grid-template-columns:1fr}
+  .today-col .today-t+.today-t{border-left:0;margin:10px 0 0;padding:10px 0 0;border-top:1px solid var(--line-2)}
+  .today-t{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:baseline}
+  .today-t small{grid-column:1/-1}
+  .today-t b{font-size:19px}
+  .today-t p{font-size:12px;text-align:right}
+  .q-abs{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+  .q-abs span{text-align:center}
+  .kv{flex-wrap:wrap}
+  .kv .pair{margin-left:auto}
   .qform{grid-template-columns:1fr 1fr}
   .qform .btn{grid-column:span 2}
   .card h2 .tag{display:none}
@@ -375,8 +397,9 @@ body.settings .drawer{transform:none}
   .tiles{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:84%;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;
     margin:0 -18px;padding:6px 18px 14px;scrollbar-width:none;scroll-padding:0 18px;-webkit-overflow-scrolling:touch}
   .tiles::-webkit-scrollbar{display:none}
-  .tile{scroll-snap-align:center;scroll-snap-stop:always;position:relative;overflow:hidden;aspect-ratio:1.586;display:flex;flex-direction:column;
-    padding:18px 20px;border:0;border-radius:22px;color:#fff;box-shadow:0 14px 30px -14px rgba(30,20,50,.55)}
+  .tile{scroll-snap-align:center;scroll-snap-stop:always;position:relative;overflow:hidden;min-height:196px;display:flex;flex-direction:column;
+    padding:18px 20px 16px;border:0;border-radius:22px;color:#fff;box-shadow:0 14px 30px -14px rgba(30,20,50,.55)}
+  .tile>*{flex-shrink:0}
   .tile.n{background:linear-gradient(135deg,#9A8DDB 0%,#6C5FB8 55%,#4E4394 100%)}
   .tile.a{background:linear-gradient(135deg,#7DB18C 0%,#4F8460 55%,#3A6447 100%)}
   .tile.l{background:linear-gradient(135deg,#DC8C95 0%,#B35D69 55%,#8C414C 100%)}
@@ -386,10 +409,10 @@ body.settings .drawer{transform:none}
   .tile .chip{display:block;width:34px;height:26px;border-radius:6px;background:linear-gradient(135deg,#F6E3A6,#D8B35A);box-shadow:inset 0 0 0 1px rgba(120,80,10,.25);margin-bottom:10px;order:-1}
   .tile .brandmark{display:block;position:absolute;right:20px;top:20px;font-family:var(--head);font-weight:900;font-size:13px;letter-spacing:.04em;opacity:.85}
   .tile .t-l,.tile.a .t-l,.tile.l .t-l,.tile.n .t-l{color:rgba(255,255,255,.9);font-size:12px}
-  .tile .t-v{font-size:22px;margin-top:4px;color:#fff;text-overflow:clip}
-  .tile .t-v .dec{opacity:.6;font-size:.72em}
-  .tile .t-s{color:rgba(255,255,255,.8)}
-  .tile .t-d{margin-top:auto;color:rgba(255,255,255,.85);font-size:12.5px}
+  .tile .t-v{font-size:26px;margin-top:6px;color:#fff;line-height:1.25}
+  .tile .t-v .dec{opacity:.6;font-size:.62em}
+  .tile .t-s{color:rgba(255,255,255,.82);margin-top:4px}
+  .tile .t-d{margin-top:auto;padding-top:10px;border-top:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.88);font-size:12.5px;line-height:1.45}
   .tile .t-d b{color:#fff}
   .dots{display:flex;justify-content:center;gap:2px;margin:-2px 0 16px}
   .dots button{width:28px;height:24px;display:grid;place-items:center}
@@ -498,8 +521,10 @@ body.settings .drawer{transform:none}
         <svg viewBox="0 0 96 96" aria-hidden="true"><circle class="trk" cx="48" cy="48" r="40"/><circle class="prg" id="dayRing" cx="48" cy="48" r="40" stroke-dasharray="251.3" stroke-dashoffset="251.3"/></svg>
         <div class="lbl" id="dayPct">0%</div>
       </div>
-      <div class="today-t"><small>Earned today</small><b id="todayAmt">AED 0.00</b><p id="todayInr">₹0</p></div>
-      <div class="today-t"><small>This month</small><b id="monthAmt" style="color:var(--sage)">AED 0.00</b><p id="monthInr">₹0</p></div>
+      <div class="today-col">
+        <div class="today-t"><small>Earned today</small><b id="todayAmt" class="fit">AED 0.00</b><p id="todayInr">₹0</p></div>
+        <div class="today-t"><small>This month</small><b id="monthAmt" class="fit" style="color:var(--sage)">AED 0.00</b><p id="monthInr">₹0</p></div>
+      </div>
     </div>
     <div class="fxline" id="fxLine"></div>
   </section>
@@ -703,6 +728,21 @@ function tickHTML(n,cur='AED',dp=4){
   const neg=n<0;const [w,d]=Math.abs(n).toFixed(dp).split('.');
   return `${neg?'−':''}${cur==='INR'?'₹':'AED '}${Number(w).toLocaleString(cur==='INR'?'en-IN':'en-AE')}<span class="dec">.${d}</span>`;
 }
+/* two figures together: main value, then the other currency muted behind a hairline */
+const dual=(aed,d=2)=>`<span class="pair"><b>${fAED(aed,d)}</b><span class="alt">${fINR(aed*RATE,d)}</span></span>`;
+const pairCur=(v,cur,d=0)=>{const O=cur==='AED'?'INR':'AED';return `<span class="pair"><b>${fCur(v,cur,d)}</b><span class="alt">${fCur(conv(v,cur,O),O,d)}</span></span>`;};
+const kv=(label,val)=>`<div class="kv"><span>${label}</span>${val}</div>`;
+/* shrink a single-line figure until it fits its box (never clip a number) */
+function fitText(el){
+  if(!el||!el.clientWidth)return;
+  if(el.dataset.fl===String(el.textContent.length)&&el.dataset.fw===String(el.clientWidth))return;
+  el.style.fontSize='';let fs=parseFloat(getComputedStyle(el).fontSize),g=0;
+  while(el.scrollWidth>el.clientWidth+1&&fs>12&&g++<40){fs-=.5;el.style.fontSize=fs+'px';}
+  el.dataset.fl=el.textContent.length;el.dataset.fw=el.clientWidth;
+}
+const fitAll=()=>document.querySelectorAll('.fit,.big,.tile .t-v,.entry .ev').forEach(fitText);
+addEventListener('resize',()=>document.querySelectorAll('[data-fw]').forEach(e=>e.dataset.fw=''));
+if(document.fonts)document.fonts.ready.then(()=>document.querySelectorAll('[data-fw]').forEach(e=>e.dataset.fw=''));
 const monthYear=d=>d.toLocaleDateString('en-GB',{month:'short',year:'numeric'});
 function dur(ms){const s=Math.max(0,Math.floor(ms/1000));const d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);
   return d?`${d}d ${h}h`:h?`${h}h ${m}m`:`${m}m ${s%60}s`;}
@@ -963,7 +1003,7 @@ function renderQuests(){
       <div class="q-cd">${SEGS.map(([k,l])=>`<div class="seg" data-seg="${k}"><b>0</b><small>${l}</small></div>`).join('')}</div>
       <div class="q-abs" aria-label="Total time"></div>
       <div class="bar"><i style="width:0"></i></div>
-      <div class="q-sub"><span class="q-when"></span><span class="q-earn"></span></div>
+      <div class="q-sub"><span class="q-when"></span><div class="q-earn"></div></div>
     </div>`).join('');
   $('#qCount').textContent=`${qs.filter(q=>!q.done).length} active`;
   tickQuests(true);
@@ -991,12 +1031,12 @@ function tickQuests(full){
     el.querySelector('.bar i').style.width=(p*100).toFixed(2)+'%';
     if(full)el.querySelector('.q-when').textContent=(up?'Since ':'')+target.toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const earn=el.querySelector('.q-earn');
-    if(q.kind==='due'){const l=q.l,O=l.cur==='AED'?'INR':'AED',e=earnedBetween(now,target);
-      earn.innerHTML=`Pay <b>${fCur(l.val,l.cur)}</b> (≈ ${fCur(conv(l.val,l.cur,O),O)}) · you'll earn <b>${fAED(e,0)}</b> · <b>${fINR(e*RATE)}</b> by then`;}
-    else if(q.kind==='emi'){const l=q.l,O=l.cur==='AED'?'INR':'AED',after=Math.max(0,liabAt(l,new Date(q.t+1000)));
-      earn.innerHTML=`Pays <b>${fCur(l.emi,l.cur)}</b> (≈ ${fCur(conv(l.emi,l.cur,O),O)}) · leaves ${fCur(after,l.cur)}`;}
+    if(q.kind==='due'){const l=q.l,e=earnedBetween(now,target);
+      earn.innerHTML=kv('To pay',pairCur(l.val,l.cur))+kv('You’ll earn by then',dual(e,0));}
+    else if(q.kind==='emi'){const l=q.l,after=Math.max(0,liabAt(l,new Date(q.t+1000)));
+      earn.innerHTML=kv('EMI',pairCur(l.emi,l.cur))+kv('Balance after',pairCur(after,l.cur));}
     else{const e=up?earnedBetween(target,now):earnedBetween(now,target);
-      earn.innerHTML=up?`Earned since <b>${fAED(e)}</b> · <b>${fINR(e*RATE,2)}</b>`:`To earn by then <b>${fAED(e)}</b> · <b>${fINR(e*RATE,2)}</b>`;}
+      earn.innerHTML=kv(up?'Earned since':'To earn by then',dual(e));}
   }
 }
 function finishQuest(q){toast('check','Quest complete: '+q.name,'The moment has arrived');chime([523,659,784,1046]);if(!reduced)burst(innerWidth/2,innerHeight*.45,90,850);}
@@ -1076,6 +1116,7 @@ function update(){
     if(!document.hidden&&!reduced&&sec%2===0)floatPop('+'+fAED(perSec*2,4));
   }
   tickNet(now,full);
+  fitAll();
 
   const whole=Math.floor(total);
   if(lastWhole!==null&&whole>lastWhole){clink();const c=$('#coin');c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');}
