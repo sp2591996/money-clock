@@ -204,7 +204,7 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .entry.pinned{border-style:dashed}
 .eform .seg-ctl.kind{grid-column:span 6;margin:0;display:flex}
 .eform .seg-ctl.kind button{flex:1}
-.dots{display:none}
+.cnav{display:none}
 .quest.due .q-badge{background:var(--peach-soft);color:var(--peach)}
 .quest.due .bar i{background:linear-gradient(90deg,#F5CDB8,var(--peach))}
 .tile .chip,.tile .brandmark{display:none}
@@ -394,8 +394,9 @@ body.settings .drawer{transform:none}
   .seg small{font-size:9px;letter-spacing:.06em}
   .nw-head .seg-ctl{margin-left:0}
   /* bank-app style card carousel */
-  .tiles{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:84%;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;
-    margin:0 -18px;padding:6px 18px 14px;scrollbar-width:none;scroll-padding:0 18px;-webkit-overflow-scrolling:touch}
+  /* one full card per view: gap = both side gutters, so the next card stays off-screen until you swipe */
+  .tiles{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:100%;overflow-x:auto;scroll-snap-type:x mandatory;gap:36px;
+    margin:0 -18px;padding:6px 18px 14px;scrollbar-width:none;scroll-padding:0 18px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
   .tiles::-webkit-scrollbar{display:none}
   .tile{scroll-snap-align:center;scroll-snap-stop:always;position:relative;overflow:hidden;min-height:196px;display:flex;flex-direction:column;
     padding:18px 20px 16px;border:0;border-radius:22px;color:#fff;box-shadow:0 14px 30px -14px rgba(30,20,50,.55)}
@@ -414,7 +415,14 @@ body.settings .drawer{transform:none}
   .tile .t-s{color:rgba(255,255,255,.82);margin-top:4px}
   .tile .t-d{margin-top:auto;padding-top:10px;border-top:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.88);font-size:12.5px;line-height:1.45}
   .tile .t-d b{color:#fff}
-  .dots{display:flex;justify-content:center;gap:2px;margin:-2px 0 16px}
+  .cnav{display:flex;align-items:center;gap:6px;margin:-4px 0 18px}
+  .cbtn{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:12px;background:var(--tint);color:var(--ink);transition:background .2s,opacity .2s}
+  .cbtn:active{background:var(--lav-soft)}
+  .cbtn:disabled{opacity:.3;cursor:default}
+  .cnext{margin-left:auto;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap}
+  .dots{display:flex;align-items:center;gap:0}
+  .tiles.nudge>.tile{animation:nudge 1.1s ease-in-out .3s 1}
+  @keyframes nudge{0%,100%{transform:none}35%{transform:translateX(-56px)}60%{transform:translateX(0)}75%{transform:translateX(-14px)}}
   .dots button{width:28px;height:24px;display:grid;place-items:center}
   .dots button::before{content:"";width:7px;height:7px;border-radius:99px;background:var(--line-2);transition:width .25s,background .25s}
   .dots button[aria-selected="true"]::before{width:20px;background:var(--lav)}
@@ -469,6 +477,8 @@ body.settings .drawer{transform:none}
   <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
 </svg>
 
 <header class="top">
@@ -566,8 +576,13 @@ body.settings .drawer{transform:none}
       <div class="tile a"><span class="chip" aria-hidden="true"></span><span class="brandmark" aria-hidden="true">Money Quest</span><div class="t-l"><svg class="i"><use href="#i-up"/></svg>Assets</div><div class="t-v" id="tA">0</div><div class="t-s" id="tAi"></div><div class="t-d" id="tAd"></div></div>
       <div class="tile l"><span class="chip" aria-hidden="true"></span><span class="brandmark" aria-hidden="true">Money Quest</span><div class="t-l"><svg class="i"><use href="#i-down"/></svg>Liabilities</div><div class="t-v" id="tL">0</div><div class="t-s" id="tLi"></div><div class="t-d" id="tLd"></div></div>
     </div>
-    <div class="dots" id="tileDots" role="tablist" aria-label="Net worth cards">
-      <button role="tab" aria-label="Net worth" aria-selected="true"></button><button role="tab" aria-label="Assets" aria-selected="false"></button><button role="tab" aria-label="Liabilities" aria-selected="false"></button>
+    <div class="cnav" id="cnav">
+      <button class="cbtn" id="cPrev" aria-label="Previous card"><svg class="i"><use href="#i-left"/></svg></button>
+      <div class="dots" id="tileDots" role="tablist" aria-label="Net worth cards">
+        <button role="tab" aria-label="Net worth" aria-selected="true"></button><button role="tab" aria-label="Assets" aria-selected="false"></button><button role="tab" aria-label="Liabilities" aria-selected="false"></button>
+      </div>
+      <span class="cnext" id="cNextLbl" aria-hidden="true">Next: Assets</span>
+      <button class="cbtn" id="cNext" aria-label="Next card"><svg class="i"><use href="#i-right"/></svg></button>
     </div>
     <div class="cols">
       <div class="col">
@@ -1138,11 +1153,24 @@ $('#coin').addEventListener('click',e=>{
 /* ================= net worth card carousel (phone) ================= */
 (function(){
   const box=$('#tiles'),dots=[...document.querySelectorAll('#tileDots button')],cards=[...box.children];
-  const sync=()=>{const c=box.scrollLeft+box.clientWidth/2;let best=0,bd=1e9;
-    cards.forEach((t,i)=>{const d=Math.abs(t.offsetLeft+t.offsetWidth/2-c);if(d<bd){bd=d;best=i;}});
-    dots.forEach((d,i)=>d.setAttribute('aria-selected',i===best));};
-  box.addEventListener('scroll',()=>requestAnimationFrame(sync),{passive:true});
-  dots.forEach((d,i)=>d.onclick=()=>box.scrollTo({left:cards[i].offsetLeft-(box.clientWidth-cards[i].offsetWidth)/2,behavior:reduced?'auto':'smooth'}));
+  const NAMES=['Net worth','Assets','Liabilities'];
+  const step=()=>cards[1].offsetLeft-cards[0].offsetLeft;               // distance between card starts
+  const cur=()=>Math.max(0,Math.min(cards.length-1,Math.round(box.scrollLeft/(step()||1))));
+  const go=i=>box.scrollTo({left:Math.max(0,Math.min(cards.length-1,i))*step(),behavior:reduced?'auto':'smooth'});
+  const sync=()=>{const i=cur();
+    dots.forEach((d,k)=>d.setAttribute('aria-selected',k===i));
+    $('#cPrev').disabled=i===0;$('#cNext').disabled=i===cards.length-1;
+    $('#cNextLbl').textContent=i<cards.length-1?'Next: '+NAMES[i+1]:'Swipe back ‹';};
+  box.addEventListener('scroll',sync,{passive:true});
+  dots.forEach((d,i)=>d.onclick=()=>go(i));
+  $('#cPrev').onclick=()=>go(cur()-1);
+  $('#cNext').onclick=()=>go(cur()+1);
+  sync();
+  // one gentle nudge the first time the cards come into view, so it's clear they swipe
+  if(!reduced&&'IntersectionObserver' in window){
+    const o=new IntersectionObserver(es=>{if(es[0].isIntersecting&&getComputedStyle($('#cnav')).display!=='none'){box.classList.add('nudge');setTimeout(()=>box.classList.remove('nudge'),1500);o.disconnect();}},{threshold:.6});
+    o.observe(box);
+  }
 })();
 
 /* ================= phone tab bar ================= */
