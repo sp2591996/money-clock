@@ -1156,14 +1156,14 @@ function tickQuests(full){
     el.querySelector('.bar i').style.width=(p*100).toFixed(2)+'%';
     if(full)el.querySelector('.q-when').textContent=(up?'Since ':'')+target.toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const earn=el.querySelector('.q-earn');
-    if(q.kind==='due'){const l=q.l,e=earnedBetween(now,target);
-      earn.innerHTML=kv('To pay',pairCur(l.val,l.cur))+kv('You’ll earn by then',dual(e,0));}
+    const nwThen=()=>kv(up?'Net worth then':'Your net worth then',pairCur(netAt(target),'AED',0));
+    if(q.kind==='due'){const l=q.l;
+      earn.innerHTML=kv('To pay',pairCur(l.val,l.cur))+nwThen();}
     else if(q.kind==='nw'){const gap=-netAt(now);
       earn.innerHTML=kv('Gap to close',dual(Math.max(0,gap),0))+kv('You’ll save by then',dual(earnedBetween(now,target)-earnedBetween(now,target,expAED()),0));}
     else if(q.kind==='emi'){const l=q.l,after=Math.max(0,liabAt(l,new Date(q.t+1000)));
-      earn.innerHTML=kv('EMI',pairCur(l.emi,l.cur))+kv('Balance after',pairCur(after,l.cur));}
-    else{const e=up?earnedBetween(target,now):earnedBetween(now,target);
-      earn.innerHTML=kv(up?'Earned since':'To earn by then',dual(e));}
+      earn.innerHTML=kv('EMI',pairCur(l.emi,l.cur))+kv('Balance after',pairCur(after,l.cur))+nwThen();}
+    else earn.innerHTML=nwThen();
   }
 }
 function finishQuest(q){toast('check','Quest complete: '+q.name,'The moment has arrived');chime([523,659,784,1046]);if(!reduced)burst(innerWidth/2,innerHeight*.45,90,850);}
