@@ -123,6 +123,7 @@ main{width:min(1200px,100%);margin:0 auto;padding:8px clamp(16px,4vw,40px) 48px;
 .tag{margin-left:auto;font-family:var(--body);font-size:12px;font-weight:600;color:var(--muted);background:var(--tint);padding:4px 10px;border-radius:99px;white-space:nowrap}
 .c-loot,.c-quests{grid-column:span 6;display:flex;flex-direction:column}
 .c-net{grid-column:span 12}
+.hero-up{color:var(--sage)!important}.hero-down{color:var(--rose)!important}
 
 /* ---------- lifetime loot ---------- */
 .loot-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
@@ -173,7 +174,7 @@ main{width:min(1200px,100%);margin:0 auto;padding:8px clamp(16px,4vw,40px) 48px;
 .ring .lbl{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font-family:var(--head);font-weight:800;font-size:18px}
 .today-t small{color:var(--faint);font-size:13px}
 .today-t b{display:block;font-family:var(--mono);font-weight:500;font-size:22px;color:var(--gold);white-space:nowrap}
-.today-t p{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.today-t p{font-family:var(--mono);font-size:13px;color:var(--muted);white-space:nowrap}
 .fxline{margin-top:14px;font-size:12px;color:var(--faint)}
 
 /* ---------- quests ---------- */
@@ -251,11 +252,13 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .seg-ctl{margin-left:auto;display:inline-flex;padding:4px;border-radius:14px;background:var(--tint);gap:2px}
 .seg-ctl button{min-height:36px;min-width:58px;padding:4px 12px;border-radius:10px;font-family:var(--head);font-weight:800;font-size:14px;color:var(--muted);transition:.2s}
 .seg-ctl button[aria-pressed="true"]{background:var(--surface-solid);color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:22px}
 .tile{border-radius:20px;padding:18px 20px;border:1px solid var(--line);min-width:0}
 .tile.a{background:linear-gradient(160deg,var(--sage-soft),var(--raise))}
 .tile.l{background:linear-gradient(160deg,var(--rose-soft),var(--raise))}
 .tile.n{background:linear-gradient(160deg,var(--lav-soft),var(--raise))}
+.tile.g{background:linear-gradient(160deg,var(--gold-soft),var(--raise))}
+.tile.g .t-l{color:var(--gold)}
 .tile .t-l{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .tile.a .t-l{color:var(--sage)} .tile.l .t-l{color:var(--rose)} .tile.n .t-l{color:var(--lav)}
 .tile .t-v{font-family:var(--mono);font-size:clamp(20px,2.4vw,30px);letter-spacing:-.02em;line-height:1.25;margin-top:8px;white-space:nowrap;overflow:hidden}
@@ -391,10 +394,10 @@ body.settings .drawer{transform:none}
   .ring .lbl{font-size:15px}
   .today-col{grid-template-columns:1fr}
   .today-col .today-t+.today-t{border-left:0;margin:10px 0 0;padding:10px 0 0;border-top:1px solid var(--line-2)}
-  .today-t{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:baseline}
+  .today-t{display:block}
   .today-t small{grid-column:1/-1}
   .today-t b{font-size:19px}
-  .today-t p{font-size:12px;text-align:right}
+  .today-t p{font-size:12px;margin-top:2px}
   .q-abs{display:grid;grid-template-columns:1fr 1fr;gap:4px}
   .q-abs span{text-align:center}
   .kv{flex-wrap:wrap}
@@ -421,12 +424,13 @@ body.settings .drawer{transform:none}
   .tile.n{background:linear-gradient(135deg,#9A8DDB 0%,#6C5FB8 55%,#4E4394 100%)}
   .tile.a{background:linear-gradient(135deg,#7DB18C 0%,#4F8460 55%,#3A6447 100%)}
   .tile.l{background:linear-gradient(135deg,#DC8C95 0%,#B35D69 55%,#8C414C 100%)}
+  .tile.g{background:linear-gradient(135deg,#E2BE6E 0%,#B58A34 55%,#8A6524 100%)}
   .tile::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-80px;top:-90px;background:rgba(255,255,255,.12)}
   .tile::after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-30px;bottom:-110px;background:rgba(255,255,255,.08)}
   .tile>*{position:relative;z-index:1}
   .tile .chip{display:block;width:34px;height:26px;border-radius:6px;background:linear-gradient(135deg,#F6E3A6,#D8B35A);box-shadow:inset 0 0 0 1px rgba(120,80,10,.25);margin-bottom:10px;order:-1}
   .tile .brandmark{display:block;position:absolute;right:20px;top:20px;font-family:var(--head);font-weight:900;font-size:13px;letter-spacing:.04em;opacity:.85}
-  .tile .t-l,.tile.a .t-l,.tile.l .t-l,.tile.n .t-l{color:rgba(255,255,255,.9);font-size:12px}
+  .tile .t-l,.tile.a .t-l,.tile.l .t-l,.tile.n .t-l,.tile.g .t-l{color:rgba(255,255,255,.9);font-size:12px}
   .tile .t-v{font-size:26px;margin-top:6px;color:#fff;line-height:1.25}
   .tile .t-v .dec{opacity:.6;font-size:.62em}
   .tile .t-s{color:rgba(255,255,255,.82);margin-top:4px}
@@ -529,21 +533,77 @@ body.settings .drawer{transform:none}
     <div class="daybar" aria-hidden="true"><small><span>Today</span><span id="dayPctTxt">0%</span></small><div class="track"><i id="dayBar"></i></div></div>
   </section>
 
+  <!-- LIFETIME LOOT -->
+  <section class="card c-loot" id="secLoot" aria-labelledby="lootH">
+    <div class="loot-top">
+      <div style="min-width:0">
+        <h2 id="lootH"><span class="ic" style="background:var(--sky-soft);color:var(--sky)"><svg class="i"><use href="#i-scale"/></svg></span>Net worth</h2>
+        <div class="eyebrow"><span class="live" aria-hidden="true"></span><span id="nwEye">Live</span></div>
+      </div>
+      <div class="coin-wrap" id="coinWrap">
+        <button class="coin" id="coin" aria-label="Tap the coin"><span id="coinCur">AED</span></button>
+        <span class="combo" id="combo">x2</span>
+      </div>
+    </div>
+    <div class="big" id="aed"><span class="cur">AED</span>0<span class="dec">.0000</span></div>
+    <div class="inr" id="inr">₹0.00</div>
+    <div class="stats">
+      <div class="stat"><small>per second</small><b id="perSec">0</b><em id="perSecI"></em></div>
+      <div class="stat"><small>per hour</small><b id="perHour">0</b><em id="perHourI"></em></div>
+      <div class="stat"><small>per day</small><b id="perDay">0</b><em id="perDayI"></em></div>
+    </div>
+    <div class="today">
+      <div class="ring">
+        <svg viewBox="0 0 96 96" aria-hidden="true"><circle class="trk" cx="48" cy="48" r="40"/><circle class="prg" id="dayRing" cx="48" cy="48" r="40" stroke-dasharray="251.3" stroke-dashoffset="251.3"/></svg>
+        <div class="lbl" id="dayPct">0%</div>
+      </div>
+      <div class="today-col">
+        <div class="today-t"><small>Change today</small><b id="todayAmt" class="fit">AED 0.00</b><p id="todayInr">₹0</p></div>
+        <div class="today-t"><small>Change this month</small><b id="monthAmt" class="fit">AED 0.00</b><p id="monthInr">₹0</p></div>
+      </div>
+    </div>
+    <div class="fxline" id="fxLine"></div>
+  </section>
+
+  <!-- QUESTS -->
+  <section class="card c-quests" id="secQuests" aria-labelledby="qH">
+    <h2 id="qH"><span class="ic" style="background:var(--lav-soft);color:var(--lav)"><svg class="i"><use href="#i-target"/></svg></span>Quests<span class="tag" id="qCount">0 active</span><button class="btn mini" id="qToggle" aria-expanded="false" aria-controls="qAdd"><svg class="i"><use href="#i-plus"/></svg>New quest</button></h2>
+    <p class="lead">Countdowns to what matters, plus payday and every EMI.</p>
+    <div id="qAdd" class="qadd" hidden>
+    <form class="qform" id="qForm" novalidate>
+      <input class="inp" id="qName" maxlength="48" placeholder="What are you waiting for?" aria-label="Quest name" autocomplete="off">
+      <input class="inp" id="qDate" type="date" aria-label="Date">
+      <input class="inp" id="qTime" type="time" aria-label="Time">
+      <label class="qpin"><input type="checkbox" id="qPin">Pin to top of the list</label>
+      <button class="btn" type="submit"><svg class="i"><use href="#i-plus"/></svg>Add</button>
+    </form>
+    <div class="err" id="qErr" hidden>Pick a date in the future.</div>
+    <div class="presets">Quick start:
+      <button type="button" data-preset="weekend">Weekend</button>
+      <button type="button" data-preset="ny">New Year</button>
+      <button type="button" data-preset="hour">1 hour</button>
+      <button type="button" data-preset="min">1 minute</button>
+    </div>
+    </div>
+    <div class="qlist" id="qList"></div>
+  </section>
+
   <!-- NET WORTH -->
   <section class="card c-net" id="secNet" aria-labelledby="nwH">
     <div class="nw-head">
-      <h2 id="nwH"><span class="ic" style="background:var(--sky-soft);color:var(--sky)"><svg class="i"><use href="#i-scale"/></svg></span>Net worth</h2>
+      <h2 id="nwH"><span class="ic" style="background:var(--sky-soft);color:var(--sky)"><svg class="i"><use href="#i-scale"/></svg></span>Assets &amp; liabilities</h2>
     </div>
-    <p class="lead">Assets grow, loans shrink with every EMI. Everything ticks live.</p>
+    <p class="lead">What you own, what you owe, and everything you have earned. Everything ticks live.</p>
     <div class="tiles" id="tiles">
       <div class="tile n"><span class="chip" aria-hidden="true"></span><span class="brandmark" aria-hidden="true">Money Quest</span><div class="t-l"><svg class="i"><use href="#i-scale"/></svg>Net worth</div><div class="t-v" id="tN">0</div><div class="t-s" id="tNi"></div><div class="t-d" id="tNd"></div></div>
       <div class="tile a"><span class="chip" aria-hidden="true"></span><span class="brandmark" aria-hidden="true">Money Quest</span><div class="t-l"><svg class="i"><use href="#i-up"/></svg>Assets</div><div class="t-v" id="tA">0</div><div class="t-s" id="tAi"></div><div class="t-d" id="tAd"></div></div>
       <div class="tile l"><span class="chip" aria-hidden="true"></span><span class="brandmark" aria-hidden="true">Money Quest</span><div class="t-l"><svg class="i"><use href="#i-down"/></svg>Liabilities</div><div class="t-v" id="tL">0</div><div class="t-s" id="tLi"></div><div class="t-d" id="tLd"></div></div>
+      <div class="tile g"><span class="chip" aria-hidden="true"></span><span class="brandmark" aria-hidden="true">Money Quest</span><div class="t-l"><svg class="i"><use href="#i-leaf"/></svg>Lifetime loot</div><div class="t-v" id="tG">0</div><div class="t-s" id="tGi"></div><div class="t-d" id="tGd"></div></div>
     </div>
     <div class="cnav" id="cnav">
       <button class="cbtn" id="cPrev" aria-label="Previous card"><svg class="i"><use href="#i-left"/></svg></button>
       <div class="dots" id="tileDots" role="tablist" aria-label="Net worth cards">
-        <button role="tab" aria-label="Net worth" aria-selected="true"></button><button role="tab" aria-label="Assets" aria-selected="false"></button><button role="tab" aria-label="Liabilities" aria-selected="false"></button>
+        <button role="tab" aria-label="Net worth" aria-selected="true"></button><button role="tab" aria-label="Assets" aria-selected="false"></button><button role="tab" aria-label="Liabilities" aria-selected="false"></button><button role="tab" aria-label="Lifetime loot" aria-selected="false"></button>
       </div>
       <span class="cnext" id="cNextLbl" aria-hidden="true">Next: Assets</span>
       <button class="cbtn" id="cNext" aria-label="Next card"><svg class="i"><use href="#i-right"/></svg></button>
@@ -589,67 +649,12 @@ body.settings .drawer{transform:none}
       </div>
     </div>
   </section>
-  <!-- LIFETIME LOOT -->
-  <section class="card c-loot" id="secLoot" aria-labelledby="lootH">
-    <div class="loot-top">
-      <div style="min-width:0">
-        <h2 id="lootH"><span class="ic" style="background:var(--sage-soft);color:var(--sage)"><svg class="i"><use href="#i-leaf"/></svg></span>Lifetime loot</h2>
-        <div class="eyebrow"><span class="live" aria-hidden="true"></span>Earned since <span id="sinceTxt">start</span></div>
-      </div>
-      <div class="coin-wrap" id="coinWrap">
-        <button class="coin" id="coin" aria-label="Tap the coin"><span id="coinCur">AED</span></button>
-        <span class="combo" id="combo">x2</span>
-      </div>
-    </div>
-    <div class="big" id="aed"><span class="cur">AED</span>0<span class="dec">.0000</span></div>
-    <div class="inr" id="inr">₹0.00</div>
-    <div class="stats">
-      <div class="stat"><small>per second</small><b id="perSec">0</b><em id="perSecI"></em></div>
-      <div class="stat"><small>per hour</small><b id="perHour">0</b><em id="perHourI"></em></div>
-      <div class="stat"><small>per day</small><b id="perDay">0</b><em id="perDayI"></em></div>
-    </div>
-    <div class="today">
-      <div class="ring">
-        <svg viewBox="0 0 96 96" aria-hidden="true"><circle class="trk" cx="48" cy="48" r="40"/><circle class="prg" id="dayRing" cx="48" cy="48" r="40" stroke-dasharray="251.3" stroke-dashoffset="251.3"/></svg>
-        <div class="lbl" id="dayPct">0%</div>
-      </div>
-      <div class="today-col">
-        <div class="today-t"><small>Earned today</small><b id="todayAmt" class="fit">AED 0.00</b><p id="todayInr">₹0</p></div>
-        <div class="today-t"><small>This month</small><b id="monthAmt" class="fit" style="color:var(--sage)">AED 0.00</b><p id="monthInr">₹0</p></div>
-      </div>
-    </div>
-    <div class="fxline" id="fxLine"></div>
-  </section>
-
-  <!-- QUESTS -->
-  <section class="card c-quests" id="secQuests" aria-labelledby="qH">
-    <h2 id="qH"><span class="ic" style="background:var(--lav-soft);color:var(--lav)"><svg class="i"><use href="#i-target"/></svg></span>Quests<span class="tag" id="qCount">0 active</span><button class="btn mini" id="qToggle" aria-expanded="false" aria-controls="qAdd"><svg class="i"><use href="#i-plus"/></svg>New quest</button></h2>
-    <p class="lead">Countdowns to what matters, plus payday and every EMI.</p>
-    <div id="qAdd" class="qadd" hidden>
-    <form class="qform" id="qForm" novalidate>
-      <input class="inp" id="qName" maxlength="48" placeholder="What are you waiting for?" aria-label="Quest name" autocomplete="off">
-      <input class="inp" id="qDate" type="date" aria-label="Date">
-      <input class="inp" id="qTime" type="time" aria-label="Time">
-      <label class="qpin"><input type="checkbox" id="qPin">Pin to top of the list</label>
-      <button class="btn" type="submit"><svg class="i"><use href="#i-plus"/></svg>Add</button>
-    </form>
-    <div class="err" id="qErr" hidden>Pick a date in the future.</div>
-    <div class="presets">Quick start:
-      <button type="button" data-preset="weekend">Weekend</button>
-      <button type="button" data-preset="ny">New Year</button>
-      <button type="button" data-preset="hour">1 hour</button>
-      <button type="button" data-preset="min">1 minute</button>
-    </div>
-    </div>
-    <div class="qlist" id="qList"></div>
-  </section>
-
 </main>
 
 <nav class="tabbar" aria-label="Sections">
-  <button data-go="secNet" aria-current="true"><svg class="i"><use href="#i-scale"/></svg>Net worth</button>
-  <button data-go="secLoot"><svg class="i"><use href="#i-leaf"/></svg>Loot</button>
+  <button data-go="secLoot" aria-current="true"><svg class="i"><use href="#i-scale"/></svg>Net worth</button>
   <button data-go="secQuests"><svg class="i"><use href="#i-target"/></svg>Quests</button>
+  <button data-go="secNet"><svg class="i"><use href="#i-up"/></svg>Assets</button>
 </nav>
 
 <!-- SETTINGS -->
@@ -1027,6 +1032,7 @@ function tickNet(now,full){
     if(be.state==='green'&&S.beFrom){delete S.beFrom;save();toast('scale','Net worth balanced','Assets now cover every liability');chime([523,659,784,1046]);if(!reduced)burst(innerWidth/2,innerHeight*.45,90,850);}
     renderAlloc(now,A,L);
   }
+  return {N,drift:Ad-Ld};
 }
 function setCur(c,init){S.cur=c;save();
   document.querySelectorAll('[data-cur]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cur===c));
@@ -1211,24 +1217,33 @@ function update(){
   const now=new Date(),start=parseDate(S.start);
   const total=earnedBetween(start,now)+bonusBetween(start,now),inr=total*RATE;
   const C=S.cur,O=OTH(C);
-  $('#aed').innerHTML=tickHTML(fromAED(total,C),C).replace(C==='INR'?'₹':'AED ',`<span class="cur">${C==='INR'?'₹':'AED'}</span>`);
-  $('#inr').textContent=fIn(total,O,2);
-
   const sec=Math.floor(now/1000),full=sec!==lastSec;
+  const nw=tickNet(now,full),N=nw.N;
+  const sym=C==='INR'?'₹':'AED';
+  $('#aed').innerHTML=tickHTML(fromAED(N,C),C).replace(C==='INR'?'₹':'AED ',`<span class="cur">${sym}</span>`);
+  $('#inr').textContent=fCur(fromAED(N,O),O,2);
+
   if(full){
     lastSec=sec;
-    const perSec=salAED()/dim(now.getFullYear(),now.getMonth())/86400;
-    $('#perSec').textContent=fIn(perSec,C,4,3);$('#perSecI').textContent=fIn(perSec,O,4,3);
-    $('#perHour').textContent=fIn(perSec*3600,C);$('#perHourI').textContent=fIn(perSec*3600,O);
-    $('#perDay').textContent=fIn(perSec*86400,C);$('#perDayI').textContent=fIn(perSec*86400,O);
+    const per=nw.drift/86400,sg=(v,c,dA=2,dI=dA)=>(v<0?'−':'+')+fIn(Math.abs(v),c,dA,dI);
+    $('#perSec').textContent=sg(per,C,4,3);$('#perSecI').textContent=sg(per,O,4,3);
+    $('#perHour').textContent=sg(per*3600,C);$('#perHourI').textContent=sg(per*3600,O);
+    $('#perDay').textContent=sg(per*86400,C);$('#perDayI').textContent=sg(per*86400,O);
     const mid=new Date(now.getFullYear(),now.getMonth(),now.getDate()),frac=(now-mid)/DAY;
     const today=earnedBetween(start>mid?start:mid,now)+bonusBetween(start>mid?start:mid,now);
-    const m1=new Date(now.getFullYear(),now.getMonth(),1),mStart=start>m1?start:m1,month=earnedBetween(mStart,now)+bonusBetween(mStart,now);
+    const m1=new Date(now.getFullYear(),now.getMonth(),1);
+    const dT=N-netAt(mid),dM=N-netAt(m1);
     $('#dayRing').style.strokeDashoffset=(251.3*(1-frac)).toFixed(1);
     $('#dayPct').textContent=Math.floor(frac*100)+'%';$('#dayPctTxt').textContent=Math.floor(frac*100)+'%';$('#dayBar').style.width=(frac*100).toFixed(1)+'%';
-    $('#todayAmt').textContent=fIn(today,C);$('#todayInr').textContent=fIn(today,O);
-    $('#monthAmt').textContent=fIn(month,C);$('#monthInr').textContent=fIn(month,O);
-    $('#sinceTxt').textContent=start.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    $('#todayAmt').textContent=sg(dT,C);$('#todayInr').textContent=sg(dT,O);
+    $('#monthAmt').textContent=sg(dM,C);$('#monthInr').textContent=sg(dM,O);
+    $('#todayAmt').className='fit '+(dT<0?'hero-down':'hero-up');$('#monthAmt').className='fit '+(dM<0?'hero-down':'hero-up');
+    const be=breakEven(now);
+    $('#nwEye').textContent=be.state==='red'?'Balanced by '+new Date(be.t).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})
+      :be.state==='never'?'Live · not balanced within 10 yrs':'Live · in the green';
+    // lifetime loot card in the balance sheet
+    $('#tGi').textContent='≈ '+fIn(total,O,0);
+    $('#tGd').innerHTML=`Earning <b>${fIn(salAED()/dim(now.getFullYear(),now.getMonth()),C,2,0)}</b> / day · since ${start.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}`;
     greet(now,today);
 
     const lv=Math.max(1,levelOf(Math.max(0,total))),lo=xpFor(lv),hi=xpFor(lv+1),pct=Math.min(100,(total-lo)/(hi-lo)*100);
@@ -1239,12 +1254,12 @@ function update(){
 
     tickQuests(false);
     if(now-lastFull>60000){if(lastFull){projDirty=true;renderLiabs();renderQuests();}lastFull=+now;}
-    if(!document.hidden&&!reduced&&sec%2===0)floatPop('+'+one(perSec*2,4,3));
+    if(!document.hidden&&!reduced&&sec%2===0&&nw.drift>0)floatPop('+'+one(per*2,4,3));
   }
-  tickNet(now,full);
+  $('#tG').innerHTML=tickHTML(fromAED(total,C),C);
   fitAll();
 
-  const whole=Math.floor(total);
+  const whole=Math.floor(fromAED(N,C));
   if(lastWhole!==null&&whole>lastWhole){clink();const c=$('#coin');c.classList.remove('bump');void c.offsetWidth;c.classList.add('bump');}
   lastWhole=whole;
 }
@@ -1264,7 +1279,7 @@ $('#coin').addEventListener('click',e=>{
 /* ================= net worth card carousel (phone) ================= */
 (function(){
   const box=$('#tiles'),dots=[...document.querySelectorAll('#tileDots button')],cards=[...box.children];
-  const NAMES=['Net worth','Assets','Liabilities'];
+  const NAMES=['Net worth','Assets','Liabilities','Lifetime loot'];
   const step=()=>cards[1].offsetLeft-cards[0].offsetLeft;               // distance between card starts
   const cur=()=>Math.max(0,Math.min(cards.length-1,Math.round(box.scrollLeft/(step()||1))));
   const go=i=>box.scrollTo({left:Math.max(0,Math.min(cards.length-1,i))*step(),behavior:reduced?'auto':'smooth'});
