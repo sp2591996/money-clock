@@ -270,6 +270,7 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .eform{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:14px;border-radius:18px;background:var(--raise);border:1px dashed var(--line-2);margin-bottom:12px}
 .eform label{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px;grid-column:span 2}
 .eform label.w6,.eform .err{grid-column:span 6}
+.eform .fhelp{font-size:12px;color:var(--faint);line-height:1.4}
 .eform .acts{grid-column:span 6;display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
 .elist{display:flex;flex-direction:column;gap:10px}
 #lList{max-height:720px;overflow-y:auto;overscroll-behavior:contain;padding-right:4px;margin-right:-4px}
@@ -634,6 +635,7 @@ body.settings .drawer{transform:none}
           <label data-k="emi">EMI amount<input class="inp" id="lEmi" type="number" min="0" step="any" inputmode="decimal" placeholder="25000"></label>
           <label data-k="emi">EMI day of month<input class="inp" id="lDay" type="number" min="1" max="31" step="1" inputmode="numeric" placeholder="10"></label>
           <label data-k="emi">Original loan (optional)<input class="inp" id="lOrig" type="number" min="0" step="any" inputmode="decimal" placeholder="for % cleared"></label>
+          <label data-k="emi" class="w6">EMIs paid from salary since<input class="inp" id="lFrom" type="date" aria-describedby="lFromHelp"><small id="lFromHelp" class="fhelp">EMIs from this date are taken off your salary. Starts on your salary start date; pick a later date for a loan whose EMIs begin later.</small></label>
           <div class="err" id="lErr" hidden>Add a name, an outstanding amount and an EMI day from 1 to 31.</div>
           <div class="acts"><button type="button" class="btn ghost" data-cancel="l">Cancel</button><button class="btn rose" type="submit">Save liability</button></div>
         </form>
@@ -815,11 +817,14 @@ const assetAt=(a,t)=>a.val*Math.pow(1+(a.g||0)/100,(t-a.asOf)/YEAR);
 const assetPerSec=(a,t)=>assetAt(a,t)*Math.log(1+(a.g||0)/100)/(YEAR/1000);
 const emiDate=(y,m,day)=>new Date(y,m,Math.min(day,dim(y,m)));
 function nextEmi(after,day){let d=emiDate(after.getFullYear(),after.getMonth(),day);if(d<=after)d=emiDate(after.getFullYear(),after.getMonth()+1,day);return d;}
+/* EMIs start on/after the loan's "paid from salary since" date (l.from); older loans have none */
+const emiAfter=(l,after)=>nextEmi(new Date(Math.max(+after,(l.from||0)-1)),l.day);
+const fromOf=l=>l.from||+parseDate(S.start);
 const rMs=l=>(l.rate||0)/100/(365*DAY);
 const isOnce=l=>l.kind==='once';
 function liabAt(l,t){ // interest accrues daily between EMIs; the EMI comes off on its day each month
   if(isOnce(l))return t<l.due?l.val:0;    // one-time payment: owed in full until its due date
-  let bal=l.val,cur=new Date(l.asOf),n=nextEmi(cur,l.day),g=0;const r=rMs(l);
+  let bal=l.val,cur=new Date(l.asOf),n=emiAfter(l,cur),g=0;const r=rMs(l);
   while(n<=t&&bal>0&&g++<1500){bal*=1+r*(n-cur);bal-=l.emi||0;cur=n;n=nextEmi(cur,l.day);}
   return bal<=0?0:bal*(1+r*(t-cur));
 }
@@ -828,7 +833,7 @@ function project(l,now){
   let bal=liabAt(l,now),cur=new Date(now),interest=0,count=0;const r=rMs(l),pts=[[now.getTime(),bal]];
   if(bal<=0)return {pts,count:0,interest:0,payoff:null,never:false};
   if(!(l.emi>0))return {pts,count:0,interest:0,payoff:null,never:true};
-  let n=nextEmi(cur,l.day);
+  let n=emiAfter(l,cur);
   while(bal>0&&count<600){const i=bal*r*(n-cur);interest+=i;bal+=i-l.emi;count++;cur=n;pts.push([n.getTime(),Math.max(0,bal)]);n=nextEmi(cur,l.day);
     if(count===3&&bal>=pts[0][1])return {pts:[pts[0]],count:0,interest:0,payoff:null,never:true};}
   return {pts,count,interest,payoff:bal<=0?cur:null,never:bal>0};
@@ -840,14 +845,14 @@ const incLoot=()=>S.incLoot!==false;
 /* net worth (AED) at any moment, using the same models as the live tiles */
 function netAt(t){let n=incLoot()?netSalary(t):0;
   S.assets.forEach(a=>n+=toAED(assetAt(a,t),a.cur));S.liabs.forEach(l=>n-=toAED(liabAt(l,t),l.cur));return n;}
-/* first moment net worth reaches zero: month steps for up to 50 years, then a binary search to the minute */
+/* first moment net worth reaches zero: month steps for up to 10 years, then a binary search to the minute */
 let beKey='',beVal=null;
 function breakEven(now){
   const key=JSON.stringify([S.assets,S.liabs,S.salary,S.salCur,S.exp,S.expCur,S.bonuses,S.start,S.incLoot,RATE,Math.floor(now/60000)]);
   if(key===beKey)return beVal;beKey=key;
   if(netAt(now)>=0)return beVal={state:'green'};
   let lo=+now,hi=null;
-  for(let i=1;i<=600;i++){const t=new Date(now.getFullYear(),now.getMonth()+i,now.getDate(),now.getHours(),now.getMinutes());
+  for(let i=1;i<=120;i++){const t=new Date(now.getFullYear(),now.getMonth()+i,now.getDate(),now.getHours(),now.getMinutes());
     if(netAt(t)>=0){hi=+t;break;}lo=+t;}
   if(hi===null)return beVal={state:'never'};
   while(hi-lo>60000){const m=(lo+hi)/2;if(netAt(new Date(m))>=0)hi=m;else lo=m;}
@@ -857,8 +862,11 @@ function breakEven(now){
 const lootTotal=now=>{const st=parseDate(S.start);return earnedBetween(st,now)+bonusBetween(st,now);};
 /* what a liability has taken out of your pocket by time t (EMIs, or the one-time payment) */
 function liabPaid(l,t){
-  if(isOnce(l))return t>=l.due&&l.due>l.asOf?l.val:0;
-  let bal=l.val,cur=new Date(l.asOf),n=nextEmi(cur,l.day),g=0,paid=0;const r=rMs(l);
+  if(isOnce(l))return t>=l.due&&l.due>=+parseDate(S.start)?l.val:0;
+  let paid=0,g=0;
+  if(l.emi>0){let h=nextEmi(new Date(fromOf(l)-1),l.day);const end=Math.min(+t,l.asOf);   // EMIs before the loan was entered
+    while(h<end&&g++<1500){paid+=l.emi;h=nextEmi(h,l.day);}}
+  let bal=l.val,cur=new Date(l.asOf),n=emiAfter(l,cur);const r=rMs(l);g=0;
   while(n<=t&&bal>0&&g++<1500){bal*=1+r*(n-cur);const p=Math.min(l.emi||0,bal);bal-=p;paid+=p;cur=n;n=nextEmi(cur,l.day);}
   return paid;
 }
@@ -917,6 +925,7 @@ function renderLiabs(){
       <div style="min-width:0"><div class="en">${esc(l.name)}</div><div class="ev" data-lv></div>
         <div class="chipline">
           <span class="pill">EMI <b>${fCur(l.emi||0,l.cur)}</b> on the ${ordinal(l.day)}</span>
+          <span class="pill">From salary since ${new Date(fromOf(l)).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</span>
           <span class="pill" data-next></span>
           ${l.rate?`<span class="pill">${l.rate}% p.a.</span>`:''}
           <span class="pill" data-lconv></span>
@@ -976,7 +985,7 @@ function tickNet(now,full){
       el.querySelector('[data-lconv]').textContent='≈ '+fCur(conv(v,l.cur,O),O);
       el.querySelector('[data-pb]').style.width=(cl*100).toFixed(2)+'%';
       el.querySelector('[data-pct]').textContent=(cl*100).toFixed(1)+'% cleared';
-      el.querySelector('[data-next]').textContent=v>0&&l.emi>0?'next EMI in '+dur(nextEmi(now,l.day)-now):'all paid';}});
+      el.querySelector('[data-next]').textContent=v>0&&l.emi>0?'next EMI in '+dur(emiAfter(l,now)-now):'all paid';}});
   const N=A-L;
   $('#tA').innerHTML=tickHTML(fromAED(A,C),C);$('#tL').innerHTML=tickHTML(fromAED(L,C),C);$('#tN').innerHTML=tickHTML(fromAED(N,C),C);
   if(full){
@@ -986,7 +995,7 @@ function tickNet(now,full){
     $('#tLd').innerHTML=S.liabs.length?`Interest <b>${fCur(fromAED(Ld,C),C,2)}</b> / day${last?` · debt-free <b>${monthYear(last)}</b>`:''}`:'No loans. Nice.';
     const be=breakEven(now);
     $('#tNd').innerHTML=be.state==='red'?`Balanced by <b>${new Date(be.t).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</b> · in ${ahead(now,new Date(be.t))}`
-      :be.state==='never'?'Not balanced within 50 years at this pace'
+      :be.state==='never'?'Not balanced within 10 years at this pace'
       :(S.assets.length||S.liabs.length)?`In the green · <b>${(Ad-Ld>=0?'+':'')+fCur(fromAED(Ad-Ld,C),C,2)}</b> / day`:'Assets minus liabilities';
     if(be.state==='green'&&S.beFrom){delete S.beFrom;save();toast('scale','Net worth balanced','Assets now cover every liability');chime([523,659,784,1046]);if(!reduced)burst(innerWidth/2,innerHeight*.45,90,850);}
     renderAlloc(now,A,L);
@@ -1005,8 +1014,8 @@ function openForm(k,item){
   if(item){$('#'+k+'Id').value=item.id;$('#'+k+'Name').value=item.name;$('#'+k+'Cur').value=item.cur;
     if(k==='a'){$('#aVal').value=+assetAt(item,new Date()).toFixed(2);$('#aGrow').value=item.g||'';$('#aType').value=item.type;}
     else if(isOnce(item)){setLKind('once');$('#lVal').value=item.val;$('#lDue').value=iso(new Date(item.due));}
-    else{setLKind('emi');$('#lVal').value=+liabAt(item,new Date()).toFixed(2);$('#lRate').value=item.rate||'';$('#lEmi').value=item.emi||'';$('#lDay').value=item.day;$('#lOrig').value=item.orig||'';}}
-  else{$('#'+k+'Cur').value=S.cur;if(k==='l')setLKind('emi');}
+    else{setLKind('emi');$('#lVal').value=+liabAt(item,new Date()).toFixed(2);$('#lRate').value=item.rate||'';$('#lEmi').value=item.emi||'';$('#lDay').value=item.day;$('#lOrig').value=item.orig||'';$('#lFrom').value=iso(new Date(fromOf(item)));}}
+  else{$('#'+k+'Cur').value=S.cur;if(k==='l'){setLKind('emi');$('#lFrom').value=S.start;}}
   $('#'+k+'Name').focus();
 }
 $('#addAssetBtn').onclick=()=>openForm('a');
@@ -1040,7 +1049,7 @@ $('#lForm').addEventListener('submit',e=>{
   }
   if(!name||!(val>0)||!(day>=1&&day<=31)){$('#lErr').hidden=false;return;}
   const orig=Number($('#lOrig').value)||(old&&old.orig)||val;
-  const rec={id:id||uid(),name,val,cur:$('#lCur').value,rate:Number($('#lRate').value)||0,emi:Number($('#lEmi').value)||0,day,orig:Math.max(orig,val),asOf:Date.now()};
+  const rec={id:id||uid(),name,val,cur:$('#lCur').value,rate:Number($('#lRate').value)||0,emi:Number($('#lEmi').value)||0,day,orig:Math.max(orig,val),asOf:Date.now(),from:$('#lFrom').value?+parseDate($('#lFrom').value):+parseDate(S.start)};
   const i=S.liabs.findIndex(l=>l.id===id);if(i>=0)S.liabs[i]=rec;else S.liabs.push(rec);
   save();projDirty=true;$('#lForm').hidden=true;renderLiabs();renderQuests();tickNet(new Date(),true);chime([392,523,659]);
 });
@@ -1067,7 +1076,7 @@ function questView(){
   const rec=[{id:'pay',name:'Payday',t:np.getTime(),created:prevMonthSame(np,S.payday).getTime(),kind:'pay'}];
   S.liabs.forEach(l=>{
     if(isOnce(l)){if(!l.ack)rec.push({id:'due-'+l.id,name:l.name,t:l.due,created:l.asOf,kind:'due',l});return;}
-    if(!(l.emi>0)||liabAt(l,now)<=0)return;const n=nextEmi(now,l.day);
+    if(!(l.emi>0)||liabAt(l,now)<=0)return;const n=emiAfter(l,now);
     rec.push({id:'emi-'+l.id,name:l.name+' EMI',t:n.getTime(),created:prevMonthSame(n,l.day).getTime(),kind:'emi',l});});
   const be=breakEven(now);
   if(be.state==='red')rec.push({id:'nw',name:'Net worth balanced',t:be.t,created:S.beFrom||+now,kind:'nw'});
