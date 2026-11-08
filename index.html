@@ -284,6 +284,7 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .entry .ea{display:flex;gap:2px}
 .chipline{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .pill{font-size:12px;padding:3px 9px;border-radius:99px;background:var(--tint);color:var(--muted);white-space:nowrap}
+.pill[data-int]{white-space:normal;max-width:100%;border-radius:12px}
 .pill b{font-family:var(--mono);font-weight:500;color:var(--ink)}
 .pill.good{background:var(--sage-soft);color:var(--sage)}
 .pill.warn{background:var(--peach-soft);color:var(--peach)}
@@ -528,61 +529,6 @@ body.settings .drawer{transform:none}
     <div class="daybar" aria-hidden="true"><small><span>Today</span><span id="dayPctTxt">0%</span></small><div class="track"><i id="dayBar"></i></div></div>
   </section>
 
-  <!-- LIFETIME LOOT -->
-  <section class="card c-loot" id="secLoot" aria-labelledby="lootH">
-    <div class="loot-top">
-      <div style="min-width:0">
-        <h2 id="lootH"><span class="ic" style="background:var(--sage-soft);color:var(--sage)"><svg class="i"><use href="#i-leaf"/></svg></span>Lifetime loot</h2>
-        <div class="eyebrow"><span class="live" aria-hidden="true"></span>Earned since <span id="sinceTxt">start</span></div>
-      </div>
-      <div class="coin-wrap" id="coinWrap">
-        <button class="coin" id="coin" aria-label="Tap the coin"><span id="coinCur">AED</span></button>
-        <span class="combo" id="combo">x2</span>
-      </div>
-    </div>
-    <div class="big" id="aed"><span class="cur">AED</span>0<span class="dec">.0000</span></div>
-    <div class="inr" id="inr">₹0.00</div>
-    <div class="stats">
-      <div class="stat"><small>per second</small><b id="perSec">0</b><em id="perSecI"></em></div>
-      <div class="stat"><small>per hour</small><b id="perHour">0</b><em id="perHourI"></em></div>
-      <div class="stat"><small>per day</small><b id="perDay">0</b><em id="perDayI"></em></div>
-    </div>
-    <div class="today">
-      <div class="ring">
-        <svg viewBox="0 0 96 96" aria-hidden="true"><circle class="trk" cx="48" cy="48" r="40"/><circle class="prg" id="dayRing" cx="48" cy="48" r="40" stroke-dasharray="251.3" stroke-dashoffset="251.3"/></svg>
-        <div class="lbl" id="dayPct">0%</div>
-      </div>
-      <div class="today-col">
-        <div class="today-t"><small>Earned today</small><b id="todayAmt" class="fit">AED 0.00</b><p id="todayInr">₹0</p></div>
-        <div class="today-t"><small>This month</small><b id="monthAmt" class="fit" style="color:var(--sage)">AED 0.00</b><p id="monthInr">₹0</p></div>
-      </div>
-    </div>
-    <div class="fxline" id="fxLine"></div>
-  </section>
-
-  <!-- QUESTS -->
-  <section class="card c-quests" id="secQuests" aria-labelledby="qH">
-    <h2 id="qH"><span class="ic" style="background:var(--lav-soft);color:var(--lav)"><svg class="i"><use href="#i-target"/></svg></span>Quests<span class="tag" id="qCount">0 active</span><button class="btn mini" id="qToggle" aria-expanded="false" aria-controls="qAdd"><svg class="i"><use href="#i-plus"/></svg>New quest</button></h2>
-    <p class="lead">Countdowns to what matters, plus payday and every EMI.</p>
-    <div id="qAdd" class="qadd" hidden>
-    <form class="qform" id="qForm" novalidate>
-      <input class="inp" id="qName" maxlength="48" placeholder="What are you waiting for?" aria-label="Quest name" autocomplete="off">
-      <input class="inp" id="qDate" type="date" aria-label="Date">
-      <input class="inp" id="qTime" type="time" aria-label="Time">
-      <label class="qpin"><input type="checkbox" id="qPin">Pin to top of the list</label>
-      <button class="btn" type="submit"><svg class="i"><use href="#i-plus"/></svg>Add</button>
-    </form>
-    <div class="err" id="qErr" hidden>Pick a date in the future.</div>
-    <div class="presets">Quick start:
-      <button type="button" data-preset="weekend">Weekend</button>
-      <button type="button" data-preset="ny">New Year</button>
-      <button type="button" data-preset="hour">1 hour</button>
-      <button type="button" data-preset="min">1 minute</button>
-    </div>
-    </div>
-    <div class="qlist" id="qList"></div>
-  </section>
-
   <!-- NET WORTH -->
   <section class="card c-net" id="secNet" aria-labelledby="nwH">
     <div class="nw-head">
@@ -643,12 +589,67 @@ body.settings .drawer{transform:none}
       </div>
     </div>
   </section>
+  <!-- LIFETIME LOOT -->
+  <section class="card c-loot" id="secLoot" aria-labelledby="lootH">
+    <div class="loot-top">
+      <div style="min-width:0">
+        <h2 id="lootH"><span class="ic" style="background:var(--sage-soft);color:var(--sage)"><svg class="i"><use href="#i-leaf"/></svg></span>Lifetime loot</h2>
+        <div class="eyebrow"><span class="live" aria-hidden="true"></span>Earned since <span id="sinceTxt">start</span></div>
+      </div>
+      <div class="coin-wrap" id="coinWrap">
+        <button class="coin" id="coin" aria-label="Tap the coin"><span id="coinCur">AED</span></button>
+        <span class="combo" id="combo">x2</span>
+      </div>
+    </div>
+    <div class="big" id="aed"><span class="cur">AED</span>0<span class="dec">.0000</span></div>
+    <div class="inr" id="inr">₹0.00</div>
+    <div class="stats">
+      <div class="stat"><small>per second</small><b id="perSec">0</b><em id="perSecI"></em></div>
+      <div class="stat"><small>per hour</small><b id="perHour">0</b><em id="perHourI"></em></div>
+      <div class="stat"><small>per day</small><b id="perDay">0</b><em id="perDayI"></em></div>
+    </div>
+    <div class="today">
+      <div class="ring">
+        <svg viewBox="0 0 96 96" aria-hidden="true"><circle class="trk" cx="48" cy="48" r="40"/><circle class="prg" id="dayRing" cx="48" cy="48" r="40" stroke-dasharray="251.3" stroke-dashoffset="251.3"/></svg>
+        <div class="lbl" id="dayPct">0%</div>
+      </div>
+      <div class="today-col">
+        <div class="today-t"><small>Earned today</small><b id="todayAmt" class="fit">AED 0.00</b><p id="todayInr">₹0</p></div>
+        <div class="today-t"><small>This month</small><b id="monthAmt" class="fit" style="color:var(--sage)">AED 0.00</b><p id="monthInr">₹0</p></div>
+      </div>
+    </div>
+    <div class="fxline" id="fxLine"></div>
+  </section>
+
+  <!-- QUESTS -->
+  <section class="card c-quests" id="secQuests" aria-labelledby="qH">
+    <h2 id="qH"><span class="ic" style="background:var(--lav-soft);color:var(--lav)"><svg class="i"><use href="#i-target"/></svg></span>Quests<span class="tag" id="qCount">0 active</span><button class="btn mini" id="qToggle" aria-expanded="false" aria-controls="qAdd"><svg class="i"><use href="#i-plus"/></svg>New quest</button></h2>
+    <p class="lead">Countdowns to what matters, plus payday and every EMI.</p>
+    <div id="qAdd" class="qadd" hidden>
+    <form class="qform" id="qForm" novalidate>
+      <input class="inp" id="qName" maxlength="48" placeholder="What are you waiting for?" aria-label="Quest name" autocomplete="off">
+      <input class="inp" id="qDate" type="date" aria-label="Date">
+      <input class="inp" id="qTime" type="time" aria-label="Time">
+      <label class="qpin"><input type="checkbox" id="qPin">Pin to top of the list</label>
+      <button class="btn" type="submit"><svg class="i"><use href="#i-plus"/></svg>Add</button>
+    </form>
+    <div class="err" id="qErr" hidden>Pick a date in the future.</div>
+    <div class="presets">Quick start:
+      <button type="button" data-preset="weekend">Weekend</button>
+      <button type="button" data-preset="ny">New Year</button>
+      <button type="button" data-preset="hour">1 hour</button>
+      <button type="button" data-preset="min">1 minute</button>
+    </div>
+    </div>
+    <div class="qlist" id="qList"></div>
+  </section>
+
 </main>
 
 <nav class="tabbar" aria-label="Sections">
-  <button data-go="secLoot" aria-current="true"><svg class="i"><use href="#i-leaf"/></svg>Loot</button>
+  <button data-go="secNet" aria-current="true"><svg class="i"><use href="#i-scale"/></svg>Net worth</button>
+  <button data-go="secLoot"><svg class="i"><use href="#i-leaf"/></svg>Loot</button>
   <button data-go="secQuests"><svg class="i"><use href="#i-target"/></svg>Quests</button>
-  <button data-go="secNet"><svg class="i"><use href="#i-scale"/></svg>Net worth</button>
 </nav>
 
 <!-- SETTINGS -->
@@ -661,8 +662,9 @@ body.settings .drawer{transform:none}
     <label class="fld" for="salaryInput">Monthly salary<span class="inrow"><input class="inp" id="salaryInput" type="number" min="0" step="100" inputmode="decimal"><select class="inp" id="salaryCur" aria-label="Salary currency"><option>AED</option><option>INR</option></select></span></label>
     <label class="fld">Payday (day of month)<input class="inp" id="paydayInput" type="number" min="1" max="31" step="1" inputmode="numeric"></label>
     <label class="fld" for="expInput">Monthly expenses<span class="inrow"><input class="inp" id="expInput" type="number" min="0" step="100" inputmode="decimal" placeholder="0"><select class="inp" id="expCur" aria-label="Expenses currency"><option>AED</option><option>INR</option></select></span></label>
+    <label class="fld">Savings interest % / year<input class="inp" id="savInput" type="number" min="0" max="50" step="0.01" inputmode="decimal" placeholder="e.g. 6.25"></label>
     <button class="btn sage" id="saveSalary"><svg class="i"><use href="#i-check"/></svg>Save</button>
-    <p class="help">Salary accrues every second, 24 hours a day. Each calendar month spreads the salary over its actual number of days. Expenses are your living costs without EMIs; net worth counts salary after expenses, EMIs and one-time payments.</p>
+    <p class="help">Salary accrues every second, 24 hours a day. Each calendar month spreads the salary over its actual number of days. Expenses are your living costs without EMIs; net worth counts salary after expenses, EMIs and one-time payments. That money earns the savings interest every day, on the balance at the end of the previous month, added to the balance each month.</p>
   </section>
   <section>
     <h4>One-time bonuses</h4>
@@ -711,7 +713,8 @@ if(!S||!S.salary){
   if(c&&c.t)S.quests.push({id:uid(),name:c.n||'The Moment',t:c.t,created:c.s||Date.now(),done:!!c.completed});
 }
 S.quests=S.quests||[];S.bonuses=S.bonuses||[];S.assets=S.assets||[];S.liabs=S.liabs||[];S.cur=S.cur||S.nwCur||'AED';S.salCur=S.salCur||'AED';S.exp=S.exp||0;S.expCur=S.expCur||'AED';S.pins=S.pins||[];delete S.nwCur;delete S.ach;
-const save=()=>store.set(K,S);
+let savMemo=[];
+const save=()=>{store.set(K,S);savMemo=[];};
 
 (function streak(){
   const t=todayStr();
@@ -741,7 +744,7 @@ async function fetchFx(){
   try{
     const r=await fetch(FX_URL,{cache:'no-store',signal:ctl.signal});if(!r.ok)throw 0;
     const rate=Number((await r.json()).rate);if(!(rate>0))throw 0;
-    RATE=rate;fxSrc='live';try{localStorage.setItem('moneyClockFxRate',String(rate));}catch(e){}
+    RATE=rate;fxSrc='live';savMemo=[];try{localStorage.setItem('moneyClockFxRate',String(rate));}catch(e){}
   }catch(e){}finally{clearTimeout(to);renderFx();}
 }
 function renderFx(){
@@ -843,12 +846,12 @@ function projections(now){if(projDirty){proj={};S.liabs.forEach(l=>proj[l.id]=pr
 
 const incLoot=()=>S.incLoot!==false;
 /* net worth (AED) at any moment, using the same models as the live tiles */
-function netAt(t){let n=incLoot()?netSalary(t):0;
+function netAt(t){let n=incLoot()?savings(t):0;
   S.assets.forEach(a=>n+=toAED(assetAt(a,t),a.cur));S.liabs.forEach(l=>n-=toAED(liabAt(l,t),l.cur));return n;}
 /* first moment net worth reaches zero: month steps for up to 10 years, then a binary search to the minute */
 let beKey='',beVal=null;
 function breakEven(now){
-  const key=JSON.stringify([S.assets,S.liabs,S.salary,S.salCur,S.exp,S.expCur,S.bonuses,S.start,S.incLoot,RATE,Math.floor(now/60000)]);
+  const key=JSON.stringify([S.assets,S.liabs,S.salary,S.salCur,S.exp,S.expCur,S.sav,S.bonuses,S.start,S.incLoot,RATE,Math.floor(now/60000)]);
   if(key===beKey)return beVal;beKey=key;
   if(netAt(now)>=0)return beVal={state:'green'};
   let lo=+now,hi=null;
@@ -873,7 +876,29 @@ function liabPaid(l,t){
 /* salary + bonuses, minus living expenses, EMIs and one-time payments: what really stays with you */
 const netSalary=now=>{const st=parseDate(S.start);
   return lootTotal(now)-earnedBetween(st,now,expAED())-S.liabs.reduce((s,l)=>s+toAED(liabPaid(l,now),l.cur),0);};
-const netSalPerDay=now=>(salAED()-expAED())/dim(now.getFullYear(),now.getMonth());
+/* savings interest: each day earns rate/365 on the balance at the end of the previous month;
+   the month's interest joins the balance at month end (so it compounds monthly) */
+const savR=()=>(S.sav||0)/100/365;
+function monthEndSav(k){            // k = months after the salary start month; {B: balance, I: interest so far}
+  const st=parseDate(S.start);
+  for(let j=savMemo.length;j<=k;j++){
+    const prev=j>0?savMemo[j-1]:{B:0,I:0};
+    const ms=new Date(st.getFullYear(),st.getMonth()+j,1),me=new Date(st.getFullYear(),st.getMonth()+j+1,1);
+    const I=prev.I+Math.max(0,prev.B)*savR()*((me-ms)/DAY);
+    savMemo[j]={B:netSalary(me)+I,I};
+  }
+  return savMemo[k];
+}
+function savPrev(t){const st=parseDate(S.start);const k=(t.getFullYear()-st.getFullYear())*12+t.getMonth()-st.getMonth();
+  return k>0?monthEndSav(k-1):{B:0,I:0};}
+function savInterest(t){
+  if(!(S.sav>0)||t<=parseDate(S.start))return 0;
+  const prev=savPrev(t),ms=new Date(t.getFullYear(),t.getMonth(),1);
+  return prev.I+Math.max(0,prev.B)*savR()*((t-ms)/DAY);
+}
+const savDaily=t=>S.sav>0&&t>parseDate(S.start)?Math.max(0,savPrev(t).B)*savR():0;
+const savings=t=>netSalary(t)+savInterest(t);
+const netSalPerDay=now=>(salAED()-expAED())/dim(now.getFullYear(),now.getMonth())+savDaily(now);
 const TYPES={loot:['Salary post EMIs & expenses','var(--gold-soft)','var(--gold)'],wallet:['Cash & savings','var(--sky-soft)','var(--sky)'],up:['Investments','var(--sage-soft)','var(--sage)'],home:['Property','var(--peach-soft)','var(--peach)'],gem:['Gold','var(--gold-soft)','var(--gold)'],car:['Vehicles','var(--lav-soft)','var(--lav)']};
 
 function renderAssets(){
@@ -881,7 +906,7 @@ function renderAssets(){
     <div class="entry pinned" data-a="loot">
       <div class="eic" style="background:var(--gold-soft);color:var(--gold)">${icon('leaf')}</div>
       <div style="min-width:0"><div class="en">Salary post EMIs &amp; expenses</div><div class="ev" data-av></div>
-        <div class="chipline"><span class="pill">Salary + bonuses − EMIs − expenses, live</span><span class="pill" data-aconv></span></div></div>
+        <div class="chipline"><span class="pill">Salary + bonuses − EMIs − expenses, live</span><span class="pill good" data-int hidden></span><span class="pill" data-aconv></span></div></div>
       <div class="ea"><button class="toggle" data-loot-toggle aria-pressed="${incLoot()}" aria-label="Count salary post EMIs and expenses in net worth"><span class="knob"></span>${incLoot()?'Counted':'Not counted'}</button></div>
     </div>`;
   if(!S.assets.length){$('#aList').innerHTML=pinned+'<div class="empty">Savings, investments, property, gold. Add what else you own and watch it grow.</div>';return;}
@@ -946,7 +971,7 @@ function renderAlloc(now,A,L){
     el.innerHTML=`<h4>How it works</h4><div class="legend" style="color:var(--muted);font-size:14px;gap:10px">
       <div>1. Add what you own: savings, funds, property, gold.</div><div>2. Add each loan with its EMI and EMI day.</div>
       <div>3. Watch net worth tick up, and loans fall on every EMI date.</div></div>`;return;}
-  const by={};if(incLoot())by.loot=Math.max(0,netSalary(now));S.assets.forEach(a=>{by[a.type]=(by[a.type]||0)+toAED(assetAt(a,now),a.cur);});
+  const by={};if(incLoot())by.loot=Math.max(0,savings(now));S.assets.forEach(a=>{by[a.type]=(by[a.type]||0)+toAED(assetAt(a,now),a.cur);});
   const keys=Object.keys(by).sort((a,b)=>by[b]-by[a]);
   const emis=S.liabs.reduce((s,l)=>s+(!isOnce(l)&&liabAt(l,now)>0?toAED(l.emi||0,l.cur):0),0);
   const salaryM=salAED();
@@ -962,9 +987,11 @@ function renderAlloc(now,A,L){
 function tickNet(now,full){
   const C=S.cur,O=OTH(C);
   let A=0,Ad=0,L=0,Ld=0;
-  { const v=netSalary(now),el=document.querySelector('[data-a="loot"]');
+  { const v=savings(now),el=document.querySelector('[data-a="loot"]');
     if(incLoot()){A+=v;Ad+=netSalPerDay(now);}
-    if(el){el.querySelector('[data-av]').innerHTML=tickHTML(fromAED(v,C),C);if(full)el.querySelector('[data-aconv]').textContent='≈ '+fCur(fromAED(v,O),O);} }
+    if(el){el.querySelector('[data-av]').innerHTML=tickHTML(fromAED(v,C),C);if(full){el.querySelector('[data-aconv]').textContent='≈ '+fCur(fromAED(v,O),O);
+      const ip=el.querySelector('[data-int]');ip.hidden=!(S.sav>0);
+      if(S.sav>0)ip.innerHTML=`${S.sav}% interest · <b>${fCur(fromAED(savInterest(now),C),C)}</b> earned · +${fCur(fromAED(savDaily(now),C),C,2)} / day`;}} }
   S.assets.forEach(a=>{const v=assetAt(a,now),ps=assetPerSec(a,now);A+=toAED(v,a.cur);Ad+=toAED(ps,a.cur)*86400;
     const el=document.querySelector(`[data-a="${a.id}"]`);if(!el)return;
     el.querySelector('[data-av]').innerHTML=tickHTML(conv(v,a.cur,C),C);
@@ -1265,7 +1292,7 @@ const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)docume
 /* ================= settings ================= */
 function openSettings(o){
   document.body.classList.toggle('settings',o);$('#drawer').setAttribute('aria-hidden',!o);
-  if(o){$('#startDate').value=S.start;$('#salaryInput').value=S.salary;$('#salaryCur').value=S.salCur;$('#expInput').value=S.exp||'';$('#expCur').value=S.expCur;$('#bonusCur').value=S.salCur;$('#paydayInput').value=S.payday;$('#bonusDate').value=todayStr();renderBonuses();$('#closeSettings').focus();}
+  if(o){$('#startDate').value=S.start;$('#salaryInput').value=S.salary;$('#salaryCur').value=S.salCur;$('#expInput').value=S.exp||'';$('#expCur').value=S.expCur;$('#savInput').value=S.sav||'';$('#bonusCur').value=S.salCur;$('#paydayInput').value=S.payday;$('#bonusDate').value=todayStr();renderBonuses();$('#closeSettings').focus();}
 }
 $('#openSettings').onclick=()=>openSettings(true);
 $('#closeSettings').onclick=()=>openSettings(false);
@@ -1274,7 +1301,7 @@ addEventListener('keydown',e=>{if(e.key==='Escape')openSettings(false);});
 $('#saveSalary').onclick=()=>{
   const d=$('#startDate').value,s=Number($('#salaryInput').value),p=Math.round(Number($('#paydayInput').value));
   if(!d||!(s>=0))return;
-  S.start=d;S.salary=s;S.salCur=$('#salaryCur').value;S.exp=Math.max(0,Number($('#expInput').value)||0);S.expCur=$('#expCur').value;beKey='';tickNet(new Date(),true);S.payday=p>=1&&p<=31?p:1;save();lastWhole=null;renderQuests();toast('check','Saved','Your clock has been recalculated');
+  S.start=d;S.salary=s;S.salCur=$('#salaryCur').value;S.exp=Math.max(0,Number($('#expInput').value)||0);S.expCur=$('#expCur').value;S.sav=Math.max(0,Number($('#savInput').value)||0);save();beKey='';tickNet(new Date(),true);S.payday=p>=1&&p<=31?p:1;save();lastWhole=null;renderQuests();toast('check','Saved','Your clock has been recalculated');
 };
 function renderBonuses(){
   $('#bonusList').innerHTML=S.bonuses.length?S.bonuses.map((b,i)=>`<div class="bitem"><div><b>${pairCur(Number(b.amount),b.cur||'AED')}</b><small>${parseDate(b.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</small></div><button class="del" data-b="${i}" aria-label="Delete bonus">${icon('trash')}</button></div>`).join(''):'<p class="help">No bonuses yet.</p>';
