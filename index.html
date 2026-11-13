@@ -137,7 +137,9 @@ main{width:min(1200px,100%);margin:0 auto;padding:8px clamp(16px,4vw,40px) 48px;
 .c-remind h2{font-size:17px}
 .rlist{display:grid;gap:8px;margin-top:10px}
 .ritem{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--raise);border:1px solid var(--line)}
-.ritem .eic{width:36px;height:36px}
+.eic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none}
+.eic .i{width:20px;height:20px}
+.ritem .eic{width:38px;height:38px}
 .ritem b{font-family:var(--head);font-weight:800;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ritem small{color:var(--muted);font-size:13px}
 .ritem .amt{font-family:var(--mono);font-size:15px;white-space:nowrap;text-align:right}
@@ -248,7 +250,14 @@ html.privacy .pop{display:none}
 
 /* ---------- quests ---------- */
 .qform{display:grid;grid-template-columns:1.3fr 1fr auto;gap:8px}
-.qform #qName{grid-column:1/-1}
+.qform #qName,.qform .qhelp{grid-column:1/-1}
+.qform{grid-template-columns:1fr 1fr .8fr}
+.qf{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--muted);min-width:0}
+.qhelp{font-size:12px;color:var(--faint);line-height:1.4;margin:-2px 0 0}
+.qform>.qbtns{grid-column:1/-1;display:flex;gap:8px}
+.qbtns .btn{flex:1}
+.q-prog{display:flex;flex-wrap:wrap;justify-content:space-between;gap:2px 10px;font-size:12px;color:var(--muted);margin-top:6px}
+.q-prog b{font-family:var(--mono);font-weight:500;color:var(--ink)}
 .inp{width:100%;min-height:44px;padding:10px 12px;border-radius:13px;background:var(--field);border:1px solid var(--line-2);font-size:16px}
 .inp:focus{outline:none;border-color:var(--lav);box-shadow:0 0 0 3px var(--lav-soft)}
 select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px;background-repeat:no-repeat;padding-right:28px}
@@ -529,7 +538,8 @@ body.settings .drawer{transform:none}
   .kv{flex-wrap:wrap}
   .kv .pair{margin-left:auto}
   .qform{grid-template-columns:1fr 1fr}
-  .qform .btn{grid-column:span 2}
+  .qform .qf:first-of-type{grid-column:span 2}
+  .qform .qbtns{grid-column:span 2}
   .card h2 .tag{display:none}
   .btn.mini{margin-left:auto}
   .qlist{max-height:none;overflow:visible;padding:0;margin:0}
@@ -624,6 +634,11 @@ body.settings .drawer{transform:none}
   <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></symbol>
   <symbol id="i-calendar" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></symbol>
   <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></symbol>
+  <symbol id="i-landmark" viewBox="0 0 24 24"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+  <symbol id="i-grad" viewBox="0 0 24 24"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></symbol>
+  <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></symbol>
   <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
   <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
@@ -713,13 +728,16 @@ body.settings .drawer{transform:none}
     <p class="lead">Countdowns to what matters, plus payday and every EMI.</p>
     <div id="qAdd" class="qadd" hidden>
     <form class="qform" id="qForm" novalidate>
+      <input type="hidden" id="qId">
       <input class="inp" id="qName" maxlength="48" placeholder="What are you waiting for?" aria-label="Quest name" autocomplete="off">
-      <input class="inp" id="qDate" type="date" aria-label="Date">
-      <input class="inp" id="qTime" type="time" aria-label="Time">
+      <label class="qf">Started on<input class="inp" id="qStart" type="date"></label>
+      <label class="qf">Ends on<input class="inp" id="qDate" type="date"></label>
+      <label class="qf">At<input class="inp" id="qTime" type="time"></label>
+      <p class="qhelp">Re-adding a quest you began earlier? Set its start date so the progress carries on.</p>
       <label class="qpin"><input type="checkbox" id="qPin">Pin to top of the list</label>
-      <button class="btn" type="submit"><svg class="i"><use href="#i-plus"/></svg>Add</button>
+      <div class="qbtns"><button class="btn" type="submit" id="qSubmit"><svg class="i"><use href="#i-plus"/></svg>Add</button><button class="btn ghost" type="button" id="qCancel" hidden>Cancel</button></div>
     </form>
-    <div class="err" id="qErr" hidden>Pick a date in the future.</div>
+    <div class="err" id="qErr" hidden>Pick an end date in the future.</div>
     <div class="presets">Quick start:
       <button type="button" data-preset="weekend">Weekend</button>
       <button type="button" data-preset="ny">New Year</button>
@@ -1128,7 +1146,7 @@ function renderLiabs(){
     return `
     <details class="entry" data-l="${l.id}" ${open.has(l.id)?'open':''}>
       <summary class="erow">
-        <span class="eic" style="background:${once?'var(--peach-soft)':'var(--rose-soft)'};color:${once?'var(--peach)':'var(--rose)'}">${icon(once?'gift':'mountain')}</span>
+        <span class="eic" style="background:${once?'var(--peach-soft)':'var(--rose-soft)'};color:${once?'var(--peach)':'var(--rose)'}">${icon(liabIcon(l))}</span>
         <span class="emain"><span class="en">${esc(l.name)}</span><span class="esub">${sub}</span></span>
         <span class="eval"><span class="ev" data-lv></span><span class="econv" data-lconv></span></span>
         <span class="chev" aria-hidden="true">${icon('chev')}</span>
@@ -1290,10 +1308,11 @@ function renderQuests(){
       <div class="q-top"><span class="q-name">${esc(q.name)}</span>
         <span class="q-badge">${q.kind==='pay'?'Payday':q.kind==='emi'?'EMI':q.kind==='due'?'Payment':q.kind==='nw'?'Goal':q.done?'Cleared':'Quest'}</span>
         <button class="pin" data-pinq="${q.id}" aria-pressed="${S.pins.includes(q.id)}" aria-label="${S.pins.includes(q.id)?'Unpin':'Pin to top'}: ${esc(q.name)}" title="${S.pins.includes(q.id)?'Unpin':'Pin to top'}">${icon('pin')}</button>
-        ${q.kind?'':`<button class="del" data-delq="${q.id}" aria-label="Delete quest">${icon('trash')}</button>`}</div>
+        ${q.kind?'':`<button class="del edit" data-editq="${q.id}" aria-label="Edit quest: ${esc(q.name)}" title="Edit">${icon('pencil')}</button><button class="del" data-delq="${q.id}" aria-label="Delete quest: ${esc(q.name)}" title="Delete">${icon('trash')}</button>`}</div>
       <div class="q-cd">${SEGS.map(([k,l])=>`<div class="seg" data-seg="${k}"><b>0</b><small>${l}</small></div>`).join('')}</div>
       <div class="q-abs" aria-label="Total time"></div>
       <div class="bar"><i style="width:0"></i></div>
+      <div class="q-prog"><span class="q-from"></span><span class="q-pct"></span></div>
       <div class="q-sub"><span class="q-when"></span><div class="q-earn"></div></div>
     </div>`).join('');
   $('#qCount').textContent=`${qs.filter(q=>!q.done).length} active`;
@@ -1321,6 +1340,9 @@ function tickQuests(full){
     el.querySelector('.q-abs').innerHTML=`<span><b>${fNum(T/86400,1)}</b> days</span><span><b>${fNum(T/3600,1)}</b> hrs</span><span><b>${fNum(Math.floor(T/60))}</b> min</span><span><b>${fNum(Math.floor(T))}</b> sec</span>`;
     const total=q.t-q.created,p=q.done?1:total>0?Math.min(1,Math.max(0,(now-q.created)/total)):0;
     el.querySelector('.bar i').style.width=(p*100).toFixed(2)+'%';
+    const pc=v=>(v*100).toFixed(v>0&&v<.1?1:0)+'%';
+    el.querySelector('.q-pct').innerHTML=q.done||up?'Done':`<b>${pc(p)}</b> passed · <b>${pc(1-p)}</b> to go`;
+    if(full)el.querySelector('.q-from').textContent='From '+new Date(q.created).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
     if(full)el.querySelector('.q-when').textContent=(up?'Since ':'')+target.toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
     const earn=el.querySelector('.q-earn');
     const nwThen=()=>kv(up?'Net worth then':'Your net worth then',pairCur(netAt(target),'AED',0));
@@ -1335,22 +1357,39 @@ function tickQuests(full){
 }
 function finishQuest(q){toast('check','Quest complete: '+q.name,'The moment has arrived');chime([523,659,784,1046]);if(!reduced)burst(innerWidth/2,innerHeight*.45,90,850);}
 function onPayday(){toast('gift','Payday','A new salary cycle begins');chime([659,784,1046]);if(!reduced)coinRain();}
-function onDue(l){toast('gift','Payment day: '+l.name,'Marked as paid and cleared from liabilities');chime([523,659,784]);if(!reduced)burst(innerWidth/2,innerHeight*.5,50,650);}
-function onEmi(l){if(!l)return;toast('mountain','EMI paid: '+l.name,'One step lighter');chime([440,554,659]);if(!reduced)burst(innerWidth/2,innerHeight*.5,40,600);}
+function onDue(l){toast('receipt','Payment day: '+l.name,'Marked as paid and cleared from liabilities');chime([523,659,784]);if(!reduced)burst(innerWidth/2,innerHeight*.5,50,650);}
+function onEmi(l){if(!l)return;toast(liabIcon(l),'EMI paid: '+l.name,'One step lighter');chime([440,554,659]);if(!reduced)burst(innerWidth/2,innerHeight*.5,40,600);}
 
 $('#qForm').addEventListener('submit',e=>{
   e.preventDefault();const d=$('#qDate').value,t=$('#qTime').value||'00:00';
   const target=d?new Date(`${d}T${t.length===5?t+':00':t}`):null;
-  if(!target||target<=new Date()){$('#qErr').hidden=false;return;}
-  $('#qErr').hidden=true;const nid=uid();S.quests.push({id:nid,name:$('#qName').value.trim()||'Something nice',t:target.getTime(),created:Date.now(),done:false});if($('#qPin').checked){S.pins.unshift(nid);$('#qPin').checked=false;}
-  save();$('#qName').value='';showQAdd(false);renderQuests();chime([523,784]);
+  if(!target||target<=new Date()){$('#qErr').textContent='Pick an end date in the future.';$('#qErr').hidden=false;return;}
+  const sv=$('#qStart').value;let from=Date.now();
+  const eq=$('#qId').value&&S.quests.find(x=>x.id===$('#qId').value);
+  if(eq&&sv===iso(new Date(eq.created)))from=eq.created;
+  else if(sv&&sv!==todayStr())from=new Date(sv+'T00:00:00').getTime();
+  if(from>=target.getTime()){$('#qErr').textContent='The start date has to be before the end date.';$('#qErr').hidden=false;return;}
+  $('#qErr').hidden=true;const eid=$('#qId').value,old=eid&&S.quests.find(x=>x.id===eid),nid=old?eid:uid();
+  const rec={id:nid,name:$('#qName').value.trim()||'Something nice',t:target.getTime(),created:from,done:false};
+  if(old)Object.assign(old,rec);else S.quests.push(rec);
+  S.pins=S.pins.filter(x=>x!==nid);if($('#qPin').checked)S.pins.unshift(nid);$('#qPin').checked=false;$('#qId').value='';
+  save();$('#qName').value='';$('#qStart').value='';showQAdd(false);renderQuests();chime([523,784]);
 });
-function showQAdd(o){$('#qAdd').hidden=!o;$('#qToggle').setAttribute('aria-expanded',o);if(o)$('#qName').focus();}
+function showQAdd(o){$('#qAdd').hidden=!o;$('#qToggle').setAttribute('aria-expanded',o);
+  if(!o){$('#qId').value='';$('#qSubmit').innerHTML=icon('plus')+'Add';$('#qCancel').hidden=true;$('#qErr').hidden=true;}
+  if(o){if(!$('#qStart').value)$('#qStart').value=todayStr();$('#qName').focus();}}
+function editQuest(id){const q=S.quests.find(x=>x.id===id);if(!q)return;
+  const d=new Date(q.t);$('#qId').value=id;$('#qName').value=q.name;$('#qStart').value=iso(new Date(q.created));
+  $('#qDate').value=iso(d);$('#qTime').value=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  $('#qPin').checked=S.pins.includes(id);$('#qSubmit').innerHTML=icon('check')+'Save changes';$('#qCancel').hidden=false;
+  showQAdd(true);$('#qAdd').scrollIntoView({block:'nearest',behavior:reduced?'auto':'smooth'});}
+$('#qCancel').onclick=()=>{$('#qName').value='';$('#qStart').value='';$('#qPin').checked=false;showQAdd(false);};
 $('#qToggle').onclick=()=>showQAdd($('#qAdd').hidden);
 $('#qList').addEventListener('click',e=>{
   const p=e.target.closest('[data-pinq]');
   if(p){const id=p.dataset.pinq;S.pins=S.pins.includes(id)?S.pins.filter(x=>x!==id):[id].concat(S.pins);save();renderQuests();
     const nb=$('#qList').querySelector(`[data-pinq="${id}"]`);if(nb)nb.focus();return;}
+  const ed=e.target.closest('[data-editq]');if(ed){editQuest(ed.dataset.editq);return;}
   const b=e.target.closest('[data-delq]');if(!b)return;const id=b.dataset.delq;S.quests=S.quests.filter(q=>q.id!==id);S.pins=S.pins.filter(x=>x!==id);save();renderQuests();});
 document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>{
   const now=new Date();let d,name;
@@ -1678,6 +1717,14 @@ function notify(title,body){
   try{if(navigator.serviceWorker&&navigator.serviceWorker.controller)navigator.serviceWorker.ready.then(r=>r.showNotification(title,{body,icon:'icon-192.png',badge:'icon-192.png',tag:title}));
       else new Notification(title,{body,icon:'icon-192.png'});}catch(e){}
 }
+function liabIcon(l){if(!l)return 'landmark';const n=(l.name||'').toLowerCase();
+  if(isOnce(l))return 'receipt';
+  if(/home|house|mortgage|flat|apartment|property/.test(n))return 'home';
+  if(/car|auto|vehicle|bike/.test(n))return 'car';
+  if(/insur|policy|lic\b|premium/.test(n))return 'shield';
+  if(/educat|student|school|college|tuition|study/.test(n))return 'grad';
+  if(/card/.test(n))return 'card';
+  return 'landmark';}
 function renderReminders(){
   const el=$('#secRemind'),days=S.remDays??2;if(!el)return;
   if(!days){el.hidden=true;return;}
@@ -1685,7 +1732,7 @@ function renderReminders(){
   const items=questView().filter(q=>(q.kind==='emi'||q.kind==='due')&&q.t>+now&&q.t<=+now+days*DAY&&!seen[q.id+'@'+q.t]);
   el.hidden=!items.length;
   $('#rList').innerHTML=items.map(q=>{const l=q.l,amt=q.kind==='emi'?l.emi:l.val,soon=q.t-now<=DAY;return `
-    <div class="ritem ${soon?'soon':''}"><div class="eic" style="background:${q.kind==='emi'?'var(--rose-soft);color:var(--rose)':'var(--peach-soft);color:var(--peach)'}">${icon(q.kind==='emi'?'mountain':'gift')}</div>
+    <div class="ritem ${soon?'soon':''}"><div class="eic" style="background:${q.kind==='emi'?'var(--rose-soft);color:var(--rose)':'var(--peach-soft);color:var(--peach)'}">${icon(liabIcon(q.l))}</div>
       <div style="min-width:0"><b>${esc(q.name)}</b><small>in ${dur(q.t-now)} · ${new Date(q.t).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}</small></div>
       <div class="amt">${fCur(conv(amt,l.cur,C),C)}</div>
       <button class="del" data-rdis="${q.id}@${q.t}" aria-label="Dismiss reminder for ${esc(q.name)}">${icon('x')}</button></div>`;}).join('');
