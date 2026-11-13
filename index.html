@@ -675,21 +675,6 @@ body.settings .drawer{transform:none}
     <div class="daybar" aria-hidden="true"><small><span>Today</span><span id="dayPctTxt">0%</span></small><div class="track"><i id="dayBar"></i></div></div>
   </section>
 
-  <!-- PAYMENT REMINDERS -->
-  <section class="card c-remind" id="secRemind" aria-labelledby="remH" hidden>
-    <h2 id="remH"><span class="ic" style="background:var(--peach-soft);color:var(--peach)"><svg class="i"><use href="#i-bell"/></svg></span>Coming up</h2>
-    <div class="rlist" id="rList"></div>
-  </section>
-
-  <!-- MONTHLY RECAP -->
-  <section class="card c-recap" id="secRecap" aria-labelledby="recapH" hidden>
-    <div class="recap-head">
-      <h2 id="recapH"><span class="ic" style="background:var(--lav-soft);color:var(--lav)"><svg class="i"><use href="#i-calendar"/></svg></span><span id="recapT">Monthly recap</span></h2>
-      <button class="icon-btn" id="recapClose" aria-label="Close recap"><svg class="i"><use href="#i-x"/></svg></button>
-    </div>
-    <div id="recapBody"></div>
-  </section>
-
   <!-- LIFETIME LOOT -->
   <section class="card c-loot" id="secLoot" aria-labelledby="lootH">
     <div class="loot-top">
@@ -828,6 +813,21 @@ body.settings .drawer{transform:none}
     </div>
     <p class="msum" id="mSum"></p>
     <details class="mtable"><summary>Show as a table</summary><div id="mTable"></div></details>
+  </section>
+
+  <!-- PAYMENT REMINDERS -->
+  <section class="card c-remind" id="secRemind" aria-labelledby="remH" hidden>
+    <h2 id="remH"><span class="ic" style="background:var(--peach-soft);color:var(--peach)"><svg class="i"><use href="#i-bell"/></svg></span>Coming up</h2>
+    <div class="rlist" id="rList"></div>
+  </section>
+
+  <!-- MONTHLY RECAP -->
+  <section class="card c-recap" id="secRecap" aria-labelledby="recapH" hidden>
+    <div class="recap-head">
+      <h2 id="recapH"><span class="ic" style="background:var(--lav-soft);color:var(--lav)"><svg class="i"><use href="#i-calendar"/></svg></span><span id="recapT">Monthly recap</span></h2>
+      <button class="icon-btn" id="recapClose" aria-label="Close recap"><svg class="i"><use href="#i-x"/></svg></button>
+    </div>
+    <div id="recapBody"></div>
   </section>
 </main>
 
