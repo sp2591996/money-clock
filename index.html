@@ -335,6 +335,26 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .tile .t-s{font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:4px}
 .tile .t-d{font-size:13px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}
 .tile .t-d b{font-family:var(--mono);font-weight:500}
+/* credit-card look, desktop and phone */
+.tile{position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:188px;padding:18px 20px 16px;border:0;border-radius:22px;color:#fff;box-shadow:0 14px 30px -14px rgba(30,20,50,.55);transition:transform .25s ease,box-shadow .25s ease}
+@media (hover:hover){.tile:hover{transform:translateY(-3px);box-shadow:0 20px 36px -16px rgba(30,20,50,.6)}}
+@media (prefers-reduced-motion:reduce){.tile{transition:none}.tile:hover{transform:none}}
+.tile>*{flex-shrink:0}
+.tile.n{background:linear-gradient(135deg,#9A8DDB 0%,#6C5FB8 55%,#4E4394 100%)}
+.tile.a{background:linear-gradient(135deg,#7DB18C 0%,#4F8460 55%,#3A6447 100%)}
+.tile.l{background:linear-gradient(135deg,#DC8C95 0%,#B35D69 55%,#8C414C 100%)}
+.tile.g{background:linear-gradient(135deg,#E2BE6E 0%,#B58A34 55%,#8A6524 100%)}
+.tile::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-80px;top:-90px;background:rgba(255,255,255,.12)}
+.tile::after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-30px;bottom:-110px;background:rgba(255,255,255,.08)}
+.tile>*{position:relative;z-index:1}
+.tile .chip{display:block;width:34px;height:26px;border-radius:6px;background:linear-gradient(135deg,#F6E3A6,#D8B35A);box-shadow:inset 0 0 0 1px rgba(120,80,10,.25);margin-bottom:10px;order:-1}
+.tile .brandmark{display:block;position:absolute;right:20px;top:20px;font-family:var(--head);font-weight:900;font-size:13px;letter-spacing:.04em;opacity:.85}
+.tile .t-l,.tile.a .t-l,.tile.l .t-l,.tile.n .t-l,.tile.g .t-l{color:rgba(255,255,255,.9);font-size:12px}
+.tile .t-v{font-size:26px;margin-top:6px;color:#fff;line-height:1.25}
+.tile .t-v .dec{opacity:.6;font-size:.62em}
+.tile .t-s{color:rgba(255,255,255,.82);margin-top:4px}
+.tile .t-d{margin-top:auto;padding-top:10px;border-top:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.88);font-size:12.5px;line-height:1.45}
+.tile .t-d b{color:#fff}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
 .col{display:flex;flex-direction:column;min-width:0}
 .col h3{font-family:var(--head);font-weight:800;font-size:17px;display:flex;align-items:center;gap:8px;margin-bottom:12px}
@@ -450,6 +470,7 @@ body.settings .drawer{transform:none}
 
 /* ---------- tablet ---------- */
 @media (max-width:980px){
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
   .c-loot,.c-quests{grid-column:span 12}
   .qlist{flex:none;min-height:0;max-height:520px}
   .cols{grid-template-columns:1fr}
@@ -523,24 +544,8 @@ body.settings .drawer{transform:none}
   .tiles{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:100%;overflow-x:auto;scroll-snap-type:x mandatory;gap:36px;
     margin:0 -18px;padding:6px 18px 14px;scrollbar-width:none;scroll-padding:0 18px;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
   .tiles::-webkit-scrollbar{display:none}
-  .tile{scroll-snap-align:center;scroll-snap-stop:always;position:relative;overflow:hidden;min-height:196px;display:flex;flex-direction:column;
-    padding:18px 20px 16px;border:0;border-radius:22px;color:#fff;box-shadow:0 14px 30px -14px rgba(30,20,50,.55)}
-  .tile>*{flex-shrink:0}
-  .tile.n{background:linear-gradient(135deg,#9A8DDB 0%,#6C5FB8 55%,#4E4394 100%)}
-  .tile.a{background:linear-gradient(135deg,#7DB18C 0%,#4F8460 55%,#3A6447 100%)}
-  .tile.l{background:linear-gradient(135deg,#DC8C95 0%,#B35D69 55%,#8C414C 100%)}
-  .tile.g{background:linear-gradient(135deg,#E2BE6E 0%,#B58A34 55%,#8A6524 100%)}
-  .tile::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-80px;top:-90px;background:rgba(255,255,255,.12)}
-  .tile::after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;right:-30px;bottom:-110px;background:rgba(255,255,255,.08)}
-  .tile>*{position:relative;z-index:1}
-  .tile .chip{display:block;width:34px;height:26px;border-radius:6px;background:linear-gradient(135deg,#F6E3A6,#D8B35A);box-shadow:inset 0 0 0 1px rgba(120,80,10,.25);margin-bottom:10px;order:-1}
-  .tile .brandmark{display:block;position:absolute;right:20px;top:20px;font-family:var(--head);font-weight:900;font-size:13px;letter-spacing:.04em;opacity:.85}
-  .tile .t-l,.tile.a .t-l,.tile.l .t-l,.tile.n .t-l,.tile.g .t-l{color:rgba(255,255,255,.9);font-size:12px}
-  .tile .t-v{font-size:26px;margin-top:6px;color:#fff;line-height:1.25}
-  .tile .t-v .dec{opacity:.6;font-size:.62em}
-  .tile .t-s{color:rgba(255,255,255,.82);margin-top:4px}
-  .tile .t-d{margin-top:auto;padding-top:10px;border-top:1px solid rgba(255,255,255,.22);color:rgba(255,255,255,.88);font-size:12.5px;line-height:1.45}
-  .tile .t-d b{color:#fff}
+  .tile{scroll-snap-align:center;scroll-snap-stop:always;min-height:196px}
+  .tile .t-v{font-size:26px}
   .cnav{display:flex;align-items:center;gap:6px;margin:-4px 0 18px}
   .cbtn{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:12px;background:var(--tint);color:var(--ink);transition:background .2s,opacity .2s}
   .cbtn:active{background:var(--lav-soft)}
