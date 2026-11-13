@@ -190,7 +190,7 @@ main{width:min(1200px,100%);margin:0 auto;padding:8px clamp(16px,4vw,40px) 48px;
 .mtable th:first-child,.mtable td:first-child{text-align:left;font-family:var(--body)}
 .mtable .tw{overflow-x:auto}
 /* hide amounts */
-html.privacy :is(.big,.inr,.stat b,.stat em,.today-t b,.today-t p,.t-v,.t-s,.t-d b,.pair,.ev,.pill b,.legend .v,.ratio b,.ratio em,#greetP b,.bitem b,.ritem .amt,.recap-big,.recap-rows b,.ctip,.chart .ax-v,.msum b,.mtable td,[data-aconv],[data-lconv],[data-int],[data-ad],.pill.money,#lvlXp){filter:blur(7px)}
+html.privacy :is(.big,.inr,.stat b,.stat em,.today-t b,.today-t p,.t-v,.t-s,.t-d b,.pair,.ev,.pill b,.legend .v,.ratio b,.ratio em,#greetP b,.bitem b,.ritem .amt,.recap-big,.recap-rows b,.ctip,.chart .ax-v,.msum b,.mtable td,.econv,.esub b,[data-ad],[data-inte],.edet .kv b,.pill.money,#lvlXp){filter:blur(7px)}
 html.privacy .pop{display:none}
 .hero-up{color:var(--sage)!important}.hero-down{color:var(--rose)!important}
 
@@ -347,11 +347,39 @@ select.inp{appearance:none;background-image:linear-gradient(45deg,transparent 50
 .elist{display:flex;flex-direction:column;gap:10px}
 #lList{max-height:720px;overflow-y:auto;overscroll-behavior:contain;padding-right:4px;margin-right:-4px}
 .empty{padding:22px;border-radius:18px;border:1px dashed var(--line-2);text-align:center;color:var(--faint);font-size:14px}
-.entry{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:start;padding:14px;border-radius:18px;background:var(--raise);border:1px solid var(--line);flex:none}
-.entry .eic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center}
-.entry .en{font-family:var(--head);font-weight:800;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.entry{display:block;border-radius:16px;background:var(--raise);border:1px solid var(--line);flex:none;transition:border-color .2s}
+.entry[open]{border-color:var(--line-2)}
+.erow{list-style:none;display:grid;grid-template-columns:40px minmax(0,1fr) auto 18px;gap:6px 12px;align-items:center;padding:12px 14px;cursor:pointer;border-radius:16px;min-height:64px}
+.erow::-webkit-details-marker{display:none}
+.erow:hover{background:var(--tint)}
+.erow:focus-visible{outline:2px solid var(--lav);outline-offset:2px}
+.emain{min-width:0;display:flex;flex-direction:column;gap:2px}
+.esub{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.esub b{font-family:var(--mono);font-weight:500;color:var(--ink)}
+.esub .up,.edet .up{color:var(--sage)}
+.eval{display:flex;flex-direction:column;align-items:flex-end;min-width:0;max-width:52vw}
+.econv{font-family:var(--mono);font-size:12px;color:var(--faint);white-space:nowrap}
+.chev{color:var(--faint);display:grid;place-items:center;transition:transform .2s}
+.chev .i{width:18px;height:18px}
+.entry[open] .chev{transform:rotate(180deg)}
+.ebar{grid-column:2/4;display:block}
+.ebar .bar{display:block;margin-top:2px;height:5px}
+.ebar .bar i{background:linear-gradient(90deg,#BFD9C3,var(--sage))}
+.ebar-l{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--faint);margin-top:4px}
+.ebar-l b{font-family:var(--mono);font-weight:500;color:var(--sage)}
+.ebar-l .warn{color:var(--peach)}
+.edet{padding:2px 14px 14px 66px}
+.edet .kv b{font-family:var(--mono);font-weight:500;font-size:13px;text-align:right}
+.edet .kv span:first-child{color:var(--muted);font-size:13px}
+.ehelp{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.5}
+.eacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.eacts .btn{margin-left:0}
+.eacts .danger:hover{color:var(--rose);border-color:var(--rose)}
+.entry.off{opacity:.65}
+.entry .eic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center}
+.entry .en{font-family:var(--head);font-weight:800;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .entry.pinned .en{white-space:normal;line-height:1.25}
-.entry .ev{font-family:var(--mono);font-size:18px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.entry .ev{font-family:var(--mono);font-size:16px;white-space:nowrap;overflow:hidden;max-width:100%}
 .entry .ev .dec{opacity:.45}
 .entry .ea{display:flex;gap:2px}
 .chipline{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
@@ -528,7 +556,16 @@ body.settings .drawer{transform:none}
   .entry{grid-template-columns:38px 1fr;padding:12px}
   .entry .eic{width:38px;height:38px;border-radius:12px}
   .entry .ea{grid-column:1/-1;justify-content:flex-end;margin-top:-6px}
-  .entry .ev{font-size:16px}
+  .entry .ev{font-size:15px}
+  .erow{grid-template-columns:36px minmax(0,1fr) 16px;grid-template-areas:"ic main chev" "ic val chev" "bar bar bar";gap:2px 10px;padding:12px;align-items:start}
+  .erow>.eic{grid-area:ic}.erow>.emain{grid-area:main}.erow>.chev{grid-area:chev;align-self:center}.erow>.ebar{grid-area:bar;margin-top:6px}
+  .erow>.eval{grid-area:val;flex-direction:row;align-items:baseline;justify-content:flex-start;gap:8px;max-width:none;margin-top:2px}
+  .entry .eic{width:36px;height:36px}
+  .entry.pinned .en{white-space:normal}
+  .esub{white-space:normal;line-height:1.35}
+  .eval .ev{flex:none;overflow:visible}
+  .erow>.eval{flex-wrap:wrap;row-gap:0}
+  .edet{padding:2px 12px 12px}
   .lg{font-size:13px}
   .toasts{bottom:calc(84px + env(safe-area-inset-bottom))}
   .tabbar{display:flex;position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));z-index:30;padding:6px;border-radius:22px;
@@ -582,6 +619,7 @@ body.settings .drawer{transform:none}
   <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></symbol>
   <symbol id="i-calendar" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></symbol>
   <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
   <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
 </svg>
@@ -1039,70 +1077,61 @@ const netSalPerDay=now=>(salAED()-expAED())/dim(now.getFullYear(),now.getMonth()
 const TYPES={loot:['Salary post EMIs & expenses','var(--gold-soft)','var(--gold)'],wallet:['Cash & savings','var(--sky-soft)','var(--sky)'],up:['Investments','var(--sage-soft)','var(--sage)'],home:['Property','var(--peach-soft)','var(--peach)'],gem:['Gold','var(--gold-soft)','var(--gold)'],car:['Vehicles','var(--lav-soft)','var(--lav)']};
 
 function renderAssets(){
-  const pinned=`
-    <div class="entry pinned" data-a="loot">
-      <div class="eic" style="background:var(--gold-soft);color:var(--gold)">${icon('leaf')}</div>
-      <div style="min-width:0"><div class="en">Salary post EMIs &amp; expenses</div><div class="ev" data-av></div>
-        <div class="chipline"><span class="pill">Salary + bonuses − EMIs − expenses, live</span><span class="pill good" data-int hidden></span><span class="pill" data-aconv></span></div></div>
-      <div class="ea"><button class="toggle" data-loot-toggle aria-pressed="${incLoot()}" aria-label="Count salary post EMIs and expenses in net worth"><span class="knob"></span>${incLoot()?'Counted':'Not counted'}</button></div>
-    </div>`;
-  if(!S.assets.length){$('#aList').innerHTML=pinned+'<div class="empty">Savings, investments, property, gold. Add what else you own and watch it grow.</div>';return;}
-  $('#aList').innerHTML=pinned+S.assets.map(a=>{const c=TYPES[a.type]||TYPES.wallet;return `
-    <div class="entry" data-a="${a.id}">
-      <div class="eic" style="background:${c[1]};color:${c[2]}">${icon(a.type||'wallet')}</div>
-      <div style="min-width:0"><div class="en">${esc(a.name)}</div><div class="ev" data-av></div>
-        <div class="chipline"><span class="pill ${a.g>0?'good':''}">${a.g?(a.g>0?'+':'')+a.g+'% / yr':'no growth set'}</span><span class="pill" data-aconv></span><span class="pill" data-ad></span></div></div>
-      <div class="ea"><button class="del edit" data-edit-a="${a.id}" aria-label="Edit ${esc(a.name)}">${icon('pencil')}</button><button class="del" data-del-a="${a.id}" aria-label="Delete ${esc(a.name)}">${icon('trash')}</button></div>
-    </div>`;}).join('');
-}
-function sparkSVG(pts){
+  const on=incLoot(),open=new Set([...document.querySelectorAll('#aList details[open]')].map(d=>d.dataset.a));
+  const row=(id,ic,bg,fg,name,sub,det,cls='')=>`
+    <details class="entry ${cls}" data-a="${id}" ${open.has(id)?'open':''}>
+      <summary class="erow">
+        <span class="eic" style="background:${bg};color:${fg}">${icon(ic)}</span>
+        <span class="emain"><span class="en">${name}</span><span class="esub">${sub}</span></span>
+        <span class="eval"><span class="ev" data-av></span><span class="econv" data-aconv></span></span>
+        <span class="chev" aria-hidden="true">${icon('chev')}</span>
+      </summary>
+      <div class="edet">${det}</div>
+    </details>`;
+  const pot=row('loot','leaf','var(--gold-soft)','var(--gold)','Salary post EMIs &amp; expenses',
+    on?(S.sav>0?`<span data-int></span>`:'Salary + bonuses − EMIs − expenses'):'Not counted in net worth',
+    `${S.sav>0?kv('Interest earned so far','<b data-inte></b>')+kv('Rate',`<b>${S.sav}% a year, on last month-end balance</b>`):''}
+     <p class="ehelp">Salary and bonuses, minus expenses, EMIs and one-time payments. Change salary, expenses and interest in Settings.</p>
+     <div class="eacts"><button class="toggle" data-loot-toggle aria-pressed="${on}" aria-label="Count salary post EMIs and expenses in net worth"><span class="knob"></span>${on?'Counted in net worth':'Not counted'}</button></div>`,
+    on?'pinned':'pinned off');
+  const acts=(k,id,name)=>`<div class="eacts"><button class="btn mini ghost" data-edit-${k}="${id}">${icon('pencil')}Edit</button><button class="btn mini ghost danger" data-del-${k}="${id}" aria-label="Delete ${esc(name)}">${icon('trash')}Delete</button></div>`;
+  const list=S.assets.map(a=>{const c=TYPES[a.type]||TYPES.wallet;
+    const sub=a.g?`<span class="up">${a.g>0?'+':''}${a.g}% / yr</span> · <span data-ad></span>`:'No growth set';
+    return row(a.id,a.type||'wallet',c[1],c[2],esc(a.name),sub,
+      kv('Type',`<b>${c[0]}</b>`)+kv('Value entered',`<b>${fCur(a.val,a.cur)} on ${new Date(a.asOf).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</b>`)+acts('a',a.id,a.name));}).join('');
+  $('#aList').innerHTML=pot+(list||'<div class="empty">Savings, investments, property, gold. Add what else you own and watch it grow.</div>');
+}function sparkSVG(pts){
   if(pts.length<2)return '';
   const t0=pts[0][0],t1=pts[pts.length-1][0],max=pts[0][1]||1,step=Math.max(1,Math.floor(pts.length/80));
   const p=pts.filter((_,i)=>i%step===0||i===pts.length-1).map(([t,v])=>`${((t-t0)/(t1-t0||1)*100).toFixed(2)},${(4+(1-v/max)*38).toFixed(2)}`);
   return `<svg class="spark" viewBox="0 0 100 46" preserveAspectRatio="none" aria-hidden="true"><polygon class="area" points="0,46 ${p.join(' ')} 100,46"/><polyline class="ln" points="${p.join(' ')}"/></svg>`;
 }
 function renderLiabs(){
-  const now=new Date(),P=projections(now);
+  const now=new Date(),P=projections(now),open=new Set([...document.querySelectorAll('#lList details[open]')].map(d=>d.dataset.l));
   if(!S.liabs.length){$('#lList').innerHTML='<div class="empty">Home loan, car loan, credit card. Add a loan with its EMI and see the day it reaches zero.</div>';return;}
-  $('#lList').innerHTML=S.liabs.map(l=>{const p=P[l.id],orig=l.orig||l.val;
-    if(isOnce(l)){const due=new Date(l.due),paid=due<=now;return `
-    <div class="entry" data-l="${l.id}">
-      <div class="eic" style="background:var(--peach-soft);color:var(--peach)">${icon('gift')}</div>
-      <div style="min-width:0"><div class="en">${esc(l.name)}</div><div class="ev" data-lv></div>
-        <div class="chipline">
-          <span class="pill">One-time · <b>${fCur(l.val,l.cur)}</b></span>
-          <span class="pill">Due ${due.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</span>
-          <span class="pill ${paid?'good':'warn'}" data-next></span>
-          <span class="pill" data-lconv></span>
-          ${paid?'':`<span class="pill">You'll earn <b data-earnby></b> by then</span>`}
-        </div>
-        <div class="payoff"><div class="bar"><i data-pb></i></div><div class="payoff-l"><span data-pct></span><span>until due</span></div></div>
-      </div>
-      <div class="ea"><button class="del edit" data-edit-l="${l.id}" aria-label="Edit ${esc(l.name)}">${icon('pencil')}</button><button class="del" data-del-l="${l.id}" aria-label="Delete ${esc(l.name)}">${icon('trash')}</button></div>
-    </div>`;}
-    const payoff=p.payoff?`Debt-free by <b>${monthYear(p.payoff)}</b>`:p.never?'EMI doesn’t cover the interest':'Cleared';
+  const dt=d=>new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  const acts=l=>`<div class="eacts"><button class="btn mini ghost" data-edit-l="${l.id}">${icon('pencil')}Edit</button><button class="btn mini ghost danger" data-del-l="${l.id}" aria-label="Delete ${esc(l.name)}">${icon('trash')}Delete</button></div>`;
+  $('#lList').innerHTML=S.liabs.map(l=>{const p=P[l.id],orig=l.orig||l.val,once=isOnce(l);
+    const right=once?`Due ${dt(l.due)}`:p.payoff?`Debt-free <b>${monthYear(p.payoff)}</b>`:p.never?'<b class="warn">EMI below interest</b>':'Cleared';
+    const sub=once?`One-time · <span data-next></span>`:`<b>${fCur(l.emi||0,l.cur)}</b> EMI on the ${ordinal(l.day)} · <span data-next></span>`;
+    const det=once
+      ?kv('Amount',`<b>${fCur(l.val,l.cur)}</b>`)+kv('You’ll earn by then','<b data-earnby></b>')+acts(l)
+      :(l.rate?kv('Interest rate',`<b>${l.rate}% a year</b>`):'')+(p.count?kv('EMIs left',`<b>${p.count}</b>`):'')
+        +(p.interest?kv('Interest still to pay',`<b>${fCur(p.interest,l.cur)}</b>`):'')+kv('Original loan',`<b>${fCur(orig,l.cur)}</b>`)
+        +kv('EMIs from salary since',`<b>${dt(fromOf(l))}</b>`)
+        +(p.pts.length>1?`${sparkSVG(p.pts)}<div class="spark-l"><span>Today</span><span>${monthYear(new Date(p.pts[p.pts.length-1][0]))}</span></div>`:'')+acts(l);
     return `
-    <div class="entry" data-l="${l.id}">
-      <div class="eic" style="background:var(--rose-soft);color:var(--rose)">${icon('mountain')}</div>
-      <div style="min-width:0"><div class="en">${esc(l.name)}</div><div class="ev" data-lv></div>
-        <div class="chipline">
-          <span class="pill">EMI <b>${fCur(l.emi||0,l.cur)}</b> on the ${ordinal(l.day)}</span>
-          <span class="pill">From salary since ${new Date(fromOf(l)).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</span>
-          <span class="pill" data-next></span>
-          ${l.rate?`<span class="pill">${l.rate}% p.a.</span>`:''}
-          <span class="pill" data-lconv></span>
-          <span class="pill ${p.never?'warn':'good'}">${payoff}</span>
-          ${p.count?`<span class="pill">${p.count} EMIs left</span>`:''}
-          ${p.interest?`<span class="pill">Interest ahead <b>${fCur(p.interest,l.cur)}</b></span>`:''}
-        </div>
-        <div class="payoff"><div class="bar"><i data-pb></i></div><div class="payoff-l"><span data-pct></span><span>of ${fCur(orig,l.cur)}</span></div></div>
-        ${sparkSVG(p.pts)}
-        ${p.pts.length>1?`<div class="spark-l"><span>Today</span><span>${monthYear(new Date(p.pts[p.pts.length-1][0]))}</span></div>`:''}
-      </div>
-      <div class="ea"><button class="del edit" data-edit-l="${l.id}" aria-label="Edit ${esc(l.name)}">${icon('pencil')}</button><button class="del" data-del-l="${l.id}" aria-label="Delete ${esc(l.name)}">${icon('trash')}</button></div>
-    </div>`;}).join('');
-}
-function renderAlloc(now,A,L){
+    <details class="entry" data-l="${l.id}" ${open.has(l.id)?'open':''}>
+      <summary class="erow">
+        <span class="eic" style="background:${once?'var(--peach-soft)':'var(--rose-soft)'};color:${once?'var(--peach)':'var(--rose)'}">${icon(once?'gift':'mountain')}</span>
+        <span class="emain"><span class="en">${esc(l.name)}</span><span class="esub">${sub}</span></span>
+        <span class="eval"><span class="ev" data-lv></span><span class="econv" data-lconv></span></span>
+        <span class="chev" aria-hidden="true">${icon('chev')}</span>
+        <span class="ebar"><span class="bar"><i data-pb></i></span><span class="ebar-l"><span data-pct></span><span>${right}</span></span></span>
+      </summary>
+      <div class="edet">${det}</div>
+    </details>`;}).join('');
+}function renderAlloc(now,A,L){
   const C=S.cur,el=$('#alloc');
   if(!S.assets.length&&!S.liabs.length&&!incLoot()){
     el.innerHTML=`<h4>How it works</h4><div class="legend" style="color:var(--muted);font-size:14px;gap:10px">
@@ -1126,30 +1155,30 @@ function tickNet(now,full){
   let A=0,Ad=0,L=0,Ld=0;
   { const v=savings(now),el=document.querySelector('[data-a="loot"]');
     if(incLoot()){A+=v;Ad+=netSalPerDay(now);}
-    if(el){el.querySelector('[data-av]').innerHTML=tickHTML(fromAED(v,C),C);if(full){el.querySelector('[data-aconv]').textContent='≈ '+fCur(fromAED(v,O),O);
-      const ip=el.querySelector('[data-int]');ip.hidden=!(S.sav>0);
-      if(S.sav>0)ip.innerHTML=`${S.sav}% interest · <b>${fCur(fromAED(savInterest(now),C),C)}</b> earned · +${fCur(fromAED(savDaily(now),C),C,2)} / day`;}} }
+    if(el){el.querySelector('[data-av]').innerHTML=tickHTML(fromAED(v,C),C,2);if(full){el.querySelector('[data-aconv]').textContent='≈ '+fCur(fromAED(v,O),O);
+      const ip=el.querySelector('[data-int]');if(ip)ip.innerHTML=`<span class="up">${S.sav}% interest</span> · +${fCur(fromAED(savDaily(now),C),C)} / day`;
+      const ie=el.querySelector('[data-inte]');if(ie)ie.textContent=fCur(fromAED(savInterest(now),C),C);}} }
   S.assets.forEach(a=>{const v=assetAt(a,now),ps=assetPerSec(a,now);A+=toAED(v,a.cur);Ad+=toAED(ps,a.cur)*86400;
     const el=document.querySelector(`[data-a="${a.id}"]`);if(!el)return;
-    el.querySelector('[data-av]').innerHTML=tickHTML(conv(v,a.cur,C),C);
+    el.querySelector('[data-av]').innerHTML=tickHTML(conv(v,a.cur,C),C,2);
     if(full){el.querySelector('[data-aconv]').textContent='≈ '+fCur(conv(v,a.cur,O),O);
-      el.querySelector('[data-ad]').textContent=a.g?`${a.g>0?'+':'−'}${fCur(Math.abs(conv(ps*86400,a.cur,C)),C,2)} / day`:'';}});
+      const ad=el.querySelector('[data-ad]');if(ad)ad.textContent=`${a.g>0?'+':'−'}${fCur(Math.abs(conv(ps*86400,a.cur,C)),C)} / day`;}});
   S.liabs.forEach(l=>{const v=liabAt(l,now);L+=toAED(v,l.cur);Ld+=toAED(v*rMs(l)*DAY,l.cur);
     const el=document.querySelector(`[data-l="${l.id}"]`);if(!el)return;
-    el.querySelector('[data-lv]').innerHTML=tickHTML(conv(v,l.cur,C),C);
+    el.querySelector('[data-lv]').innerHTML=tickHTML(conv(v,l.cur,C),C,2);
     if(full&&isOnce(l)){
       const span=l.due-l.asOf,f=span>0?Math.max(0,Math.min(1,(now-l.asOf)/span)):1;
       el.querySelector('[data-lconv]').textContent='≈ '+fCur(conv(l.val,l.cur,O),O);
       el.querySelector('[data-pb]').style.width=(f*100).toFixed(2)+'%';
-      el.querySelector('[data-pct]').textContent=v>0?(f*100).toFixed(1)+'% of the wait done':'Settled';
-      el.querySelector('[data-next]').textContent=v>0?'due in '+dur(l.due-now):'paid';
+      el.querySelector('[data-pct]').textContent=v>0?Math.floor(f*100)+'% of the wait':'Settled';
+      el.querySelector('[data-next]').textContent=v>0?'in '+ahead(now,new Date(l.due)):'paid';
       const eb=el.querySelector('[data-earnby]');if(eb){const e=earnedBetween(now,new Date(l.due));eb.textContent=fCur(fromAED(e,C),C);}
     }
     else if(full){const orig=l.orig||l.val,cl=Math.max(0,Math.min(1,1-v/orig));
       el.querySelector('[data-lconv]').textContent='≈ '+fCur(conv(v,l.cur,O),O);
       el.querySelector('[data-pb]').style.width=(cl*100).toFixed(2)+'%';
-      el.querySelector('[data-pct]').textContent=(cl*100).toFixed(1)+'% cleared';
-      el.querySelector('[data-next]').textContent=v>0&&l.emi>0?'next EMI in '+dur(emiAfter(l,now)-now):'all paid';}});
+      el.querySelector('[data-pct]').textContent=(cl*100).toFixed(cl<.1?1:0)+'% paid off';
+      el.querySelector('[data-next]').textContent=v>0&&l.emi>0?'next in '+ahead(now,emiAfter(l,now)):'all paid';}});
   const N=A-L;
   $('#tA').innerHTML=tickHTML(fromAED(A,C),C);$('#tL').innerHTML=tickHTML(fromAED(L,C),C);$('#tN').innerHTML=tickHTML(fromAED(N,C),C);
   if(full){
