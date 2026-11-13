@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#F6F2EA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15131C" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Money Quest">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>Money Quest</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23E9C46A' stroke='%23B8892B' stroke-width='3'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Nunito+Sans:opsz,wght@6..12,400;6..12,500;6..12,600;6..12,700&family=Lora:ital,wght@1,500;1,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script>
 /* apply the saved theme before first paint */
-try{const s=JSON.parse(localStorage.getItem('moneyQuest:v1')||'{}');if(s.theme)document.documentElement.dataset.theme=s.theme;}catch(e){}
+try{const s=JSON.parse(localStorage.getItem('moneyQuest:v1')||'{}');if(s.theme)document.documentElement.dataset.theme=s.theme;if(s.hide)document.documentElement.classList.add('privacy');}catch(e){}
 </script>
 <style>
 :root{
@@ -123,6 +131,67 @@ main{width:min(1200px,100%);margin:0 auto;padding:8px clamp(16px,4vw,40px) 48px;
 .tag{margin-left:auto;font-family:var(--body);font-size:12px;font-weight:600;color:var(--muted);background:var(--tint);padding:4px 10px;border-radius:99px;white-space:nowrap}
 .c-loot,.c-quests{grid-column:span 6;display:flex;flex-direction:column}
 .c-net{grid-column:span 12}
+.c-remind,.c-recap,.c-trend{grid-column:span 12}
+/* reminders */
+.c-remind{padding:16px 20px}
+.c-remind h2{font-size:17px}
+.rlist{display:grid;gap:8px;margin-top:10px}
+.ritem{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:var(--raise);border:1px solid var(--line)}
+.ritem .eic{width:36px;height:36px}
+.ritem b{font-family:var(--head);font-weight:800;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ritem small{color:var(--muted);font-size:13px}
+.ritem .amt{font-family:var(--mono);font-size:15px;white-space:nowrap;text-align:right}
+.ritem.soon{border-color:color-mix(in srgb,var(--peach) 45%,transparent)}
+/* recap */
+.recap-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.recap-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px 28px;margin-top:12px}
+.recap-big{font-family:var(--mono);font-size:clamp(26px,3.4vw,38px);letter-spacing:-.02em;white-space:nowrap}
+.recap-big small{display:block;font-family:var(--body);font-size:13px;color:var(--muted);letter-spacing:0}
+.recap-note{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.5}
+.recap-rows .kv:first-child{border-top:0;margin-top:0;padding-top:0}
+.recap-rows .kv span:first-child{color:var(--muted)}
+.recap-rows .kv b{font-family:var(--mono);font-weight:500;white-space:nowrap}
+.recap-rows .kv.tot{border-top:1px solid var(--line-2);font-weight:700}
+/* trend */
+.trend-wrap{position:relative}
+.chart{width:100%;height:240px;touch-action:pan-y}
+.chart.bars{height:180px}
+.chart svg{display:block;overflow:visible}
+.chart .ax{font-family:var(--body);font-size:11px;fill:var(--faint)}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .zero{stroke:var(--line-2);stroke-width:1;stroke-dasharray:4 4}
+.chart .rec{fill:none;stroke:var(--sky);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.chart .proj{fill:none;stroke:var(--sky);stroke-width:2;stroke-dasharray:6 5;stroke-linecap:round;opacity:.75}
+.chart .area{fill:var(--sky-soft);opacity:.7}
+.chart .dot{fill:var(--sky);stroke:var(--surface-solid);stroke-width:2}
+.chart .be{fill:var(--sage);stroke:var(--surface-solid);stroke-width:2}
+.chart .cross{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3}
+.chart .bar-p{fill:var(--sage)}.chart .bar-n{fill:var(--rose)}
+.chart .bar-now{opacity:.55}
+.chart .bar-hit{fill:transparent;cursor:pointer}
+.chart .bar-hit:hover+.bar-on,.chart .on{stroke:var(--ink);stroke-width:1.5}
+.ctip{position:absolute;top:0;z-index:3;pointer-events:none;padding:8px 11px;border-radius:12px;background:var(--surface-solid);border:1px solid var(--line-2);box-shadow:0 8px 24px -10px rgba(40,30,60,.35);font-size:13px;white-space:nowrap}
+.ctip b{display:block;font-family:var(--mono);font-weight:500;font-size:15px}
+.ctip small{color:var(--muted)}
+.ctip .row{display:flex;justify-content:space-between;gap:14px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.trend-keys{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--muted);margin:8px 0 4px}
+.trend-keys i{display:inline-block;width:22px;height:0;border-top:2px solid var(--sky);vertical-align:middle;margin-right:7px}
+.trend-keys .k-dash{border-top-style:dashed;opacity:.75}
+.trend-keys #trBe b{color:var(--sage)}
+.mhead{display:flex;align-items:center;gap:10px;margin:18px 0 6px}
+.mhead h3{font-family:var(--head);font-weight:800;font-size:16px}
+.mhead .btn{margin-left:auto}
+.msum{font-size:14px;color:var(--muted);margin-top:6px}
+.msum b{font-family:var(--mono);font-weight:500;color:var(--ink)}
+.mtable{margin-top:10px;font-size:13px}
+.mtable summary{cursor:pointer;color:var(--muted);min-height:32px;display:flex;align-items:center}
+.mtable table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px}
+.mtable th,.mtable td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+.mtable th:first-child,.mtable td:first-child{text-align:left;font-family:var(--body)}
+.mtable .tw{overflow-x:auto}
+/* hide amounts */
+html.privacy :is(.big,.inr,.stat b,.stat em,.today-t b,.today-t p,.t-v,.t-s,.t-d b,.pair,.ev,.pill b,.legend .v,.ratio b,.ratio em,#greetP b,.bitem b,.ritem .amt,.recap-big,.recap-rows b,.ctip,.chart .ax-v,.msum b,.mtable td,[data-aconv],[data-lconv],[data-int],[data-ad],.pill.money,#lvlXp){filter:blur(7px)}
+html.privacy .pop{display:none}
 .hero-up{color:var(--sage)!important}.hero-down{color:var(--rose)!important}
 
 /* ---------- lifetime loot ---------- */
@@ -364,13 +433,21 @@ body.settings .drawer{transform:none}
   .top{flex-wrap:wrap;gap:8px 8px;padding:10px 16px}
   .brand{margin-right:auto;font-size:18px}
   .brand-t{display:none}
+  .mini-coin{display:none}
+  .tools{margin-left:auto}
+  .recap-grid{grid-template-columns:1fr;gap:12px}
+  .ritem{grid-template-columns:auto minmax(0,1fr) auto;row-gap:2px}
+  .ritem .amt{grid-column:2/3;text-align:left}
+  .ritem .del{grid-row:1/3;grid-column:3}
+  .chart{height:210px}
+  .chart.bars{height:160px}
   .lvl{order:5;flex-basis:100%;max-width:none;gap:10px}
   .lvl-badge{width:34px;height:34px;border-radius:11px;font-size:15px}
   .xpbar{height:6px;margin-top:4px}
   .icon-btn,.streak{height:40px}
   .icon-btn{width:40px;border-radius:12px}
-  .streak{padding:0 10px;border-radius:12px}
-  .tools{gap:6px}
+  .streak{padding:0 8px;gap:4px;border-radius:12px}
+  .tools{gap:4px}
   .seg-ctl.cur-ctl{padding:3px;border-radius:12px}
   .seg-ctl.cur-ctl button{min-width:44px;min-height:34px;padding:2px 6px;font-size:13px}
   main{gap:14px;padding:4px 16px calc(96px + env(safe-area-inset-bottom))}
@@ -499,6 +576,12 @@ body.settings .drawer{transform:none}
   <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
   <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.06 12.35a1 1 0 0 1 0-.7 10.75 10.75 0 0 1 19.88 0 1 1 0 0 1 0 .7 10.75 10.75 0 0 1-19.88 0"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></symbol>
   <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
   <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
 </svg>
@@ -517,6 +600,7 @@ body.settings .drawer{transform:none}
       <button type="button" data-cur="AED" aria-pressed="true">AED</button>
       <button type="button" data-cur="INR" aria-pressed="false">INR</button>
     </div>
+    <button class="icon-btn" id="hideBtn" aria-label="Hide amounts" aria-pressed="false" title="Hide amounts"><svg class="i"><use href="#i-eye" id="hideIc"/></svg></button>
     <div class="streak" title="Daily visit streak"><svg class="i"><use href="#i-flame"/></svg><span id="streak">1</span><span class="sr"> day streak</span></div>
     <button class="icon-btn" id="themeBtn" aria-label="Switch to dark mode"><svg class="i"><use href="#i-moon" id="themeIc"/></svg></button>
     <button class="icon-btn" id="soundBtn" aria-label="Toggle soft sounds" aria-pressed="false"><svg class="i"><use href="#i-mute" id="soundIc"/></svg></button>
@@ -531,6 +615,21 @@ body.settings .drawer{transform:none}
       <p id="greetP">Your money keeps working while you rest.</p>
     </div>
     <div class="daybar" aria-hidden="true"><small><span>Today</span><span id="dayPctTxt">0%</span></small><div class="track"><i id="dayBar"></i></div></div>
+  </section>
+
+  <!-- PAYMENT REMINDERS -->
+  <section class="card c-remind" id="secRemind" aria-labelledby="remH" hidden>
+    <h2 id="remH"><span class="ic" style="background:var(--peach-soft);color:var(--peach)"><svg class="i"><use href="#i-bell"/></svg></span>Coming up</h2>
+    <div class="rlist" id="rList"></div>
+  </section>
+
+  <!-- MONTHLY RECAP -->
+  <section class="card c-recap" id="secRecap" aria-labelledby="recapH" hidden>
+    <div class="recap-head">
+      <h2 id="recapH"><span class="ic" style="background:var(--lav-soft);color:var(--lav)"><svg class="i"><use href="#i-calendar"/></svg></span><span id="recapT">Monthly recap</span></h2>
+      <button class="icon-btn" id="recapClose" aria-label="Close recap"><svg class="i"><use href="#i-x"/></svg></button>
+    </div>
+    <div id="recapBody"></div>
   </section>
 
   <!-- LIFETIME LOOT -->
@@ -649,12 +748,33 @@ body.settings .drawer{transform:none}
       </div>
     </div>
   </section>
+  <!-- TREND -->
+  <section class="card c-trend" id="secTrend" aria-labelledby="trH">
+    <div class="nw-head">
+      <h2 id="trH"><span class="ic" style="background:var(--sky-soft);color:var(--sky)"><svg class="i"><use href="#i-chart"/></svg></span>Trend</h2>
+      <span class="tag" id="trTag">Next 12 months</span>
+    </div>
+    <p class="lead">Net worth over time. The solid line is what the app recorded each day you opened it; the dashed line is the projection.</p>
+    <div class="trend-wrap">
+      <div class="chart" id="trChart" role="img" aria-label="Net worth trend"></div>
+      <div class="ctip" id="trTip" hidden></div>
+    </div>
+    <div class="trend-keys"><span><i class="k-solid"></i>Recorded</span><span><i class="k-dash"></i>Projected</span><span id="trBe"></span></div>
+    <div class="mhead"><h3>Month by month</h3><button class="btn mini ghost" id="openRecap"><svg class="i"><use href="#i-calendar"/></svg>Last month’s recap</button></div>
+    <div class="trend-wrap">
+      <div class="chart bars" id="mChart"></div>
+      <div class="ctip" id="mTip" hidden></div>
+    </div>
+    <p class="msum" id="mSum"></p>
+    <details class="mtable"><summary>Show as a table</summary><div id="mTable"></div></details>
+  </section>
 </main>
 
 <nav class="tabbar" aria-label="Sections">
   <button data-go="secLoot" aria-current="true"><svg class="i"><use href="#i-scale"/></svg>Net worth</button>
   <button data-go="secQuests"><svg class="i"><use href="#i-target"/></svg>Quests</button>
   <button data-go="secNet"><svg class="i"><use href="#i-up"/></svg>Assets</button>
+  <button data-go="secTrend"><svg class="i"><use href="#i-chart"/></svg>Trend</button>
 </nav>
 
 <!-- SETTINGS -->
@@ -678,6 +798,17 @@ body.settings .drawer{transform:none}
     <button class="btn" id="addBonus"><svg class="i"><use href="#i-gift"/></svg>Add bonus</button>
     <div class="blist" id="bonusList"></div>
     <p class="help">A bonus counts once its date is on or after the start date and not in the future.</p>
+  </section>
+  <section>
+    <h4>Payment reminders</h4>
+    <label class="fld">Show upcoming EMIs and payments<select class="inp" id="remDays"><option value="1">1 day before</option><option value="2">2 days before</option><option value="3">3 days before</option><option value="7">A week before</option><option value="0">Off</option></select></label>
+    <label class="qpin"><input type="checkbox" id="remNotify">Also send a phone notification the day before</label>
+    <p class="help" id="remHelp">Reminders appear at the top of the app. Notifications arrive while the app is open or was opened recently; phones pause web apps in the background, so treat them as a bonus, not an alarm.</p>
+  </section>
+  <section>
+    <h4>Install on your phone</h4>
+    <button class="btn" id="installBtn" hidden><svg class="i"><use href="#i-download"/></svg>Install Money Quest</button>
+    <p class="help" id="installHelp">Android (Chrome): menu ⋮ → <b>Install app</b> or <b>Add to Home screen</b>. iPhone (Safari): Share → <b>Add to Home Screen</b>. It opens full screen and works offline.</p>
   </section>
   <section>
     <h4>Exchange rate</h4>
@@ -719,7 +850,8 @@ if(!S||!S.salary){
 }
 S.quests=S.quests||[];S.bonuses=S.bonuses||[];S.assets=S.assets||[];S.liabs=S.liabs||[];S.cur=S.cur||S.nwCur||'AED';S.salCur=S.salCur||'AED';S.exp=S.exp||0;S.expCur=S.expCur||'AED';S.pins=S.pins||[];delete S.nwCur;delete S.ach;
 let savMemo=[];
-const save=()=>{store.set(K,S);savMemo=[];};
+let trendT=0;
+const save=()=>{store.set(K,S);savMemo=[];clearTimeout(trendT);trendT=setTimeout(()=>{if(typeof renderTrend==='function'){renderTrend();renderReminders();}},300);};
 
 (function streak(){
   const t=todayStr();
@@ -1038,7 +1170,7 @@ function setCur(c,init){S.cur=c;save();
   document.querySelectorAll('[data-cur]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.cur===c));
   $('#coinCur').textContent=c==='INR'?'₹':'AED';
   if(init)return;
-  lastSec=-1;renderBonuses();renderQuests();tickNet(new Date(),true);update();}
+  lastSec=-1;renderBonuses();renderQuests();tickNet(new Date(),true);update();renderTrend();if(!$('#secRecap').hidden&&recapOn)showRecap(recapOn[0],recapOn[1],true);}
 document.querySelectorAll('[data-cur]').forEach(b=>b.onclick=()=>setCur(b.dataset.cur));
 
 /* entry forms */
@@ -1132,6 +1264,7 @@ function renderQuests(){
     </div>`).join('');
   $('#qCount').textContent=`${qs.filter(q=>!q.done).length} active`;
   tickQuests(true);
+  if(typeof renderReminders==='function'&&$('#rList'))renderReminders();
 }
 function tickQuests(full){
   const now=new Date();
@@ -1253,7 +1386,7 @@ function update(){
     if(lv!==S.level){S.level=lv;save();}
 
     tickQuests(false);
-    if(now-lastFull>60000){if(lastFull){projDirty=true;renderLiabs();renderQuests();}lastFull=+now;}
+    if(now-lastFull>60000){if(lastFull){projDirty=true;renderLiabs();renderQuests();}lastFull=+now;recordSnap(now,N);renderTrend();renderReminders();}
     if(!document.hidden&&!reduced&&sec%2===0&&nw.drift>0)floatPop('+'+one(per*2,4,3));
   }
   $('#tG').innerHTML=tickHTML(fromAED(total,C),C);
@@ -1302,12 +1435,12 @@ $('#coin').addEventListener('click',e=>{
 /* ================= phone tab bar ================= */
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>document.getElementById(b.dataset.go).scrollIntoView({block:'start'}));
 const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)document.querySelectorAll('[data-go]').forEach(b=>b.setAttribute('aria-current',b.dataset.go===e.target.id));});},{rootMargin:'-45% 0px -50% 0px'});
-['secLoot','secQuests','secNet'].forEach(id=>io.observe(document.getElementById(id)));
+['secLoot','secQuests','secNet','secTrend'].forEach(id=>io.observe(document.getElementById(id)));
 
 /* ================= settings ================= */
 function openSettings(o){
   document.body.classList.toggle('settings',o);$('#drawer').setAttribute('aria-hidden',!o);
-  if(o){$('#startDate').value=S.start;$('#salaryInput').value=S.salary;$('#salaryCur').value=S.salCur;$('#expInput').value=S.exp||'';$('#expCur').value=S.expCur;$('#savInput').value=S.sav||'';$('#bonusCur').value=S.salCur;$('#paydayInput').value=S.payday;$('#bonusDate').value=todayStr();renderBonuses();$('#closeSettings').focus();}
+  if(o){$('#remDays').value=String(S.remDays??2);$('#remNotify').checked=!!S.notify;$('#startDate').value=S.start;$('#salaryInput').value=S.salary;$('#salaryCur').value=S.salCur;$('#expInput').value=S.exp||'';$('#expCur').value=S.expCur;$('#savInput').value=S.sav||'';$('#bonusCur').value=S.salCur;$('#paydayInput').value=S.payday;$('#bonusDate').value=todayStr();renderBonuses();$('#closeSettings').focus();}
 }
 $('#openSettings').onclick=()=>openSettings(true);
 $('#closeSettings').onclick=()=>openSettings(false);
@@ -1374,7 +1507,182 @@ function frame(ts){
 }
 
 /* ================= boot ================= */
-applyTheme();renderFx();renderAssets();renderLiabs();renderQuests();setCur(S.cur,true);update();
+
+/* ================= history, trend & monthly recap ================= */
+const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function recordSnap(now,N){            // one value per day: the latest seen that day (AED)
+  S.hist=S.hist||{};S.hist[iso(now)]=Math.round(N*100)/100;
+  const ks=Object.keys(S.hist);if(ks.length>1500){ks.sort();ks.slice(0,ks.length-1500).forEach(k=>delete S.hist[k]);}
+  store.set(K,S);
+}
+/* compact money for axis labels: ₹12.4L, ₹1.2Cr, AED 85k */
+function fShortCur(aed,c=S.cur){const v=fromAED(aed,c),a=Math.abs(v),sg=v<0?'−':'';
+  if(c==='INR')return sg+'₹'+(a>=1e7?(a/1e7).toFixed(a>=1e8?0:2)+'Cr':a>=1e5?(a/1e5).toFixed(a>=1e6?0:1)+'L':a>=1e3?(a/1e3).toFixed(0)+'k':a.toFixed(0));
+  return sg+'AED '+(a>=1e6?(a/1e6).toFixed(2)+'M':a>=1e3?(a/1e3).toFixed(a>=1e5?0:1)+'k':a.toFixed(0));}
+const sgnCur=(aed,c=S.cur,d=0)=>(aed<0?'−':'+')+fCur(Math.abs(fromAED(aed,c)),c,d);
+/* what moved net worth in one calendar month (AED) */
+function monthStats(y,m,now){
+  const st=parseDate(S.start),m0=new Date(y,m,1),mEnd=new Date(y,m+1,1),m1=new Date(Math.min(+mEnd,+now)),s0=st>m0?st:m0;
+  const earned=m1>s0?earnedBetween(s0,m1)+bonusBetween(s0,m1):0,exp=m1>s0?earnedBetween(s0,m1,expAED()):0;
+  const sInt=savInterest(m1)-savInterest(m0);
+  let growth=0,loanInt=0,paid=0;
+  S.assets.forEach(a=>{if(a.asOf>=+m1)return;growth+=toAED(assetAt(a,m1)-assetAt(a,new Date(Math.max(+m0,a.asOf))),a.cur);});
+  S.liabs.forEach(l=>{paid+=toAED(liabPaid(l,m1)-liabPaid(l,m0),l.cur);
+    if(isOnce(l)||l.asOf>=+m1)return;const a0=new Date(Math.max(+m0,l.asOf)),L0=+a0===l.asOf?l.val:liabAt(l,a0);
+    loanInt+=toAED(Math.max(0,liabAt(l,m1)-L0+liabPaid(l,m1)-liabPaid(l,a0)),l.cur);});
+  const inc=incLoot(),net=(inc?earned-exp+sInt:paid)+growth-loanInt;
+  return {y,m,earned,exp,saved:earned-exp,sInt,growth,loanInt,paid,principal:Math.max(0,paid-loanInt),net,partial:+m1<+mEnd,inc};
+}
+function monthList(now){const st=parseDate(S.start),out=[];
+  for(let i=11;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);if(new Date(d.getFullYear(),d.getMonth()+1,1)<=new Date(st.getFullYear(),st.getMonth(),1))continue;out.push([d.getFullYear(),d.getMonth()]);}
+  return out;}
+const svgEl=(w,h,inner)=>`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true">${inner}</svg>`;
+const pathOf=pts=>pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+let trendGeo=null,barGeo=null;
+function renderTrend(){
+  const box=$('#trChart');if(!box)return;const W=box.clientWidth,H=box.clientHeight;if(!W||!H)return;
+  const now=new Date(),day0=+parseDate(iso(now));
+  const nNow=netAt(now);
+  const rec=Object.entries(S.hist||{}).map(([d,v])=>[+parseDate(d)+12*3600e3,v]).filter(p=>p[0]<day0).sort((a,b)=>a[0]-b[0]);
+  rec.push([+now,nNow]);
+  const proj=[[+now,nNow]];for(let i=1;i<=24;i++){const t=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i*365/24);proj.push([+t,netAt(t)]);}
+  const x0=Math.min(rec[0][0],+now-30*DAY),x1=proj[proj.length-1][0];
+  const vals=rec.concat(proj).map(p=>p[1]);let lo=Math.min(0,...vals),hi=Math.max(0,...vals);
+  const pad=(hi-lo||1)*.08;hi+=pad;lo-=lo<0?pad:0;
+  const L=6,Rp=6,T=10,B=24,X=t=>L+(t-x0)/(x1-x0)*(W-L-Rp),Y=v=>T+(hi-v)/(hi-lo)*(H-T-B);
+  let g='';
+  [hi-pad,(hi-pad+lo)/2,lo].forEach((v,i)=>{if(i===2&&lo===0)return;const y=Y(v);g+=`<line class="grid" x1="${L}" x2="${W-Rp}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}"/><text class="ax ax-v" x="${L+2}" y="${(y-5).toFixed(1)}">${fShortCur(v)}</text>`;});
+  if(lo<0&&hi>0){const y=Y(0);g+=`<line class="zero" x1="${L}" x2="${W-Rp}" y1="${y}" y2="${y}"/>`;}
+  const yb=H-6;
+  g+=`<text class="ax" x="${L}" y="${yb}">${new Date(x0).toLocaleDateString('en-GB',{month:'short',year:'numeric'})}</text>`;
+  const xn=X(+now);g+=`<line class="grid" x1="${xn}" x2="${xn}" y1="${T}" y2="${H-B}"/><text class="ax" x="${xn}" y="${yb}" text-anchor="middle">Today</text>`;
+  g+=`<text class="ax" x="${W-Rp}" y="${yb}" text-anchor="end">${new Date(x1).toLocaleDateString('en-GB',{month:'short',year:'numeric'})}</text>`;
+  if(rec.length>1)g+=`<path class="rec" d="${pathOf(rec.map(p=>[X(p[0]),Y(p[1])]))}"/>`;
+  g+=`<path class="proj" d="${pathOf(proj.map(p=>[X(p[0]),Y(p[1])]))}"/>`;
+  const be=breakEven(now);
+  if(be.state==='red'&&be.t<=x1){g+=`<circle class="be" cx="${X(be.t)}" cy="${Y(0)}" r="5"/>`;
+    $('#trBe').innerHTML=`<i style="border:0;width:10px;height:10px;border-radius:50%;background:var(--sage)"></i>Balanced <b>${new Date(be.t).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}</b>`;}
+  else $('#trBe').innerHTML=be.state==='green'?'<b>In the green</b>':be.state==='red'?`Balanced after ${new Date(x1).toLocaleDateString('en-GB',{month:'short',year:'numeric'})}`:'';
+  g+=`<circle class="dot" cx="${xn}" cy="${Y(nNow)}" r="5"/><g id="trCross" style="display:none"><line class="cross" y1="${T}" y2="${H-B}"/><circle class="dot" r="4.5"/></g>`;
+  box.innerHTML=svgEl(W,H,g);
+  box.setAttribute('aria-label',`Net worth trend: ${fShortCur(nNow)} today, ${fShortCur(proj[proj.length-1][1])} projected in 12 months`);
+  trendGeo={X,Y,x0,x1,rec,now:+now,W};
+  renderBars(now);
+}
+function trendAt(t){const G=trendGeo;if(t>G.now)return netAt(new Date(t));const r=G.rec;
+  if(t<=r[0][0])return r[0][1];for(let i=1;i<r.length;i++)if(t<=r[i][0]){const a=r[i-1],b=r[i];return a[1]+(b[1]-a[1])*(t-a[0])/(b[0]-a[0]||1);}return r[r.length-1][1];}
+function tipAt(tip,box,x,html){tip.innerHTML=html;tip.hidden=false;const w=tip.offsetWidth,bw=box.clientWidth;tip.style.left=Math.max(0,Math.min(bw-w,x+14>bw-w?x-w-14:x+14))+'px';}
+$('#trChart').addEventListener('pointermove',e=>{if(!trendGeo)return;const box=$('#trChart'),r=box.getBoundingClientRect(),x=e.clientX-r.left,G=trendGeo;
+  const t=Math.max(G.x0,Math.min(G.x1,G.x0+(x-6)/(G.W-12)*(G.x1-G.x0))),v=trendAt(t),cx=G.X(t),cy=G.Y(v),c=$('#trCross');
+  c.style.display='';c.querySelector('line').setAttribute('x1',cx);c.querySelector('line').setAttribute('x2',cx);c.querySelector('circle').setAttribute('cx',cx);c.querySelector('circle').setAttribute('cy',cy);
+  const C=S.cur,O=OTH(C);
+  tipAt($('#trTip'),box,cx,`<small>${new Date(t).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})} · ${t>G.now?'projected':'recorded'}</small><b>${fCur(fromAED(v,C),C)}</b><small>${fCur(fromAED(v,O),O)}</small>`);});
+$('#trChart').addEventListener('pointerleave',()=>{const c=$('#trCross');if(c)c.style.display='none';$('#trTip').hidden=true;});
+
+function renderBars(now){
+  const box=$('#mChart');const W=box.clientWidth,H=box.clientHeight;if(!W||!H)return;
+  const ms=monthList(now).map(([y,m])=>monthStats(y,m,now));const C=S.cur;
+  if(!ms.length){box.innerHTML='';$('#mSum').textContent='';return;}
+  let hi=Math.max(0,...ms.map(x=>x.net)),lo=Math.min(0,...ms.map(x=>x.net));if(hi===lo)hi=1;
+  const T=16,B=22,n=ms.length,slot=W/n,bw=Math.min(40,slot-6),Y=v=>T+(hi-v)/(hi-lo)*(H-T-B),y0=Y(0);
+  let g=`<line class="grid" x1="0" x2="${W}" y1="${y0}" y2="${y0}"/>`;
+  ms.forEach((st,i)=>{const cx=slot*i+slot/2,x=cx-bw/2,y=Y(st.net),h=Math.max(2,Math.abs(y-y0)),r=Math.min(4,bw/2,h);
+    const pos=st.net>=0,top=pos?y0-h:y0;
+    const d=pos?`M${x},${y0}V${top+r}Q${x},${top} ${x+r},${top}H${x+bw-r}Q${x+bw},${top} ${x+bw},${top+r}V${y0}Z`
+               :`M${x},${y0}V${top+h-r}Q${x},${top+h} ${x+r},${top+h}H${x+bw-r}Q${x+bw},${top+h} ${x+bw},${top+h-r}V${y0}Z`;
+    g+=`<path class="${pos?'bar-p':'bar-n'} ${st.partial?'bar-now':''}" d="${d}" data-i="${i}"/>`;
+    g+=`<text class="ax" x="${cx}" y="${H-6}" text-anchor="middle">${MON[st.m]}${st.partial?'*':''}</text>`;
+    g+=`<rect class="bar-hit" x="${slot*i}" y="0" width="${slot}" height="${H}" data-i="${i}" tabindex="0" role="button" aria-label="${MONL[st.m]} ${st.y}: ${sgnCur(st.net)}"/>`;});
+  box.innerHTML=svgEl(W,H,g);barGeo={ms,slot};
+  const done=ms.filter(x=>!x.partial);
+  if(done.length){const best=done.reduce((a,b)=>b.net>a.net?b:a),worst=done.reduce((a,b)=>b.net<a.net?b:a),avg=done.reduce((s,x)=>s+x.net,0)/done.length;
+    $('#mSum').innerHTML=`Best <b>${MON[best.m]} ${sgnCur(best.net)}</b> · Lowest <b>${MON[worst.m]} ${sgnCur(worst.net)}</b> · Average <b>${sgnCur(avg)}</b> / month. * month so far. Tap a bar for its recap.`;}
+  else $('#mSum').innerHTML=`* ${MONL[now.getMonth()]} so far. Your first full month appears on 1 ${MON[(now.getMonth()+1)%12]}. Tap the bar for its recap.`;
+  $('#mTable').innerHTML=`<div class="tw"><table><thead><tr><th>Month</th><th>Saved</th><th>Interest</th><th>Asset growth</th><th>Loan interest</th><th>Net worth</th></tr></thead><tbody>${ms.map(st=>`<tr><td>${MON[st.m]} ${st.y}${st.partial?' (so far)':''}</td><td>${sgnCur(st.saved)}</td><td>${sgnCur(st.sInt)}</td><td>${sgnCur(st.growth)}</td><td>${sgnCur(-st.loanInt)}</td><td>${sgnCur(st.net)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function barTip(i){const st=barGeo.ms[i],box=$('#mChart');
+  box.querySelectorAll('path.on').forEach(p=>p.classList.remove('on'));const pth=box.querySelector(`path[data-i="${i}"]`);if(pth)pth.classList.add('on');
+  tipAt($('#mTip'),box,barGeo.slot*i+barGeo.slot/2,`<small>${MONL[st.m]} ${st.y}${st.partial?' · so far':''}</small><b>${sgnCur(st.net)}</b>
+    <div class="row"><span>Saved</span><span>${sgnCur(st.saved)}</span></div><div class="row"><span>Interest</span><span>${sgnCur(st.sInt)}</span></div>
+    <div class="row"><span>Assets</span><span>${sgnCur(st.growth)}</span></div><div class="row"><span>Loan interest</span><span>${sgnCur(-st.loanInt)}</span></div>`);}
+$('#mChart').addEventListener('pointerover',e=>{const h=e.target.closest('[data-i]');if(h&&barGeo)barTip(+h.dataset.i);});
+$('#mChart').addEventListener('focusin',e=>{const h=e.target.closest('[data-i]');if(h&&barGeo)barTip(+h.dataset.i);});
+$('#mChart').addEventListener('pointerleave',()=>{$('#mTip').hidden=true;$('#mChart').querySelectorAll('path.on').forEach(p=>p.classList.remove('on'));});
+$('#mChart').addEventListener('click',e=>{const h=e.target.closest('rect[data-i]');if(h&&barGeo){const st=barGeo.ms[+h.dataset.i];showRecap(st.y,st.m);}});
+$('#mChart').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset.i){e.preventDefault();const st=barGeo.ms[+e.target.dataset.i];showRecap(st.y,st.m);}});
+let rsT=0;addEventListener('resize',()=>{clearTimeout(rsT);rsT=setTimeout(renderTrend,150);});
+
+let recapOn=null;
+function showRecap(y,m,quiet){
+  const now=new Date(),st=monthStats(y,m,now),C=S.cur,O=OTH(C);recapOn=[y,m];
+  $('#recapT').textContent=`${MONL[m]} ${y}`+(st.partial?' so far':' recap');
+  const rows=[];
+  if(st.inc){rows.push(kv(`Saved from salary <small>(earned ${fCur(fromAED(st.earned,C),C)} − expenses ${fCur(fromAED(st.exp,C),C)})</small>`,`<b>${sgnCur(st.saved)}</b>`));
+    if(S.sav>0||st.sInt)rows.push(kv('Savings interest',`<b>${sgnCur(st.sInt)}</b>`));}
+  else if(st.paid)rows.push(kv('Loan payments',`<b>${sgnCur(st.paid)}</b>`));
+  if(S.assets.length)rows.push(kv('Asset growth',`<b>${sgnCur(st.growth)}</b>`));
+  if(S.liabs.some(l=>!isOnce(l)))rows.push(kv('Loan interest',`<b>${sgnCur(-st.loanInt)}</b>`));
+  rows.push(`<div class="kv tot"><span>Net worth change</span><b>${sgnCur(st.net)}</b></div>`);
+  const done=monthList(now).map(([yy,mm])=>monthStats(yy,mm,now)).filter(x=>!x.partial);
+  const best=!st.partial&&done.length>1&&done.every(x=>x.net<=st.net);
+  const note=(st.inc&&st.paid>0?`EMIs and payments of ${fCur(fromAED(st.paid,C),C)} moved money from your savings to your loans, so they don't change net worth on their own. Your loans went down by ${fCur(fromAED(st.principal,C),C)} after interest.`:'')+(best?' Your best month so far.':'');
+  $('#recapBody').innerHTML=`<div class="recap-grid"><div><div class="recap-big ${st.net<0?'hero-down':'hero-up'}">${sgnCur(st.net,C,2)}<small>${sgnCur(st.net,O,2)} · net worth change</small></div>${note?`<p class="recap-note">${note}</p>`:''}</div><div class="recap-rows">${rows.join('')}</div></div>`;
+  $('#secRecap').hidden=false;if(!quiet)$('#secRecap').scrollIntoView({block:'start',behavior:reduced?'auto':'smooth'});
+}
+const prevMonth=now=>{const d=new Date(now.getFullYear(),now.getMonth()-1,1);return [d.getFullYear(),d.getMonth()];};
+const recapKey=(y,m)=>y+'-'+String(m+1).padStart(2,'0');
+$('#recapClose').onclick=()=>{$('#secRecap').hidden=true;if(recapOn){const [py,pm]=prevMonth(new Date());if(recapOn[0]===py&&recapOn[1]===pm){S.recapSeen=recapKey(py,pm);save();}}recapOn=null;};
+$('#openRecap').onclick=()=>{const now=new Date(),[py,pm]=prevMonth(now),st=parseDate(S.start);
+  if(new Date(py,pm+1,1)<=new Date(st.getFullYear(),st.getMonth(),1))showRecap(now.getFullYear(),now.getMonth());else showRecap(py,pm);};
+function autoRecap(){const now=new Date(),[py,pm]=prevMonth(now),st=parseDate(S.start);
+  if(new Date(py,pm+1,1)<=new Date(st.getFullYear(),st.getMonth(),1))return;
+  if(S.recapSeen!==recapKey(py,pm))showRecap(py,pm,true);}
+
+/* ================= payment reminders ================= */
+function notify(title,body){
+  try{if(navigator.serviceWorker&&navigator.serviceWorker.controller)navigator.serviceWorker.ready.then(r=>r.showNotification(title,{body,icon:'icon-192.png',badge:'icon-192.png',tag:title}));
+      else new Notification(title,{body,icon:'icon-192.png'});}catch(e){}
+}
+function renderReminders(){
+  const el=$('#secRemind'),days=S.remDays??2;if(!el)return;
+  if(!days){el.hidden=true;return;}
+  const now=new Date(),C=S.cur,seen=S.remSeen||{};
+  const items=questView().filter(q=>(q.kind==='emi'||q.kind==='due')&&q.t>+now&&q.t<=+now+days*DAY&&!seen[q.id+'@'+q.t]);
+  el.hidden=!items.length;
+  $('#rList').innerHTML=items.map(q=>{const l=q.l,amt=q.kind==='emi'?l.emi:l.val,soon=q.t-now<=DAY;return `
+    <div class="ritem ${soon?'soon':''}"><div class="eic" style="background:${q.kind==='emi'?'var(--rose-soft);color:var(--rose)':'var(--peach-soft);color:var(--peach)'}">${icon(q.kind==='emi'?'mountain':'gift')}</div>
+      <div style="min-width:0"><b>${esc(q.name)}</b><small>in ${dur(q.t-now)} · ${new Date(q.t).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}</small></div>
+      <div class="amt">${fCur(conv(amt,l.cur,C),C)}</div>
+      <button class="del" data-rdis="${q.id}@${q.t}" aria-label="Dismiss reminder for ${esc(q.name)}">${icon('x')}</button></div>`;}).join('');
+  if(S.notify&&'Notification'in window&&Notification.permission==='granted'){S.notified=S.notified||{};
+    items.forEach(q=>{const k=q.id+'@'+q.t;if(q.t-now<=DAY&&!S.notified[k]){S.notified[k]=1;store.set(K,S);
+      const l=q.l,amt=q.kind==='emi'?l.emi:l.val;notify(`${q.name} tomorrow`,`${fCur(conv(amt,l.cur,C),C)} due ${new Date(q.t).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'})}`);}});}
+  [S.remSeen,S.notified].forEach(o=>{if(o)Object.keys(o).forEach(k=>{if(+k.split('@')[1]<+now-7*DAY)delete o[k];});});
+}
+$('#rList').addEventListener('click',e=>{const b=e.target.closest('[data-rdis]');if(!b)return;S.remSeen=S.remSeen||{};S.remSeen[b.dataset.rdis]=1;store.set(K,S);renderReminders();});
+$('#remDays').onchange=()=>{S.remDays=Number($('#remDays').value);store.set(K,S);renderReminders();};
+$('#remNotify').onchange=async()=>{const cb=$('#remNotify');
+  if(!cb.checked){S.notify=false;store.set(K,S);return;}
+  if(!('Notification'in window)){cb.checked=false;$('#remHelp').textContent='This browser can’t show notifications. Install the app on your phone and try again; the reminders at the top still work.';return;}
+  const p=await Notification.requestPermission();S.notify=p==='granted';cb.checked=S.notify;store.set(K,S);
+  if(!S.notify)$('#remHelp').textContent='Notifications are blocked for this site. Allow them in the browser’s site settings to turn this on; the reminders at the top still work.';
+  else notify('Reminders on','You’ll get a heads-up the day before each EMI or payment.');};
+
+/* ================= hide amounts ================= */
+function setHide(on){S.hide=on;store.set(K,S);document.documentElement.classList.toggle('privacy',on);
+  const b=$('#hideBtn');b.setAttribute('aria-pressed',on);b.setAttribute('aria-label',on?'Show amounts':'Hide amounts');b.title=on?'Show amounts':'Hide amounts';$('#hideIc').setAttribute('href',on?'#i-eye-off':'#i-eye');}
+$('#hideBtn').onclick=()=>setHide(!S.hide);
+
+/* ================= install as an app ================= */
+if('serviceWorker'in navigator&&(location.protocol==='https:'||['localhost','127.0.0.1'].includes(location.hostname)))
+  addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+let deferredInstall=null;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstall=e;$('#installBtn').hidden=false;});
+$('#installBtn').onclick=async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;$('#installBtn').hidden=true;};
+if(matchMedia('(display-mode: standalone)').matches||navigator.standalone)$('#installHelp').textContent='Installed. Money Quest is on your home screen and works offline.';
+
+applyTheme();renderFx();renderAssets();renderLiabs();renderQuests();setCur(S.cur,true);setHide(!!S.hide);update();renderTrend();renderReminders();autoRecap();
 setInterval(update,100);
 fetchFx();setInterval(fetchFx,3600e3);
 })();
